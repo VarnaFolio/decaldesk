@@ -1,0 +1,743 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: DecalDesk 1.2.0\n"
+"Report-Msgid-Bugs-To: support@decaldesk.com\n"
+"POT-Creation-Date: 2026-07-12T00:00:00+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: manual\n"
+"Language: bg_BG\n"
+
+msgid "\"%s\" has been uploaded and queued for processing."
+msgstr "\"%s\" е качен и добавен в опашката за обработка."
+
+msgid "%1$d of %2$d products over the past week used the static template instead of an AI description."
+msgstr "%1$d от %2$d продукта през последната седмица излязоха със статичен шаблон вместо AI описание."
+
+msgid "%1$s – self-adhesive film, %2$d x %3$d cm. Order online with fast delivery."
+msgstr "%1$s – самозалепващо се фолио %2$d x %3$d см. Поръчай онлайн с бърза доставка."
+
+msgid "%1$s – self-adhesive film, %2$d x %3$d cm (%4$s m²). Made from %5$s material with high-quality printing, suited for %6$s."
+msgstr "%1$s – самозалепващо се фолио с размери %2$d x %3$d см (%4$s м²). Изработено от %5$s материал с високо качество на печат, подходящо за %6$s."
+
+msgid "%d products failed to process successfully over the past week."
+msgstr "%d продукта не бяха обработени успешно през последната седмица."
+
+msgid "%d skipped (already published, still processing, or without a product)."
+msgstr "%d пропуснати (вече публикувани, все още в обработка, или без продукт)."
+
+msgid "+ Add another template (up to %d)"
+msgstr "+ Добави още шаблон (до %d)"
+
+msgid "AI (Claude)"
+msgstr "AI (Claude)"
+
+msgid "AI (free)"
+msgstr "AI (безплатен)"
+
+msgid "AI Vision — image analysis"
+msgstr "AI Vision — анализ на изображението"
+
+msgid "AI-generated descriptions"
+msgstr "AI генериране на описания"
+
+msgid "AI provider"
+msgstr "AI доставчик"
+
+msgid "The AI provider is disabled (set to \"Disabled\")."
+msgstr "AI доставчикът е изключен (избран е \"Изключено\")."
+
+msgid "Let the AI look at the actual image (not just the filename) when writing the description"
+msgstr "AI-то да гледа реалното PNG изображение (не само името на файла) при писане на описанието"
+
+msgid "Anthropic API key"
+msgstr "Anthropic API ключ"
+
+msgid "DecalDesk"
+msgstr "DecalDesk"
+
+msgid "DecalDesk requires WooCommerce to be active in order to work."
+msgstr "DecalDesk изисква активиран WooCommerce, за да работи."
+
+msgid "DecalDesk – History"
+msgstr "DecalDesk – История"
+
+msgid "DecalDesk – Categories & Mockup Templates"
+msgstr "DecalDesk – Категории и мокъп шаблони"
+
+msgid "DecalDesk – Upload Designs"
+msgstr "DecalDesk – Качване на дизайни"
+
+msgid "DecalDesk – Settings"
+msgstr "DecalDesk – Настройки"
+
+msgid "DecalDesk — need a hand? Email %s"
+msgstr "DecalDesk — нужна ти е помощ? Пиши на %s"
+
+msgid "DecalDesk:"
+msgstr "DecalDesk:"
+
+msgid "Google Gemini API key"
+msgstr "Google Gemini API ключ"
+
+msgid "The slug is suggested automatically from the name, but you can edit it before adding."
+msgstr "Slug-ът се предлага автоматично от името, но можеш да го редактираш преди да добавиш."
+
+msgid "WooCommerce is not active."
+msgstr "WooCommerce не е активен."
+
+msgid "slug (e.g. kitchen)"
+msgstr "slug (напр. kitchen)"
+
+msgid "Free provider — Google Gemini"
+msgstr "Безплатен доставчик — Google Gemini"
+
+msgid "Get a free key from Google AI Studio (no card required):"
+msgstr "Безплатен ключ вземаш от Google AI Studio (не изисква карта):"
+
+msgid "Free — Google Gemini (daily limit, see below)"
+msgstr "Безплатно — Google Gemini (лимит на ден, виж по-долу)"
+
+msgid "The counter resets automatically at midnight. Google itself allows far more (hundreds per day) — this limit is just our own safeguard."
+msgstr "Брояч се нулира автоматично в полунощ. Google самите позволяват доста повече (стотици на ден) — този лимит е само наш собствен предпазител."
+
+msgid "It's currently being processed."
+msgstr "В момента е в процес на обработка."
+
+msgid "Pending"
+msgstr "В опашка"
+
+msgid "Important: WooCommerce products you've already created with the plugin are NEVER deleted automatically — this only affects DecalDesk's own internal data."
+msgstr "Важно: WooCommerce продуктите, които вече си създал с плъгина, НИКОГА не се трият автоматично - това засяга само вътрешните данни на самия DecalDesk."
+
+msgid "A category with this slug already exists."
+msgstr "Вече има категория с този slug."
+
+msgid "View in store"
+msgstr "Виж в магазина"
+
+msgid "See the existing product below."
+msgstr "Виж съществуващия продукт по-долу."
+
+msgid "Only check this if you're removing the plugin for good and want a clean wipe."
+msgstr "Включи тази отметка само ако наистина премахваш плъгина завинаги и искаш чисто заличаване."
+
+msgid "Drag and resize the frame to set exactly where the design should appear on this template."
+msgstr "Влачи и променяй размера на рамката, за да зададеш къде точно да се показва дизайнът върху този шаблон."
+
+msgid "No categories added yet."
+msgstr "Все още няма добавени категории."
+
+msgid "No template uploaded for this slot yet"
+msgstr "Все още няма качен шаблон за този слот"
+
+msgid "Every uploaded design will become one product with a choice of: %s"
+msgstr "Всеки качен дизайн ще стане един продукт с избор от: %s"
+
+msgid "All"
+msgstr "Всички"
+
+msgid "Each category matches the \"category\" part of the filename (e.g. holiday_50x70_matte_KITCHEN.jpg → category \"kitchen\"). Here you upload mockup template(s) and set exactly where the design should sit on each one."
+msgstr "Всяка категория съответства на \"category\" частта от името на файла (напр. koleda_50x70_matte_KITCHEN.jpg → категория \"kitchen\"). Тук качваш шаблон(и) за мокъп и настройваш къде точно да се позиционира дизайнът върху всеки от тях."
+
+msgid "Reset to centered"
+msgstr "Върни към центрирано"
+
+msgid "Generates longer, sales-focused descriptions instead of the static template. Choose a free provider (Google Gemini, with a daily limit) or a paid one (Anthropic Claude, no limit)."
+msgstr "Генерира по-дълги, продаващи описания вместо статичния шаблон. Избери безплатен доставчик (Google Gemini, с дневен лимит) или платен (Anthropic Claude, без лимит)."
+
+msgid "Generate mockups from all templates in the category (up to 4)"
+msgstr "Генерирай мокъпи от всички шаблони на категорията (до 4)"
+
+msgid "Done"
+msgstr "Готови"
+
+msgid "Total done"
+msgstr "Готови общо"
+
+msgid "Error"
+msgstr "Грешка"
+
+msgid "Date"
+msgstr "Дата"
+
+msgid "The design file doesn't exist."
+msgstr "Дизайн файлът не съществува."
+
+msgid "Daily limit"
+msgstr "Дневен лимит"
+
+msgid "Today's usage"
+msgstr "Днешна употреба"
+
+msgid "Add category"
+msgstr "Добави категория"
+
+msgid "Add new category"
+msgstr "Добави нова категория"
+
+msgid "Extra text in the description"
+msgstr "Допълнителен текст в описанието"
+
+msgid "For a more secure setup, define it in wp-config.php:"
+msgstr "За по-сигурен вариант дефинирай в wp-config.php:"
+
+msgid "Set via the DECALDESK_AI_API_KEY constant in wp-config.php"
+msgstr "Зададен през wp-config.php константа DECALDESK_AI_API_KEY"
+
+msgid "Set via the DECALDESK_GEMINI_API_KEY constant in wp-config.php"
+msgstr "Зададен през wp-config.php константа DECALDESK_GEMINI_API_KEY"
+
+msgid "Save variants"
+msgstr "Запази вариантите"
+
+msgid "Save as draft"
+msgstr "Запази като чернова"
+
+msgid "Save settings"
+msgstr "Запази настройките"
+
+msgid "Save position"
+msgstr "Запази позицията"
+
+msgid "Protects against typos in the filename (e.g. an extra accidental zero). A file larger than this on either side will be rejected with a clear message."
+msgstr "Защита срещу грешка в името на файла (напр. случайна допълнителна нула). Файл с размер над тази стойност по която и да е страна ще бъде отхвърлен с ясно съобщение."
+
+msgid "Both providers (Gemini and Claude) support image recognition. The design is automatically downscaled before sending, to save bandwidth and tokens. The result is a much more accurate, specific description, instead of a generic one based only on size/material/category."
+msgstr "И двата доставчика (Gemini и Claude) поддържат разпознаване на изображения. Дизайнът се смалява автоматично преди изпращане, за да пести трафик и токени. Резултатът е доста по-точно и специфично описание, вместо генерично, базирано само на размери/материал/категория."
+
+msgid "Disabled (use the static template)"
+msgstr "Изключено (използвай статичен шаблон)"
+
+msgid "The image resolution is too high (%1$d x %2$d px). The maximum is %3$d px on the longer side."
+msgstr "Изображението е с прекалено висока резолюция (%1$d x %2$d px). Максимумът е %3$d px по дългата страна."
+
+msgid "The image has invalid (zero) pixel dimensions."
+msgstr "Изображението има невалидни (нулеви) пикселни размери."
+
+msgid "Using the default template"
+msgstr "Използва се шаблон по подразбиране"
+
+msgid "Delete"
+msgstr "Изтрий"
+
+msgid "Delete all plugin data (settings, daily quota, log files, temporary files in incoming/mockups) when the plugin is fully removed"
+msgstr "Изтрий всички данни на плъгина (настройки, дневна квота, лог файлове, временни файлове в incoming/mockups) при пълно изтриване на плъгина"
+
+msgid "Delete record (doesn't touch the product)"
+msgstr "Изтрий записа (не пипа продукта)"
+
+msgid "Delete this record from history? (the store product, if any, is NOT deleted)"
+msgstr "Изтрий записа от историята? (продуктът в магазина, ако има такъв, НЕ се трие)"
+
+msgid "Delete category"
+msgstr "Изтрий категорията"
+
+msgid "Delete this template"
+msgstr "Изтрий този шаблон"
+
+msgid "Deleted %d records from history."
+msgstr "Изтрити %d записа от историята."
+
+msgid "Clear all"
+msgstr "Изчисти всички"
+
+msgid "Clear points"
+msgstr "Изчисти точките"
+
+msgid "Name (e.g. Kitchen Backsplash)"
+msgstr "Име (напр. Гръб за кухня)"
+
+msgid "Name and slug are required."
+msgstr "Име и slug са задължителни."
+
+msgid "The name \"%s\" doesn't match the format name_widthxheight_material_category.extension"
+msgstr "Името \"%s\" не отговаря на формата name_widthxheight_material_category.разширение"
+
+msgid "History"
+msgstr "История"
+
+msgid "Categories"
+msgstr "Категории"
+
+msgid "Categories & Mockup Templates"
+msgstr "Категории и мокъп шаблони"
+
+msgid "The category doesn't exist."
+msgstr "Категорията не съществува."
+
+msgid "Upload"
+msgstr "Качване"
+
+msgid "Upload Designs"
+msgstr "Качване на дизайни"
+
+msgid "Custom template uploaded"
+msgstr "Качен собствен шаблон"
+
+msgid "Compression quality"
+msgstr "Качество на компресията"
+
+msgid "Upload new designs"
+msgstr "Качи нови дизайни"
+
+msgid "Upload files"
+msgstr "Качи файлове"
+
+msgid "Upload template"
+msgstr "Качи шаблон"
+
+msgid "Click on the template to add a point. Drag existing points to move them. You need at least 3 points."
+msgstr "Кликни върху шаблона, за да добавиш точка. Влачи вече поставените точки, за да ги преместиш. Нужни са поне 3 точки."
+
+msgid "The key is stored in the database. For a more secure setup, define it in wp-config.php instead:"
+msgstr "Ключът се пази в базата данни. За по-сигурен вариант го дефинирай вместо това в wp-config.php:"
+
+msgid "How many products per day should get an AI description before switching to the template."
+msgstr "Колко продукта на ден да получават AI описание, преди да се превключи на шаблон."
+
+msgid "The limit has been reached — the static template will be used until tomorrow."
+msgstr "Лимитът е достигнат — до утре ще се ползва статичен шаблон."
+
+msgid "Missing category."
+msgstr "Липсва категория."
+
+msgid "Missing file or category."
+msgstr "Липсва файл или категория."
+
+msgid "Maximum size per side (cm)"
+msgstr "Максимален размер на страна (см)"
+
+msgid "Maximum %d files at once"
+msgstr "Максимум %d файла наведнъж"
+
+msgid "Material"
+msgstr "Материал"
+
+msgid "Materials (optional)"
+msgstr "Материали (незадължително)"
+
+msgid "Minimum price (€)"
+msgstr "Минимална цена (€)"
+
+msgid "Model"
+msgstr "Модел"
+
+msgid "Mockups contain a photographic background (the template), so PNG usually ends up needlessly heavy. WebP keeps nearly the same quality at a much smaller file size — a faster site."
+msgstr "Мокъпите съдържат снимков фон (шаблона), затова PNG обикновено излиза ненужно тежък. WebP пази почти същото качество при много по-малък размер на файла — по-бърз сайт."
+
+msgid "Configure sizes / materials / colors ▾"
+msgstr "Настрой размери / материали / цветове ▾"
+
+msgid "The variant sizing setup (Variable Products) now lives in <a href=\"%s\">DecalDesk → Upload</a>, right next to the variants option — easier to edit there while you upload."
+msgstr "Настройката за размерни варианти (Variable Products) вече е в <a href=\"%s\">DecalDesk → Качване</a>, точно до опцията за избираеми варианти — по-удобно е да се редактира там, докато качваш."
+
+msgid "Settings"
+msgstr "Настройки"
+
+msgid "Your settings, history, and uploaded templates were successfully migrated from the previous version (ProductOps). Everything is in place."
+msgstr "Настройките, историята и качените шаблони бяха успешно прехвърлени от старата версия (ProductOps). Всичко е на място."
+
+msgid "No file selected."
+msgstr "Не е избран файл."
+
+msgid "No file received."
+msgstr "Не е получен файл."
+
+msgid "Invalid data."
+msgstr "Невалидни данни."
+
+msgid "Failed to generate any mockup."
+msgstr "Неуспешна генерация на нито един мокъп."
+
+msgid "Failed to save the file to the server."
+msgstr "Неуспешно записване на файла на сървъра."
+
+msgid "Failed to save the template."
+msgstr "Неуспешно записване на шаблона."
+
+msgid "Failed to load the images."
+msgstr "Неуспешно зареждане на изображенията."
+
+msgid "Upload failed (unknown error)."
+msgstr "Неуспешно качване на файла (неизвестна грешка)."
+
+msgid "Failed to create the product."
+msgstr "Неуспешно създаване на продукта."
+
+msgid "Failed to create the parent product."
+msgstr "Неуспешно създаване на родителския продукт."
+
+msgid "Neither Imagick nor the GD library is available on the server."
+msgstr "Нито Imagick, нито GD библиотеката е налична на сървъра."
+
+msgid "At least 3 valid points are required."
+msgstr "Нужни са поне 3 валидни точки."
+
+msgid "At least 3 points are required for a freeform shape."
+msgstr "Нужни са поне 3 точки за полигонална форма."
+
+msgid "No Anthropic API key set."
+msgstr "Няма зададен Anthropic API ключ."
+
+msgid "No Google Gemini API key set."
+msgstr "Няма зададен Google Gemini API ключ."
+
+msgid "No variant sizes configured in Settings."
+msgstr "Няма конфигурирани размери за варианти в Настройки."
+
+msgid "No variant sizes configured yet — add at least one below to enable this option."
+msgstr "Няма конфигурирани размери за варианти — добави поне един по-долу, за да включиш опцията."
+
+msgid "You don't have permission to do this."
+msgstr "Нямаш права за това действие."
+
+msgid "Processing"
+msgstr "Обработва се"
+
+msgid "Description"
+msgstr "Описание"
+
+msgid "Mockup Image Optimization"
+msgstr "Оптимизация на мокъп изображенията"
+
+msgid "Paid provider — Anthropic Claude"
+msgstr "Платен доставчик — Anthropic Claude"
+
+msgid "Paid — Anthropic Claude (no built-in limit)"
+msgstr "Платено — Anthropic Claude (без вграден лимит)"
+
+msgid "One size per line, format \"widthxheight\" in cm."
+msgstr "По един размер на ред, формат \"ширинаxвисочина\" в см."
+
+msgid "Optional. If filled in, it's automatically appended to the bottom of the description on EVERY new product (whether the description came from AI or the static template). Leave blank = nothing gets added."
+msgstr "По желание. Ако е попълнено, се добавя автоматично най-отдолу в описанието на ВСЕКИ нов продукт (независимо дали описанието е генерирано от AI или от статичен шаблон). Оставено празно = нищо не се добавя."
+
+msgid "OFF by default (safer)"
+msgstr "По подразбиране е ИЗКЛЮЧЕНО (по-безопасно)"
+
+msgid "Allowed template formats: PNG, JPG, WEBP."
+msgstr "Позволени формати за шаблон: PNG, JPG, WEBP."
+
+msgid "Allowed formats: %s."
+msgstr "Позволени формати: %s."
+
+msgid "Allowed formats: PNG, JPG/JPEG, WEBP, GIF"
+msgstr "Позволени формати: PNG, JPG/JPEG, WEBP, GIF"
+
+msgid "Useful for categories with several templates (e.g. \"cars\" — show the design on a few different models). Slower processing, so it's off by default — turn it on only when you actually need it for a specific batch."
+msgstr "Полезно за категории с няколко шаблона (напр. \"коли\" — представи дизайна върху няколко различни модела). По-бавна обработка, затова е изключено по подразбиране — включи го само когато наистина ти трябва за конкретния батч."
+
+msgid "The field below is ignored while the constant is defined — this is the more secure approach."
+msgstr "Полето по-долу се игнорира, докато константата е дефинирана — това е по-сигурният начин."
+
+msgid "Last error:"
+msgstr "Последна грешка:"
+
+msgid "Rectangle"
+msgstr "Правоъгълник"
+
+msgid "On plugin deletion"
+msgstr "При изтриване на плъгина"
+
+msgid "Only applies to WebP/JPEG (PNG is always lossless, ignored here). 80-85 is a reasonable balance between quality and file size."
+msgstr "Прилага се само за WebP/JPEG (PNG е винаги без загуба, тук се игнорира). 80-85 е разумен баланс между качество и размер на файла."
+
+msgid "Example: holiday_50x70_matte_kitchen.jpg"
+msgstr "Пример: koleda_50x70_matte_kitchen.jpg"
+
+msgid "Check your AI settings →"
+msgstr "Провери AI настройките →"
+
+msgid "Product \"%s\" was created successfully."
+msgstr "Продукт \"%s\" беше създаден успешно."
+
+msgid "Publish"
+msgstr "Публикувай"
+
+msgid "Publish immediately"
+msgstr "Публикувай веднага"
+
+msgid "Publish selected"
+msgstr "Публикувай избраните"
+
+msgid "Published %d products."
+msgstr "Публикувани %d продукта."
+
+msgid "Drop files here or click to browse"
+msgstr "Пусни файлове тук или натисни за избор"
+
+msgid "Full cleanup"
+msgstr "Пълно почистване"
+
+msgid "Look at the design itself"
+msgstr "Разглеждай самия дизайн"
+
+msgid "Size"
+msgstr "Размер"
+
+msgid "Size: %1$d x %2$d cm | Material: %3$s"
+msgstr "Размер: %1$d x %2$d см | Материал: %3$s"
+
+msgid "Sizes (required)"
+msgstr "Размери (задължително)"
+
+msgid "The dimensions %1$d x %2$d cm look unrealistically large (maximum %3$d cm per side). Check for a typo in the filename."
+msgstr "Размерите %1$d x %2$d см изглеждат нереалистично големи (максимум %3$d см по страна). Провери дали не е грешка в името на файла."
+
+msgid "Dimensions must be positive numbers."
+msgstr "Размерите трябва да са положителни числа."
+
+msgid "Edit product"
+msgstr "Редактирай продукта"
+
+msgid "Failed"
+msgstr "С грешка"
+
+msgid "Freeform"
+msgstr "Свободна форма"
+
+msgid "Hide for 24 hours"
+msgstr "Скрий за 24 часа"
+
+msgid "Status"
+msgstr "Статус"
+
+msgid "Create with selectable variants (size/material/color)"
+msgstr "Създай с избираеми варианти (размер/материал/цвят)"
+
+msgid "Server error during upload — check your hosting configuration."
+msgstr "Сървърна грешка при качването - провери настройките на хостинга."
+
+msgid "Text at the end of every description"
+msgstr "Текст в края на всяко описание"
+
+msgid "Test connection with AI provider"
+msgstr "Тествай връзката с AI доставчика"
+
+msgid "Test with a design"
+msgstr "Тествай с дизайн"
+
+msgid "This design has already been uploaded before (as \"%s\")."
+msgstr "Този дизайн вече е качен преди (като \"%s\")."
+
+msgid "Search by filename"
+msgstr "Търси по име на файл"
+
+msgid "Category management (slug/name), mockup templates, and design positioning now live on a separate page: <a href=\"%s\">DecalDesk → Categories</a>."
+msgstr "Управлението на категории (slug/име), мокъп шаблони и позициониране на дизайна вече е на отделна страница: <a href=\"%s\">DecalDesk → Категории</a>."
+
+msgid "File"
+msgstr "Файл"
+
+msgid "The file was only partially uploaded — try again."
+msgstr "Файлът е качен само частично - опитай отново."
+
+msgid "The file is empty or corrupted."
+msgstr "Файлът е празен или повреден."
+
+msgid "The file is too large (exceeds the server's upload limit)."
+msgstr "Файлът е прекалено голям (надвишава лимита на сървъра за качване)."
+
+msgid "The file was recognized as \"%s\", which isn't an allowed design format."
+msgstr "Файлът е разпознат като \"%s\", което не е позволен формат за дизайни."
+
+msgid "The file was missing on the server when processing started."
+msgstr "Файлът липсва на сървъра при стартиране на обработката."
+
+msgid "The file wasn't recognized as a valid image (content check failed). It may be corrupted, or not actually an image despite its extension."
+msgstr "Файлът не е разпознат като валидно изображение (проверката на съдържанието се провали). Възможно е да е повреден или да не е реално изображение, въпреки разширението си."
+
+msgid "Filename format: name_widthxheight_material_category.extension"
+msgstr "Формат на името: name_widthxheight_material_category.разширение"
+
+msgid "Mockup format"
+msgstr "Формат на мокъпа"
+
+msgid "Colors (optional)"
+msgstr "Цветове (незадължително)"
+
+msgid "Color"
+msgstr "Цвят"
+
+msgid "Price"
+msgstr "Цена"
+
+msgid "Price per m² (€)"
+msgstr "Цена на м² (€)"
+
+msgid "Template"
+msgstr "Шаблон"
+
+msgid "Template %d"
+msgstr "Шаблон %d"
+
+msgid "if you just deactivate the plugin, or delete it to upload a new version, your data stays intact."
+msgstr "ако само деактивираш плъгина или го изтриеш, за да качиш нова версия, данните ти остават непокътнати."
+
+msgid "lossless, but the heaviest file"
+msgstr "без загуба на качество, но най-тежък файл"
+
+msgid "free AI descriptions used today."
+msgstr "използвани безплатни AI описания днес."
+
+msgid "fastest and cheapest"
+msgstr "най-бърз и евтин"
+
+msgid "highest quality, more expensive"
+msgstr "най-качествен, по-скъп"
+
+msgid "e.g. For a different size, please request a quote by contacting us."
+msgstr "напр. За различен размер, моля поискайте оферта, като се свържете с нас."
+
+msgid "e.g. white, black, clear film"
+msgstr "напр. бяло, черно, прозрачно фолио"
+
+msgid "e.g. matte, gloss, clear"
+msgstr "напр. матово, гланц, прозрачно"
+
+msgid "unknown type"
+msgstr "неизвестен тип"
+
+msgid "recommended balance"
+msgstr "препоръчан баланс"
+
+msgid "recommended — smallest size, good quality"
+msgstr "препоръчан — най-малък размер, добро качество"
+
+msgid "wide compatibility"
+msgstr "широка съвместимост"
+
+msgid "•••••••••••••••••••• (saved, leave blank to keep it)"
+msgstr "•••••••••••••••••••• (запазен, остави празно за да не го променяш)"
+
+msgid " (pending: "
+msgstr " (изчакват: "
+
+msgid " files selected"
+msgstr " избрани файла"
+
+msgid " of "
+msgstr " от "
+
+msgid " failed to process"
+msgstr " с грешка при обработка"
+
+msgid " cm"
+msgstr " см"
+
+msgid " successful products out of "
+msgstr " успешни продукта от общо "
+
+msgid " files were already added and were skipped."
+msgstr " файла вече бяха добавени и бяха пропуснати."
+
+msgid " files were not added."
+msgstr " файла не бяха добавени."
+
+msgid " files were not uploaded"
+msgstr " файла не бяха качени"
+
+msgid " files are in an unsupported format (allowed: PNG, JPG, WEBP, GIF) and were skipped."
+msgstr " файла са в неподдържан формат (позволени: PNG, JPG, WEBP, GIF) и бяха пропуснати."
+
+msgid " files — "
+msgstr " файла — "
+
+msgid "Queued for processing..."
+msgstr "В опашка за обработка..."
+
+msgid "Every uploaded design will become one product with a choice of: "
+msgstr "Всеки качен дизайн ще стане един продукт с избор от: "
+
+msgid "All files uploaded - processing in the background..."
+msgstr "Всички файлове са качени - обработват се във фонов режим..."
+
+msgid "A server connection error occurred."
+msgstr "Възникна грешка при връзката със сървъра."
+
+msgid "Done."
+msgstr "Готово."
+
+msgid "Done: "
+msgstr "Готово: "
+
+msgid "Server connection error."
+msgstr "Грешка при връзката със сървъра."
+
+msgid "Error saving."
+msgstr "Грешка при запис."
+
+msgid "The limit of "
+msgstr "Достигнат е лимитът от "
+
+msgid "Saving..."
+msgstr "Запазване..."
+
+msgid "Saved."
+msgstr "Запазено."
+
+msgid "Uploading file "
+msgstr "Качване на файл "
+
+msgid "Please select at least one file."
+msgstr "Моля, избери поне един файл."
+
+msgid "Unknown error during upload."
+msgstr "Неизвестна грешка при качване."
+
+msgid "Unknown error."
+msgstr "Неизвестна грешка."
+
+msgid "Processing..."
+msgstr "Обработва се..."
+
+msgid "Processed "
+msgstr "Обработени "
+
+msgid "Processing is taking unusually long. Products are still being created in the background - reload the page in a bit to see the final result."
+msgstr "Обработката отнема необичайно дълго. Продуктите продължават да се създават във фонов режим - презареди страницата след малко, за да видиш финалния резултат."
+
+msgid "Remove"
+msgstr "Премахни"
+
+msgid "An error occurred."
+msgstr "Възникна грешка."
+
+msgid "Error deleting."
+msgstr "Грешка при изтриване."
+
+msgid "Error uploading."
+msgstr "Грешка при качване."
+
+msgid "Error."
+msgstr "Грешка."
+
+msgid "The category needs at least one template (even the default). Delete the whole category if you don't need it."
+msgstr "Категорията трябва да има поне един шаблон (дори default). Изтрий цялата категория, ако не ти трябва."
+
+msgid "Uploading template..."
+msgstr "Качване на шаблона..."
+
+msgid "Please fill in a name and slug."
+msgstr "Моля, попълни име и slug."
+
+msgid "Position saved."
+msgstr "Позицията е запазена."
+
+msgid "Template uploaded."
+msgstr "Шаблонът е качен."
+
+
+msgid "AI content language"
+msgstr "Език на AI съдържанието"
+
+msgid "Other (type below)"
+msgstr "Друг (въведи по-долу)"
+
+msgid "e.g. Czech, Hungarian, Swedish..."
+msgstr "напр. чешки, унгарски, шведски..."
+
+msgid "The language for AI-generated product descriptions and tags shown to your store customers — independent of the admin panel language. This does not need to match the language your store operates in unless you want it to."
+msgstr "Езикът на AI-генерираните описания и тагове, които клиентите ти виждат — независимо от езика на admin панела. Не е нужно да съвпада с езика на магазина ти, освен ако сам не искаш това."

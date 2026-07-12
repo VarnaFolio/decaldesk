@@ -1,0 +1,23 @@
+# OS / editor artifacts
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Dependency directories (ако по-късно добавим composer/npm build tooling)
+/vendor/
+/node_modules/
+
+# Local build/output
+*.zip
+/build/
+/dist/
+
+# Environment-specific config (никога не commit-вай API ключове)
+.env
+.env.local
+
+# Log files (ако някой тества локално и генерира логове в repo-то по грешка)
+*.log

@@ -1,0 +1,635 @@
+.decaldesk-wrap {
+	max-width: 900px;
+}
+
+.decaldesk-upload-box {
+	background: #fff;
+	border: 1px solid #ccd0d4;
+	border-radius: 6px;
+	padding: 24px;
+	margin-top: 20px;
+}
+
+.decaldesk-dropzone {
+	border: 2px dashed #8c8f94;
+	border-radius: 6px;
+	padding: 48px 24px;
+	text-align: center;
+	cursor: pointer;
+	transition: background-color 0.15s ease, border-color 0.15s ease;
+	background: #fafafa;
+}
+
+.decaldesk-dropzone:hover,
+.decaldesk-dropzone.is-dragover {
+	background: #f0f6fc;
+	border-color: #2271b1;
+}
+
+.decaldesk-dropzone p {
+	margin: 0 0 8px;
+	font-size: 14px;
+	color: #1d2327;
+}
+
+.decaldesk-dropzone .decaldesk-hint {
+	font-size: 12px;
+	color: #646970;
+}
+
+.decaldesk-selected-files {
+	margin: 16px auto 0;
+	max-width: 400px;
+	text-align: left;
+	list-style: disc;
+	padding-left: 20px;
+	color: #1d2327;
+	font-size: 13px;
+}
+
+.decaldesk-options {
+	margin: 20px 0;
+	display: flex;
+	gap: 24px;
+}
+
+.decaldesk-options label {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 14px;
+}
+
+.decaldesk-variants-option {
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 6px;
+	background: #f6f7f7;
+	border: 1px solid #e0e0e0;
+	border-radius: 6px;
+	padding: 12px 16px;
+}
+
+.decaldesk-variants-option .description {
+	margin: 0;
+	font-size: 12px;
+}
+
+#decaldesk-toggle-variant-config {
+	font-size: 12px;
+	text-decoration: none;
+	margin-top: 4px;
+}
+
+#decaldesk-variant-config-panel {
+	width: 100%;
+	margin-top: 10px;
+	padding-top: 10px;
+	border-top: 1px solid #e0e0e0;
+}
+
+#decaldesk-variant-config-panel .form-table {
+	margin-top: 0;
+}
+
+#decaldesk-variant-config-panel .form-table th {
+	width: 180px;
+	padding: 10px 10px 10px 0;
+}
+
+#decaldesk-variant-config-panel .form-table td {
+	padding: 10px 0;
+}
+
+#decaldesk-variant-config-status {
+	margin-left: 10px;
+	font-size: 12px;
+	font-weight: 600;
+}
+
+#decaldesk-variant-config-status.is-success {
+	color: #00a32a;
+}
+
+#decaldesk-variant-config-status.is-error {
+	color: #d63638;
+}
+
+.decaldesk-progress {
+	margin-top: 16px;
+	height: 10px;
+	background: #f0f0f1;
+	border-radius: 5px;
+	overflow: hidden;
+}
+
+.decaldesk-progress-bar {
+	height: 100%;
+	width: 0;
+	background: #2271b1;
+	transition: width 0.2s ease;
+}
+
+.decaldesk-file-summary {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-top: 12px;
+	font-size: 13px;
+	color: #1d2327;
+}
+
+.decaldesk-file-list {
+	max-height: 220px;
+	overflow-y: auto;
+	margin-top: 8px;
+}
+
+.decaldesk-selected-files {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.decaldesk-selected-files li {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 6px 10px;
+	border-bottom: 1px solid #f0f0f1;
+	font-size: 13px;
+}
+
+.decaldesk-selected-files li:last-child {
+	border-bottom: none;
+}
+
+.decaldesk-file-name {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.decaldesk-remove-file {
+	background: none;
+	border: none;
+	color: #d63638;
+	font-size: 16px;
+	line-height: 1;
+	cursor: pointer;
+	padding: 0 4px;
+}
+
+.decaldesk-remove-file:hover {
+	color: #a02224;
+}
+
+.decaldesk-progress-label {
+	display: block;
+	margin-top: 6px;
+	font-size: 12px;
+	color: #646970;
+}
+
+.decaldesk-summary {
+	margin-top: 16px;
+	padding: 10px 14px;
+	border-radius: 4px;
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.decaldesk-summary-success {
+	background: #edfaef;
+	border-left: 4px solid #00a32a;
+	color: #00450c;
+}
+
+.decaldesk-summary-partial {
+	background: #fcf9e8;
+	border-left: 4px solid #dba617;
+	color: #664d03;
+}
+
+.decaldesk-badge {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 10px;
+	font-size: 11px;
+	font-weight: 600;
+	margin-left: 4px;
+}
+
+.decaldesk-badge-free {
+	background: #e7f5ea;
+	color: #007a2e;
+}
+
+.decaldesk-badge-claude {
+	background: #f1e9fb;
+	color: #6b21a8;
+}
+
+.decaldesk-badge-fallback {
+	background: #f0f0f1;
+	color: #646970;
+}
+
+.decaldesk-results {
+	margin-top: 20px;
+}
+
+.decaldesk-result-row {
+	padding: 10px 14px;
+	border-radius: 4px;
+	margin-bottom: 8px;
+	font-size: 13px;
+}
+
+.decaldesk-result-success {
+	background: #edfaef;
+	border-left: 4px solid #00a32a;
+}
+
+.decaldesk-result-error {
+	background: #fcf0f1;
+	border-left: 4px solid #d63638;
+}
+
+.decaldesk-result-pending {
+	background: #fcf9e8;
+	border-left: 4px solid #dba617;
+}
+
+.decaldesk-job-status-text {
+	color: #7c6001;
+	font-style: italic;
+}
+
+.decaldesk-categories-table {
+	max-width: 700px;
+	margin-bottom: 16px;
+}
+
+.decaldesk-categories-table th,
+.decaldesk-categories-table td {
+	padding: 8px 10px;
+}
+
+.decaldesk-notice-dismiss-link {
+	display: inline-block;
+	margin: 0 0 10px;
+	font-size: 12px;
+	text-decoration: none;
+}
+
+.decaldesk-stat-cards {
+	display: flex;
+	gap: 16px;
+	margin: 20px 0;
+	flex-wrap: wrap;
+}
+
+.decaldesk-stat-card {
+	background: #fff;
+	border: 1px solid #ccd0d4;
+	border-radius: 6px;
+	padding: 16px 24px;
+	min-width: 140px;
+	display: flex;
+	flex-direction: column;
+}
+
+.decaldesk-stat-number {
+	font-size: 28px;
+	font-weight: 700;
+	color: #1d2327;
+	line-height: 1.2;
+}
+
+.decaldesk-stat-label {
+	font-size: 13px;
+	color: #646970;
+	margin-top: 4px;
+}
+
+.decaldesk-stat-card-success .decaldesk-stat-number {
+	color: #00a32a;
+}
+
+.decaldesk-stat-card-error {
+	border-color: #d63638;
+}
+
+.decaldesk-stat-card-error .decaldesk-stat-number {
+	color: #d63638;
+}
+
+/* ================= Категории страница ================= */
+
+.decaldesk-add-category-box {
+	background: #fff;
+	border: 1px solid #ccd0d4;
+	border-radius: 6px;
+	padding: 20px 24px;
+	margin: 20px 0;
+}
+
+.decaldesk-add-category-fields {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+	flex-wrap: wrap;
+	margin-top: 10px;
+}
+
+.decaldesk-empty-state {
+	color: #646970;
+	font-style: italic;
+	padding: 20px 0;
+}
+
+.decaldesk-categories-list {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.decaldesk-category-card {
+	background: #fff;
+	border: 1px solid #ccd0d4;
+	border-radius: 6px;
+	overflow: hidden;
+}
+
+.decaldesk-category-header {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 14px 18px;
+	background: #f6f7f7;
+	border-bottom: 1px solid #ccd0d4;
+}
+
+.decaldesk-category-name-input {
+	font-size: 15px;
+	font-weight: 600;
+	border: 1px solid transparent;
+	background: transparent;
+	padding: 4px 8px;
+	border-radius: 4px;
+	flex: 0 1 auto;
+	min-width: 180px;
+}
+
+.decaldesk-category-name-input:hover,
+.decaldesk-category-name-input:focus {
+	border-color: #8c8f94;
+	background: #fff;
+}
+
+.decaldesk-category-slug {
+	color: #646970;
+	background: #f0f0f1;
+	padding: 3px 8px;
+	border-radius: 4px;
+	font-size: 12px;
+}
+
+.decaldesk-delete-category {
+	margin-left: auto;
+	color: #d63638;
+	text-decoration: none;
+}
+
+.decaldesk-category-body {
+	padding: 20px;
+}
+
+.decaldesk-template-slots {
+	display: flex;
+	gap: 20px;
+	flex-wrap: wrap;
+}
+
+.decaldesk-template-slot {
+	display: flex;
+	gap: 16px;
+	flex-wrap: wrap;
+	border: 1px solid #e0e0e0;
+	border-radius: 6px;
+	padding: 14px;
+	background: #fafafa;
+	flex: 1 1 480px;
+	min-width: 320px;
+}
+
+.decaldesk-template-slot-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	margin-bottom: 4px;
+}
+
+.decaldesk-slot-label {
+	font-weight: 600;
+	font-size: 13px;
+	color: #1d2327;
+}
+
+.decaldesk-delete-slot {
+	color: #d63638;
+	text-decoration: none;
+	line-height: 1;
+}
+
+.decaldesk-add-template-slot {
+	margin-top: 16px;
+}
+
+.decaldesk-template-preview-wrap {
+	position: relative;
+	width: 240px;
+	max-width: 100%;
+	aspect-ratio: 1 / 1;
+	background: #f0f0f1 repeating-conic-gradient(#e4e4e4 0% 25%, transparent 0% 50%) 50% / 20px 20px;
+	border-radius: 4px;
+	overflow: hidden;
+	flex-shrink: 0;
+}
+
+.decaldesk-template-preview-placeholder {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	padding: 16px;
+	font-size: 12px;
+	color: #8c8f94;
+}
+
+.decaldesk-template-preview-img {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.decaldesk-zone-box {
+	position: absolute;
+	border: 2px dashed #2271b1;
+	background: rgba(34, 113, 177, 0.08);
+	cursor: move;
+	box-sizing: border-box;
+}
+
+.decaldesk-zone-test-preview {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	pointer-events: none;
+}
+
+.decaldesk-zone-handle {
+	position: absolute;
+	width: 12px;
+	height: 12px;
+	background: #2271b1;
+	border: 2px solid #fff;
+	border-radius: 50%;
+	cursor: nwse-resize;
+}
+
+.decaldesk-zone-handle-nw { top: -6px; left: -6px; cursor: nwse-resize; }
+.decaldesk-zone-handle-ne { top: -6px; right: -6px; cursor: nesw-resize; }
+.decaldesk-zone-handle-sw { bottom: -6px; left: -6px; cursor: nesw-resize; }
+.decaldesk-zone-handle-se { bottom: -6px; right: -6px; cursor: nwse-resize; }
+
+.decaldesk-zone-polygon-wrap {
+	position: absolute;
+	inset: 0;
+	cursor: crosshair;
+}
+
+.decaldesk-zone-polygon-svg {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+}
+
+.decaldesk-zone-polygon-shape {
+	fill: rgba(34, 113, 177, 0.15);
+	stroke: #2271b1;
+	stroke-width: 0.5;
+	vector-effect: non-scaling-stroke;
+}
+
+.decaldesk-zone-polygon-test-preview {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	pointer-events: none;
+}
+
+.decaldesk-zone-polygon-points {
+	position: absolute;
+	inset: 0;
+}
+
+.decaldesk-zone-polygon-point {
+	position: absolute;
+	width: 14px;
+	height: 14px;
+	margin-left: -7px;
+	margin-top: -7px;
+	background: #2271b1;
+	border: 2px solid #fff;
+	border-radius: 50%;
+	cursor: grab;
+	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+
+.decaldesk-zone-polygon-point:active {
+	cursor: grabbing;
+}
+
+.decaldesk-zone-mode-toggle {
+	display: flex;
+	gap: 16px;
+	font-size: 13px;
+	margin-bottom: 4px;
+}
+
+.decaldesk-zone-mode-toggle label {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.decaldesk-slot-controls {
+	flex: 1;
+	min-width: 200px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	align-items: flex-start;
+}
+
+.decaldesk-template-status {
+	font-size: 13px;
+	margin: 0 0 6px;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.decaldesk-zone-hint {
+	font-size: 12px;
+	color: #646970;
+	margin: 8px 0 0;
+}
+
+.decaldesk-category-save-status {
+	display: none;
+	font-size: 12px;
+	padding: 4px 10px;
+	border-radius: 4px;
+	margin-top: 4px;
+}
+
+.decaldesk-category-save-status.is-success {
+	background: #edfaef;
+	color: #00450c;
+}
+
+.decaldesk-category-save-status.is-error {
+	background: #fcf0f1;
+	color: #5a0a0d;
+}
+
+.decaldesk-zone-dirty .decaldesk-template-preview-wrap {
+	outline: 2px solid #dba617;
+	outline-offset: 2px;
+}
+
+.decaldesk-save-zone-btn-pulse {
+	background: #dba617 !important;
+	border-color: #b8860b !important;
+	color: #fff !important;
+	animation: decaldesk-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes decaldesk-pulse {
+	0%, 100% { opacity: 1; }
+	50% { opacity: 0.6; }
+}
