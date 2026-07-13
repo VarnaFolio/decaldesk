@@ -23,6 +23,43 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // ==========================================================
+// Freemius (лицензиране, плащания, Pro/Free gating, ъпдейти)
+// ==========================================================
+// Трябва да се зареди възможно най-рано - преди всичко останало в плъгина.
+// Заменя предишния GitHub Plugin Update Checker: Freemius вече е
+// каноничният update/license сървър (виж decaldesk_fs()->can_use_premium_code()
+// на местата, където Pro функциите се заключват).
+if ( ! function_exists( 'decaldesk_fs' ) ) {
+    function decaldesk_fs() {
+        global $decaldesk_fs;
+
+        if ( ! isset( $decaldesk_fs ) ) {
+            require_once dirname( __FILE__ ) . '/vendor/freemius/start.php';
+
+            $decaldesk_fs = fs_dynamic_init( array(
+                'id'                  => '34508',
+                'slug'                => 'decaldesk',
+                'type'                => 'plugin',
+                'public_key'          => 'pk_5f71bbda1294ec97ace8d99c33f3b',
+                'is_premium'          => false,
+                'has_addons'          => false,
+                'has_paid_plans'      => false,
+                'is_org_compliant'    => true,
+                'menu'                => array(
+                    'account'        => false,
+                    'support'        => false,
+                ),
+            ) );
+        }
+
+        return $decaldesk_fs;
+    }
+
+    decaldesk_fs();
+    do_action( 'decaldesk_fs_loaded' );
+}
+
+// ==========================================================
 // Константи
 // ==========================================================
 define( 'DECALDESK_VERSION', '1.3.1' );
@@ -38,29 +75,6 @@ if ( ! defined( 'DECALDESK_MAX_BATCH_FILES' ) ) {
 if ( ! defined( 'DECALDESK_ALLOWED_EXTENSIONS' ) ) {
     define( 'DECALDESK_ALLOWED_EXTENSIONS', array( 'png', 'jpg', 'jpeg', 'webp', 'gif' ) );
 }
-
-// ==========================================================
-// Автоматични ъпдейти през GitHub Releases (Plugin Update Checker)
-// ==========================================================
-// Плъгинът не е в WordPress.org директорията, затова сам проверява GitHub-
-// repo-то за нови releases и показва "Update available" точно като
-// официалните плъгини. Библиотеката е bundled (не composer dependency) -
-// вижте /plugin-update-checker/ папката.
-require_once DECALDESK_PATH . 'plugin-update-checker/plugin-update-checker.php';
-
-use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
-
-$decaldeskUpdateChecker = PucFactory::buildUpdateChecker(
-    'https://github.com/varnafolio/decaldesk/',
-    __FILE__,
-    'decaldesk'
-);
-
-// Ползваме GitHub Releases (не суровия repo архив), за да можем да качваме
-// правилно структуриран zip като asset, вместо repo checkout-а директно
-// (repo checkout-ът би включил README.md/.git/languages-източници и т.н.
-// на грешно ниво в папковата структура).
-$decaldeskUpdateChecker->getVcsApi()->enableReleaseAssets();
 
 // ==========================================================
 // Съвместимост с WooCommerce HPOS (High-Performance Order Storage)
