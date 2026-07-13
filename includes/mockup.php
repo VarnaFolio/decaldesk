@@ -320,6 +320,7 @@ function decaldesk_calculate_contain_fit( $design_w, $design_h, $box_w, $box_h )
     );
 }
 
+/*! <fs_premium_only> */
 /**
  * Изчислява "cover fit" позициониране: увеличава дизайна така, че да ЗАПЪЛНИ
  * цялата кутия (запазвайки пропорциите му), центриран - краищата на дизайна
@@ -346,6 +347,7 @@ function decaldesk_calculate_cover_fit( $design_w, $design_h, $box_w, $box_h ) {
         'offset_y' => (int) round( ( $box_h - $new_h ) / 2 ),
     );
 }
+/*! </fs_premium_only> */
 
 /**
  * Генериране на мокъп чрез Imagick (предпочитан вариант, по-качествен).
@@ -374,7 +376,9 @@ function decaldesk_generate_mockup_imagick( $design_path, $template_path, $outpu
         $zone_type = isset( $zone['type'] ) && 'polygon' === $zone['type'] ? 'polygon' : 'rect';
 
         if ( 'polygon' === $zone_type && ! empty( $zone['points'] ) && count( $zone['points'] ) >= 3 ) {
+            /*! <fs_premium_only> */
             decaldesk_composite_polygon_imagick( $template, $design, $zone['points'], $tpl_width, $tpl_height );
+            /*! </fs_premium_only> */
         } else {
             $zone = wp_parse_args( $zone, array( 'x' => 15, 'y' => 15, 'width' => 70, 'height' => 70 ) );
 
@@ -424,6 +428,7 @@ function decaldesk_generate_mockup_imagick( $design_path, $template_path, $outpu
     }
 }
 
+/*! <fs_premium_only> */
 /**
  * Наслагва дизайна в произволна полигонална форма (Imagick) - "cover fit"
  * (запълва цялата форма, изрязан по контура) + alpha маска по формата.
@@ -495,6 +500,7 @@ function decaldesk_composite_polygon_imagick( $template, $design, $points, $tpl_
     $design_layer->clear();
     $mask->clear();
 }
+/*! </fs_premium_only> */
 
 /**
  * Генериране на мокъп чрез GD (fallback, ако Imagick липсва).
@@ -527,7 +533,9 @@ function decaldesk_generate_mockup_gd( $design_path, $template_path, $output_pat
     imagesavealpha( $template_img, true );
 
     if ( 'polygon' === $zone_type && ! empty( $zone['points'] ) && count( $zone['points'] ) >= 3 ) {
+        /*! <fs_premium_only> */
         decaldesk_composite_polygon_gd( $template_img, $design_img, $zone['points'], $tpl_width, $tpl_height );
+        /*! </fs_premium_only> */
     } else {
         $zone = wp_parse_args( $zone, array( 'x' => 15, 'y' => 15, 'width' => 70, 'height' => 70 ) );
 
@@ -596,6 +604,7 @@ function decaldesk_generate_mockup_gd( $design_path, $template_path, $output_pat
     return true;
 }
 
+/*! <fs_premium_only> */
 /**
  * Наслагва дизайна в произволна полигонална форма (GD) - "cover fit"
  * (запълва цялата форма) + ray-casting точков тест за изрязване по контура.
@@ -715,6 +724,7 @@ function decaldesk_point_in_polygon( $x, $y, $points ) {
 
     return $inside;
 }
+/*! </fs_premium_only> */
 
 /**
  * Вгражда текстови метаданни (заглавие, описание, автор) в изображение,

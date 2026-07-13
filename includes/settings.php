@@ -95,6 +95,10 @@ function decaldesk_ajax_test_ai_connection() {
         wp_send_json_error( array( 'message' => __( 'You don\'t have permission to do this.', 'decaldesk' ) ), 403 );
     }
 
+    if ( ! decaldesk_fs()->can_use_premium_code() ) {
+        wp_send_json_error( array( 'message' => __( 'AI descriptions require a Pro license.', 'decaldesk' ) ), 403 );
+    }
+
     $settings = wp_parse_args( get_option( 'decaldesk_settings', array() ), array(
         'ai_provider' => 'none',
         'ai_model'    => 'claude-sonnet-4-6',
@@ -390,6 +394,13 @@ function decaldesk_render_settings_page() {
             </p>
 
             <h2><?php esc_html_e( 'AI-generated descriptions', 'decaldesk' ); ?></h2>
+            <?php if ( ! decaldesk_fs()->can_use_premium_code() ) : ?>
+                <p class="description">
+                    <span class="decaldesk-pro-badge"><?php esc_html_e( 'Pro', 'decaldesk' ); ?></span>
+                    <?php esc_html_e( 'AI-generated descriptions (Google Gemini or Anthropic Claude) require a Pro license. The static template is used on the Free plan.', 'decaldesk' ); ?>
+                    <a href="<?php echo esc_url( decaldesk_fs()->get_upgrade_url() ); ?>"><?php esc_html_e( 'Upgrade to Pro', 'decaldesk' ); ?></a>
+                </p>
+            <?php else : ?>
             <p class="description">
                 <?php esc_html_e( 'Generates longer, sales-focused descriptions instead of the static template. Choose a free provider (Google Gemini, with a daily limit) or a paid one (Anthropic Claude, no limit).', 'decaldesk' ); ?>
             </p>
@@ -614,6 +625,7 @@ function decaldesk_render_settings_page() {
                     </td>
                 </tr>
             </table>
+            <?php endif; ?>
 
             <h2><?php esc_html_e( 'Categories & Mockup Templates', 'decaldesk' ); ?></h2>
             <p class="description">
