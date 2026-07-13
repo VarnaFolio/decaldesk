@@ -41,12 +41,20 @@ if ( ! function_exists( 'decaldesk_fs' ) ) {
                 'slug'                => 'decaldesk',
                 'type'                => 'plugin',
                 'public_key'          => 'pk_5f71bbda1294ec97ace8d99c33f3b',
-                'is_premium'          => false,
+                'is_premium'          => true,
+                'premium_suffix'      => 'Pro',
+                // Ако плъгинът е "serviceware" (работи само през външен сървър,
+                // без реален premium код в самия плъгин), тази опция трябва да е false.
+                'has_premium_version' => true,
                 'has_addons'          => false,
-                'has_paid_plans'      => false,
+                'has_paid_plans'      => true,
                 'is_org_compliant'    => true,
+                // Ползва се само ако/когато Freemius автоматично генерира
+                // WP.org-съвместима free версия от този код (маркирани блокове).
+                // Премахва се автоматично в тази free версия, ако въобще стигнем
+                // дотам - засега няма ефект, докато не активираме тази функция.
+                'wp_org_gatekeeper'   => 'OA7#BoRiBNqdf52FvzEf!!074aRLPs8fspif$7K1#4u4Csys1fQlCecVcUTOs2mcpeVHi#C2j9d09fOTvbC0HloPT7fFee5WdS3G',
                 'menu'                => array(
-                    'account'        => false,
                     'support'        => false,
                 ),
             ) );
