@@ -40,6 +40,29 @@ if ( ! defined( 'DECALDESK_ALLOWED_EXTENSIONS' ) ) {
 }
 
 // ==========================================================
+// Автоматични ъпдейти през GitHub Releases (Plugin Update Checker)
+// ==========================================================
+// Плъгинът не е в WordPress.org директорията, затова сам проверява GitHub-
+// repo-то за нови releases и показва "Update available" точно като
+// официалните плъгини. Библиотеката е bundled (не composer dependency) -
+// вижте /plugin-update-checker/ папката.
+require_once DECALDESK_PATH . 'plugin-update-checker/plugin-update-checker.php';
+
+use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
+
+$decaldeskUpdateChecker = PucFactory::buildUpdateChecker(
+    'https://github.com/varnafolio/decaldesk/',
+    __FILE__,
+    'decaldesk'
+);
+
+// Ползваме GitHub Releases (не суровия repo архив), за да можем да качваме
+// правилно структуриран zip като asset, вместо repo checkout-а директно
+// (repo checkout-ът би включил README.md/.git/languages-източници и т.н.
+// на грешно ниво в папковата структура).
+$decaldeskUpdateChecker->getVcsApi()->enableReleaseAssets();
+
+// ==========================================================
 // Съвместимост с WooCommerce HPOS (High-Performance Order Storage)
 // ==========================================================
 // Без тази декларация WooCommerce показва предупредителна нотификация в

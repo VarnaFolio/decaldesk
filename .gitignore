@@ -6,8 +6,9 @@ Thumbs.db
 .idea/
 .vscode/
 
-# Dependency directories (ако по-късно добавим composer/npm build tooling)
-/vendor/
+# Dependency directories (само ако по-късно добавим composer/npm build tooling
+# ЗА РАЗРАБОТКА - библиотеки, ръчно vendored в плъгина, като /plugin-update-checker/,
+# СЕ COMMIT-ВАТ нарочно, защото трябва да пътуват с плъгина при инсталация)
 /node_modules/
 
 # Local build/output
