@@ -311,6 +311,98 @@ function decaldesk_maybe_create_upload_dirs() {
 add_action( 'admin_init', 'decaldesk_maybe_create_upload_dirs' );
 
 // ==========================================================
+// Деинсталиране (през Freemius after_uninstall hook)
+// ==========================================================
+// По подразбиране НЕ трие нищо - потребителят трябва изрично да е включил
+// "Пълно почистване" от DecalDesk → Настройки, преди да изтрие плъгина.
+// Това е нарочно консервативно поведение: ако плъгинът се изтрие временно
+// (напр. за ръчен ъпдейт чрез изтриване + качване наново), данните не се губят.
+//
+// WooCommerce продуктите, създадени с плъгина, НИКОГА не се трият тук - те
+// са реални бизнес данни (инвентар на магазина), не вътрешни данни на
+// плъгина. Тук чистим само собствените опции/файлове на DecalDesk
+// (настройки, дневна AI квота, лог, временни файлове).
+//
+// Ползваме decaldesk_fs()->add_action('after_uninstall', ...) вместо
+// стандартния WordPress uninstall.php механизъм, защото Freemius сам
+// прихваща/показва диалога за деинсталиране и managing-ва собствения си
+// license/site cleanup - паралелен uninstall.php би влязъл в конфликт.
+function decaldesk_run_uninstall_cleanup() {
+    $settings = get_option( 'decaldesk_settings', array() );
+
+    if ( empty( $settings['delete_data_on_uninstall'] ) ) {
+        return;
+    }
+
+    delete_option( 'decaldesk_settings' );
+    delete_option( 'decaldesk_ai_daily_usage' );
+    delete_option( 'decaldesk_db_version' );
+
+    global $wpdb;
+    $wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . 'decaldesk_jobs' );
+
+    if ( function_exists( 'as_unschedule_all_actions' ) ) {
+        as_unschedule_all_actions( '', array(), 'decaldesk' );
+    }
+
+    $upload_dir     = wp_upload_dir();
+    $decaldesk_dir  = $upload_dir['basedir'] . '/decaldesk';
+
+    if ( is_dir( $decaldesk_dir ) ) {
+        decaldesk_recursive_delete_dir( $decaldesk_dir );
+    }
+}
+
+/**
+ * Рекурсивно изтрива директория и цялото ѝ съдържание.
+ */
+function decaldesk_recursive_delete_dir( $dir ) {
+    if ( ! is_dir( $dir ) ) {
+        return;
+    }
+
+    $items = scandir( $dir );
+    if ( false === $items ) {
+        return;
+    }
+
+    foreach ( $items as $item ) {
+        if ( '.' === $item || '..' === $item ) {
+            continue;
+        }
+
+        $path = $dir . '/' . $item;
+
+        if ( is_dir( $path ) ) {
+            decaldesk_recursive_delete_dir( $path );
+        } else {
+            @unlink( $path );
+        }
+    }
+
+    @rmdir( $dir );
+}
+
+/**
+ * Поддръжка на multisite: ако плъгинът е бил активиран мрежово, почистваме
+ * за всеки сайт в мрежата поотделно (всеки сайт си има собствени опции/uploads).
+ */
+function decaldesk_run_uninstall_cleanup_all_sites() {
+    if ( is_multisite() ) {
+        $site_ids = get_sites( array( 'fields' => 'ids' ) );
+
+        foreach ( $site_ids as $site_id ) {
+            switch_to_blog( $site_id );
+            decaldesk_run_uninstall_cleanup();
+            restore_current_blog();
+        }
+    } else {
+        decaldesk_run_uninstall_cleanup();
+    }
+}
+decaldesk_fs()->add_action( 'after_uninstall', 'decaldesk_run_uninstall_cleanup_all_sites' );
+
+// ==========================================================
 // Enqueue admin assets (само на страницата на DecalDesk)
 // ==========================================================
 function decaldesk_enqueue_admin_assets( $hook ) {
