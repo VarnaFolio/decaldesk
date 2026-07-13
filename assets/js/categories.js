@@ -82,7 +82,8 @@
 					.replace(/__NAME__/g, escapeHtml(response.data.name));
 
 				var $newCard = $(html);
-				$newCard.find('.decaldesk-template-preview-img').attr('src', response.data.preview_url);
+				var $newImg = $newCard.find('.decaldesk-template-preview-img').attr('src', response.data.preview_url);
+				applyWrapAspectRatio($newImg);
 				$list.append($newCard);
 				$('.decaldesk-empty-state').remove();
 
@@ -98,6 +99,38 @@
 		function escapeHtml(text) {
 			return $('<div>').text(text).html();
 		}
+
+		// Слага aspect-ratio на preview кутията, равно на реалното съотношение
+		// на качената снимка на шаблона. Без това, wrap-ът е фиксиран квадрат
+		// и object-fit:contain "letterbox"-ва не-квадратни снимки (празни ленти
+		// горе/долу или отстрани) - тогава кликването за точки/зона се
+		// изчислява спрямо целия квадрат, а не спрямо реално видимата снимка,
+		// и позицията излиза изместена (типично "по-надолу") спрямо реалния
+		// мокъп, който после се генерира върху пълните размери на снимката.
+		function applyWrapAspectRatio($img) {
+			var img = $img[0];
+			if (!img) {
+				return;
+			}
+
+			function apply() {
+				if (img.naturalWidth && img.naturalHeight) {
+					$img.closest('.decaldesk-template-preview-wrap')
+						.css('aspect-ratio', img.naturalWidth + ' / ' + img.naturalHeight);
+				}
+			}
+
+			if (img.complete) {
+				apply();
+			} else {
+				$img.on('load', apply);
+			}
+		}
+
+		// Прилагаме върху всички preview снимки, вече заредени в страницата.
+		$list.find('.decaldesk-template-preview-img').each(function () {
+			applyWrapAspectRatio($(this));
+		});
 
 		// ==========================================================
 		// Категорийни действия (преименуване, изтриване) - ниво card
@@ -246,6 +279,7 @@
 							$wrap.prepend($img);
 						}
 						$img.attr('src', response.data.preview_url);
+						applyWrapAspectRatio($img);
 
 						$slot.find('.decaldesk-template-status').html(
 							'<span class="dashicons dashicons-yes-alt" style="color:#00a32a;"></span> Custom template uploaded'

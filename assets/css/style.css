@@ -452,6 +452,10 @@
 	position: relative;
 	width: 240px;
 	max-width: 100%;
+	/* Default fallback докато няма заредено изображение - веднъж заредено,
+	   JS презаписва това с реалното съотношение на снимката (виж
+	   applyWrapAspectRatio в categories.js), за да съвпада видимата площ
+	   на снимката 1:1 с координатната система на зоните (проценти). */
 	aspect-ratio: 1 / 1;
 	background: #f0f0f1 repeating-conic-gradient(#e4e4e4 0% 25%, transparent 0% 50%) 50% / 20px 20px;
 	border-radius: 4px;
