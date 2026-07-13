@@ -48,6 +48,12 @@ function decaldesk_generate_ai_content( $parsed, $design_path = '' ) {
 
     $provider = ! empty( $settings['ai_provider'] ) ? $settings['ai_provider'] : 'none';
 
+    // AI описанията са Pro функция - без валиден лиценз винаги падаме на
+    // статичния шаблон, независимо какво е избрано в настройките.
+    if ( 'none' !== $provider && ! decaldesk_fs()->can_use_premium_code() ) {
+        $provider = 'none';
+    }
+
     // Подготвяме изображението само ако vision е включен, доставчикът поддържа снимки,
     // и файлът реално съществува. При грешка просто продължаваме без изображение.
     $image_payload = '';

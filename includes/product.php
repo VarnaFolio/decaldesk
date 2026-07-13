@@ -76,6 +76,11 @@ function decaldesk_attach_mockups_and_design( $product_id, $mockup_paths, $desig
  * за да може изобщо да се създаде Variable Product).
  */
 function decaldesk_variants_configured() {
+    // Variable Products (размерни варианти) е Pro функция.
+    if ( ! decaldesk_fs()->can_use_premium_code() ) {
+        return false;
+    }
+
     $settings = get_option( 'decaldesk_settings', array() );
     return ! empty( $settings['variant_sizes'] );
 }

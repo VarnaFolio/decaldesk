@@ -56,15 +56,22 @@ function decaldesk_render_upload_page() {
             $variant_materials = isset( $settings['variant_materials'] ) ? $settings['variant_materials'] : array();
             $variant_colors    = isset( $settings['variant_colors'] ) ? $settings['variant_colors'] : array();
             ?>
+            <?php $decaldesk_variants_is_pro = decaldesk_fs()->can_use_premium_code(); ?>
             <div class="decaldesk-options decaldesk-variants-option">
                 <label>
                     <input type="checkbox" id="decaldesk-use-variants" name="decaldesk_use_variants" value="1"
-                        <?php disabled( empty( $variant_sizes ) ); ?>>
+                        <?php disabled( empty( $variant_sizes ) || ! $decaldesk_variants_is_pro ); ?>>
                     <?php esc_html_e( 'Create with selectable variants (size/material/color)', 'decaldesk' ); ?>
+                    <?php if ( ! $decaldesk_variants_is_pro ) : ?>
+                        <span class="decaldesk-pro-badge"><?php esc_html_e( 'Pro', 'decaldesk' ); ?></span>
+                    <?php endif; ?>
                 </label>
 
                 <p class="description" id="decaldesk-variants-summary">
-                    <?php if ( empty( $variant_sizes ) ) : ?>
+                    <?php if ( ! $decaldesk_variants_is_pro ) : ?>
+                        <?php esc_html_e( 'Selectable size/material/color variants require a Pro license.', 'decaldesk' ); ?>
+                        <a href="<?php echo esc_url( decaldesk_fs()->get_upgrade_url() ); ?>"><?php esc_html_e( 'Upgrade to Pro', 'decaldesk' ); ?></a>
+                    <?php elseif ( empty( $variant_sizes ) ) : ?>
                         <?php esc_html_e( 'No variant sizes configured yet — add at least one below to enable this option.', 'decaldesk' ); ?>
                     <?php else : ?>
                         <?php
@@ -77,7 +84,7 @@ function decaldesk_render_upload_page() {
                     <?php endif; ?>
                 </p>
 
-                <button type="button" id="decaldesk-toggle-variant-config" class="button-link">
+                <button type="button" id="decaldesk-toggle-variant-config" class="button-link" <?php disabled( ! $decaldesk_variants_is_pro ); ?>>
                     <?php esc_html_e( 'Configure sizes / materials / colors ▾', 'decaldesk' ); ?>
                 </button>
 
@@ -123,11 +130,19 @@ function decaldesk_render_upload_page() {
 
             <div class="decaldesk-options decaldesk-multi-mockup-option">
                 <label>
-                    <input type="checkbox" id="decaldesk-generate-all-mockups" name="decaldesk_generate_all_mockups" value="1">
+                    <input type="checkbox" id="decaldesk-generate-all-mockups" name="decaldesk_generate_all_mockups" value="1" <?php disabled( ! decaldesk_fs()->can_use_premium_code() ); ?>>
                     <?php esc_html_e( 'Generate mockups from all templates in the category (up to 4)', 'decaldesk' ); ?>
+                    <?php if ( ! decaldesk_fs()->can_use_premium_code() ) : ?>
+                        <span class="decaldesk-pro-badge"><?php esc_html_e( 'Pro', 'decaldesk' ); ?></span>
+                    <?php endif; ?>
                 </label>
                 <p class="description">
-                    <?php esc_html_e( 'Useful for categories with several templates (e.g. "cars" — show the design on a few different models). Slower processing, so it\'s off by default — turn it on only when you actually need it for a specific batch.', 'decaldesk' ); ?>
+                    <?php if ( ! decaldesk_fs()->can_use_premium_code() ) : ?>
+                        <?php esc_html_e( 'Multiple mockup templates per category require a Pro license.', 'decaldesk' ); ?>
+                        <a href="<?php echo esc_url( decaldesk_fs()->get_upgrade_url() ); ?>"><?php esc_html_e( 'Upgrade to Pro', 'decaldesk' ); ?></a>
+                    <?php else : ?>
+                        <?php esc_html_e( 'Useful for categories with several templates (e.g. "cars" — show the design on a few different models). Slower processing, so it\'s off by default — turn it on only when you actually need it for a specific batch.', 'decaldesk' ); ?>
+                    <?php endif; ?>
                 </p>
             </div>
 

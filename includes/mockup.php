@@ -8,6 +8,21 @@ if ( ! defined( 'DECALDESK_MAX_TEMPLATES_PER_CATEGORY' ) ) {
 }
 
 /**
+ * Колко темплейт слота има право да КОНФИГУРИРА текущият потребител на
+ * категория - 1 без валиден лиценз (Free), до DECALDESK_MAX_TEMPLATES_PER_CATEGORY
+ * с Pro лиценз. Отделно от DECALDESK_MAX_TEMPLATES_PER_CATEGORY (абсолютният
+ * hard cap), за да можем да продължим да ЧЕТЕМ/показваме вече качени слотове
+ * 2-4 на потребител, който е имал Pro и е свалил лиценза - просто не му
+ * позволяваме да добавя нови, нито да ги ползва при генериране (виж
+ * decaldesk_generate_mockup()).
+ *
+ * @return int
+ */
+function decaldesk_max_template_slots() {
+    return decaldesk_fs()->can_use_premium_code() ? DECALDESK_MAX_TEMPLATES_PER_CATEGORY : 1;
+}
+
+/**
  * Генерира мокъп изображение(я), наслагвайки дизайна върху шаблон(и) за категорията.
  *
  * Всяка категория може да има до DECALDESK_MAX_TEMPLATES_PER_CATEGORY (4)
@@ -38,7 +53,10 @@ function decaldesk_generate_mockup( $design_path, $category, $generate_all = fal
     $zones          = decaldesk_get_template_zones( $category );
     $output_config  = decaldesk_get_mockup_output_config();
 
-    if ( ! $generate_all ) {
+    // Множество мокъп шаблони на категория е Pro функция - без валиден
+    // лиценз винаги генерираме само от първия шаблон, независимо от избора
+    // на потребителя при качване.
+    if ( ! $generate_all || ! decaldesk_fs()->can_use_premium_code() ) {
         $template_paths = array_slice( $template_paths, 0, 1 );
     }
 
@@ -94,6 +112,12 @@ function decaldesk_get_mockup_output_config() {
     $format = isset( $settings['mockup_format'] ) && in_array( $settings['mockup_format'], array( 'webp', 'jpeg', 'png' ), true )
         ? $settings['mockup_format']
         : 'webp';
+
+    // WebP/JPEG компресията е Pro функция - без валиден лиценз винаги
+    // записваме PNG (без загуба, но по-тежък файл), независимо от избора в настройките.
+    if ( 'png' !== $format && ! decaldesk_fs()->can_use_premium_code() ) {
+        $format = 'png';
+    }
 
     // Ако е избран WebP, но нито Imagick, нито GD с webp поддръжка са налични -
     // падаме на PNG ОЩЕ ТУК, за да могат разширението на файла и реалния запис
@@ -231,16 +255,33 @@ function decaldesk_get_template_zones( $category ) {
 
     // Стар формат: единична зона с ключ 'x' директно (не индексиран списък)
     if ( isset( $zones_config['x'] ) ) {
-        return array( wp_parse_args( $zones_config, $default_zone ) );
+        return array( decaldesk_maybe_downgrade_zone( wp_parse_args( $zones_config, $default_zone ) ) );
     }
 
     // Нов формат: индексиран списък от зони, по една на слот
     $result = array();
     foreach ( $zones_config as $zone ) {
-        $result[] = wp_parse_args( (array) $zone, $default_zone );
+        $result[] = decaldesk_maybe_downgrade_zone( wp_parse_args( (array) $zone, $default_zone ) );
     }
 
     return ! empty( $result ) ? $result : array( $default_zone );
+}
+
+/**
+ * Freeform (polygon) зоните са Pro функция. Без валиден лиценз, всяка
+ * запазена polygon зона (напр. от преди изтичане на лиценз) пада обратно
+ * на правоъгълна зона по подразбиране - вместо да гърми или тихо да
+ * прилага premium позициониране без лиценз.
+ *
+ * @param array $zone
+ * @return array
+ */
+function decaldesk_maybe_downgrade_zone( $zone ) {
+    if ( isset( $zone['type'] ) && 'polygon' === $zone['type'] && ! decaldesk_fs()->can_use_premium_code() ) {
+        return array( 'x' => 15, 'y' => 15, 'width' => 70, 'height' => 70 );
+    }
+
+    return $zone;
 }
 
 /**

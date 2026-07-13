@@ -5,7 +5,8 @@
 		var $list = $('#decaldesk-categories-list');
 		var cardTemplate = $('#decaldesk-category-card-template').html();
 		var slotTemplate = $('#decaldesk-template-slot-template').html();
-		var MAX_SLOTS = 4;
+		var MAX_SLOTS = DecalDeskCategoriesData.maxSlots || 1;
+		var IS_PRO = !!DecalDeskCategoriesData.isPro;
 
 		// Следи кои слотове имат преместена, но НЕзапазена зона (ключ: "slug:slot") -
 		// за да предупредим потребителя при опит да напусне страницата с
@@ -323,6 +324,13 @@
 			var $radio = $(this);
 			var $slot = $radio.closest('.decaldesk-template-slot');
 			var mode = $radio.val();
+
+			// Freeform zone editor-ът е Pro функция - без лиценз връщаме обратно
+			// на "rect" избора, дори ако някой опита да превключи radio-то.
+			if ('polygon' === mode && !IS_PRO) {
+				$slot.find('.decaldesk-zone-mode-radio[value="rect"]').prop('checked', true);
+				mode = 'rect';
+			}
 
 			$slot.attr('data-zone-type', mode);
 			$slot.find('.decaldesk-zone-box').toggle(mode === 'rect');

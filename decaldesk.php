@@ -457,8 +457,10 @@ function decaldesk_enqueue_admin_assets( $hook ) {
         );
 
         wp_localize_script( 'decaldesk-categories', 'DecalDeskCategoriesData', array(
-            'ajax_url' => admin_url( 'admin-ajax.php' ),
-            'nonce'    => wp_create_nonce( 'decaldesk_categories_nonce' ),
+            'ajax_url'  => admin_url( 'admin-ajax.php' ),
+            'nonce'     => wp_create_nonce( 'decaldesk_categories_nonce' ),
+            'isPro'     => decaldesk_fs()->can_use_premium_code(),
+            'maxSlots'  => decaldesk_max_template_slots(),
         ) );
     }
 }

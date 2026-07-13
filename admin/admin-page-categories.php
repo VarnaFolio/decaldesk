@@ -97,15 +97,21 @@ function decaldesk_render_category_card( $slug, $name, $is_template = false ) {
             </div>
 
             <button type="button" class="button decaldesk-add-template-slot"
-                <?php disabled( $slot_count >= DECALDESK_MAX_TEMPLATES_PER_CATEGORY ); ?>>
+                <?php disabled( $slot_count >= decaldesk_max_template_slots() ); ?>>
                 <?php
                 printf(
                     /* translators: %d: maximum number of templates per category */
                     esc_html__( '+ Add another template (up to %d)', 'decaldesk' ),
-                    (int) DECALDESK_MAX_TEMPLATES_PER_CATEGORY
+                    (int) decaldesk_max_template_slots()
                 );
                 ?>
             </button>
+            <?php if ( ! decaldesk_fs()->can_use_premium_code() ) : ?>
+                <p class="decaldesk-zone-hint">
+                    <?php esc_html_e( 'Multiple templates per category and the freeform zone editor are Pro features.', 'decaldesk' ); ?>
+                    <a href="<?php echo esc_url( decaldesk_fs()->get_upgrade_url() ); ?>"><?php esc_html_e( 'Upgrade to Pro', 'decaldesk' ); ?></a>
+                </p>
+            <?php endif; ?>
         </div>
     </div>
     <?php
@@ -185,8 +191,11 @@ function decaldesk_render_template_slot( $slug, $slot, $preview_url, $zone, $has
                     <?php esc_html_e( 'Rectangle', 'decaldesk' ); ?>
                 </label>
                 <label>
-                    <input type="radio" class="decaldesk-zone-mode-radio" name="decaldesk_zone_mode_<?php echo esc_attr( $slug . '_' . $slot ); ?>" value="polygon" <?php checked( 'polygon', $zone_type ); ?>>
+                    <input type="radio" class="decaldesk-zone-mode-radio" name="decaldesk_zone_mode_<?php echo esc_attr( $slug . '_' . $slot ); ?>" value="polygon" <?php checked( 'polygon', $zone_type ); ?> <?php disabled( ! decaldesk_fs()->can_use_premium_code() ); ?>>
                     <?php esc_html_e( 'Freeform', 'decaldesk' ); ?>
+                    <?php if ( ! decaldesk_fs()->can_use_premium_code() ) : ?>
+                        <span class="decaldesk-pro-badge"><?php esc_html_e( 'Pro', 'decaldesk' ); ?></span>
+                    <?php endif; ?>
                 </label>
             </div>
 
@@ -445,6 +454,14 @@ function decaldesk_ajax_upload_template() {
         wp_send_json_error( array( 'message' => __( 'Missing file or category.', 'decaldesk' ) ), 400 );
     }
 
+    // Сървърна защита: без Pro лиценз, слот 2+ не е позволен, дори ако
+    // заявката дойде директно (bypass на UI-то). Отхвърляме изрично, вместо
+    // тихо да "clamp"-нем към слот 1 - иначе бихме презаписали слот 1 с
+    // файл, предназначен за друг слот.
+    if ( $slot > decaldesk_max_template_slots() ) {
+        wp_send_json_error( array( 'message' => __( 'Multiple templates per category require a Pro license.', 'decaldesk' ) ), 403 );
+    }
+
     $file = $_FILES['template'];
 
     if ( ! isset( $file['error'] ) || UPLOAD_ERR_OK !== $file['error'] ) {
@@ -577,6 +594,14 @@ function decaldesk_ajax_save_zone() {
 
     if ( empty( $slug ) ) {
         wp_send_json_error( array( 'message' => __( 'Missing category.', 'decaldesk' ) ), 400 );
+    }
+
+    if ( 'polygon' === $type && ! decaldesk_fs()->can_use_premium_code() ) {
+        wp_send_json_error( array( 'message' => __( 'The freeform zone editor requires a Pro license.', 'decaldesk' ) ), 403 );
+    }
+
+    if ( $slot > decaldesk_max_template_slots() ) {
+        wp_send_json_error( array( 'message' => __( 'Multiple templates per category require a Pro license.', 'decaldesk' ) ), 403 );
     }
 
     $settings = get_option( 'decaldesk_settings', array() );

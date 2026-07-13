@@ -327,17 +327,25 @@ function decaldesk_render_settings_page() {
                         <label for="decaldesk_mockup_format"><?php esc_html_e( 'Mockup format', 'decaldesk' ); ?></label>
                     </th>
                     <td>
-                        <select id="decaldesk_mockup_format" name="decaldesk_settings[mockup_format]">
-                            <option value="webp" <?php selected( $settings['mockup_format'], 'webp' ); ?>>
+                        <?php $decaldesk_optimization_is_pro = decaldesk_fs()->can_use_premium_code(); ?>
+                        <select id="decaldesk_mockup_format" name="decaldesk_settings[mockup_format]" <?php disabled( ! $decaldesk_optimization_is_pro ); ?>>
+                            <option value="webp" <?php selected( $settings['mockup_format'], 'webp' ); ?> <?php disabled( ! $decaldesk_optimization_is_pro ); ?>>
                                 WebP (<?php esc_html_e( 'recommended — smallest size, good quality', 'decaldesk' ); ?>)
                             </option>
-                            <option value="jpeg" <?php selected( $settings['mockup_format'], 'jpeg' ); ?>>
+                            <option value="jpeg" <?php selected( $settings['mockup_format'], 'jpeg' ); ?> <?php disabled( ! $decaldesk_optimization_is_pro ); ?>>
                                 JPEG (<?php esc_html_e( 'wide compatibility', 'decaldesk' ); ?>)
                             </option>
-                            <option value="png" <?php selected( $settings['mockup_format'], 'png' ); ?>>
+                            <option value="png" <?php selected( $decaldesk_optimization_is_pro ? $settings['mockup_format'] : 'png', 'png' ); ?>>
                                 PNG (<?php esc_html_e( 'lossless, but the heaviest file', 'decaldesk' ); ?>)
                             </option>
                         </select>
+                        <?php if ( ! $decaldesk_optimization_is_pro ) : ?>
+                            <p class="description">
+                                <span class="decaldesk-pro-badge"><?php esc_html_e( 'Pro', 'decaldesk' ); ?></span>
+                                <?php esc_html_e( 'WebP/JPEG compression requires a Pro license — mockups are saved as PNG on the Free plan.', 'decaldesk' ); ?>
+                                <a href="<?php echo esc_url( decaldesk_fs()->get_upgrade_url() ); ?>"><?php esc_html_e( 'Upgrade to Pro', 'decaldesk' ); ?></a>
+                            </p>
+                        <?php endif; ?>
                     </td>
                 </tr>
                 <tr class="decaldesk-mockup-quality-row">
