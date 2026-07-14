@@ -502,7 +502,19 @@ function decaldesk_ajax_upload_template() {
 
     $target_path = $uploads_tpl . '/' . $slug . '-' . $slot . '.' . $ext;
 
-    if ( ! move_uploaded_file( $file['tmp_name'], $target_path ) ) {
+    // wp_handle_upload() (not move_uploaded_file() directly) - validates the
+    // upload through WordPress's own upload handling, then we relocate the
+    // already-validated file into our own templates/ directory structure.
+    require_once ABSPATH . 'wp-admin/includes/file.php';
+
+    $handled = wp_handle_upload( $file, array( 'test_form' => false ) );
+
+    if ( isset( $handled['error'] ) ) {
+        wp_send_json_error( array( 'message' => $handled['error'] ) );
+    }
+
+    if ( ! @rename( $handled['file'], $target_path ) ) {
+        @unlink( $handled['file'] );
         wp_send_json_error( array( 'message' => __( 'Failed to save the template.', 'decaldesk' ) ), 500 );
     }
 

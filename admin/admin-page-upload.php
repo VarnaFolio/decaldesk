@@ -242,12 +242,24 @@ function decaldesk_handle_upload() {
         wp_send_json_error( array( 'message' => $parsed->get_error_message() ), 400 );
     }
 
-    // 2) Преместваме файла в incoming/
-    $upload_dir = wp_upload_dir();
+    // 2) Преместваме файла в incoming/ - през wp_handle_upload() (не
+    //    move_uploaded_file() директно), за да мине през стандартната
+    //    WordPress upload обработка, после релокираме вече валидирания
+    //    файл в нашата собствена incoming/ структура.
+    $upload_dir   = wp_upload_dir();
     $incoming_dir = $upload_dir['basedir'] . '/decaldesk/incoming';
-    $target_path = $incoming_dir . '/' . sanitize_file_name( $file['name'] );
+    $target_path  = $incoming_dir . '/' . sanitize_file_name( $file['name'] );
 
-    if ( ! move_uploaded_file( $file['tmp_name'], $target_path ) ) {
+    require_once ABSPATH . 'wp-admin/includes/file.php';
+
+    $handled = wp_handle_upload( $file, array( 'test_form' => false ) );
+
+    if ( isset( $handled['error'] ) ) {
+        wp_send_json_error( array( 'message' => $handled['error'] ) );
+    }
+
+    if ( ! @rename( $handled['file'], $target_path ) ) {
+        @unlink( $handled['file'] );
         wp_send_json_error( array( 'message' => __( 'Failed to save the file to the server.', 'decaldesk' ) ), 500 );
     }
 
