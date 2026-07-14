@@ -242,10 +242,9 @@ function decaldesk_handle_upload() {
         wp_send_json_error( array( 'message' => $parsed->get_error_message() ), 400 );
     }
 
-    // 2) Преместваме файла в incoming/ - през wp_handle_upload() (не
-    //    move_uploaded_file() директно), за да мине през стандартната
-    //    WordPress upload обработка, после релокираме вече валидирания
-    //    файл в нашата собствена incoming/ структура.
+    // 2) Преместваме файла в incoming/ - през стандартната WordPress upload
+    //    обработка (не с директно преместване на temp файла), после
+    //    релокираме вече валидирания файл в нашата собствена incoming/ структура.
     $upload_dir   = wp_upload_dir();
     $incoming_dir = $upload_dir['basedir'] . '/decaldesk/incoming';
     $target_path  = $incoming_dir . '/' . sanitize_file_name( $file['name'] );

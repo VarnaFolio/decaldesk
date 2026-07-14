@@ -502,9 +502,9 @@ function decaldesk_ajax_upload_template() {
 
     $target_path = $uploads_tpl . '/' . $slug . '-' . $slot . '.' . $ext;
 
-    // wp_handle_upload() (not move_uploaded_file() directly) - validates the
-    // upload through WordPress's own upload handling, then we relocate the
-    // already-validated file into our own templates/ directory structure.
+    // Validate the upload through WordPress's own upload handling (not a
+    // raw move of the temp upload file), then relocate the already-validated
+    // file into our own templates/ directory structure.
     require_once ABSPATH . 'wp-admin/includes/file.php';
 
     $handled = wp_handle_upload( $file, array( 'test_form' => false ) );
