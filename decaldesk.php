@@ -10,7 +10,6 @@
  * WC requires at least: 8.0
  * WC tested up to:   10.9
  * Author:            DecalDesk
- * Author URI:        https://decaldesk.com
  * License:           GPL v2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       decaldesk
