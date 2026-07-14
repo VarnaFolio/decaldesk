@@ -19,7 +19,10 @@ const fs = require('fs');
 const path = require('path');
 
 const MARKER_RE = /\/\*!\s*<fs_premium_only>\s*\*\/[\s\S]*?\/\*!\s*<\/fs_premium_only>\s*\*\/\n?/g;
-const EXCLUDE_DIRS = new Set(['.git']);
+// 'tools' excluded so this dev-only script doesn't ship inside the plugin
+// it builds; '.gitignore' is dev-repo bookkeeping, not plugin runtime.
+const EXCLUDE_DIRS = new Set(['.git', 'tools']);
+const EXCLUDE_FILES = new Set(['.gitignore']);
 
 function copyRecursive(src, dest) {
   const stat = fs.statSync(src);
@@ -30,6 +33,7 @@ function copyRecursive(src, dest) {
       copyRecursive(path.join(src, entry), path.join(dest, entry));
     }
   } else {
+    if (EXCLUDE_FILES.has(path.basename(src))) return;
     fs.copyFileSync(src, dest);
   }
 }
