@@ -178,6 +178,9 @@ function decaldesk_handle_upload() {
     }
 
     $file = $_FILES['file'];
+    // Sanitize веднага, преди файловото име да се ползва за parsing, съобщения
+    // или съхранение - $_FILES['name'] идва директно от клиента, непроверено.
+    $file['name'] = sanitize_file_name( $file['name'] );
     $status = isset( $_POST['status'] ) && 'publish' === $_POST['status'] ? 'publish' : 'draft';
     $use_variants = ! empty( $_POST['use_variants'] );
     $generate_all_mockups = ! empty( $_POST['generate_all_mockups'] );

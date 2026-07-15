@@ -1,5 +1,5 @@
 === DecalDesk ===
-Contributors: varnafolio
+Contributors: decaldesk
 Tags: woocommerce, decals, stickers, product automation, ai
 Requires at least: 6.9
 Tested up to: 7.0

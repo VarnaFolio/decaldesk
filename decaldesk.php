@@ -229,16 +229,13 @@ function decaldesk_check_woocommerce() {
     return true;
 }
 // ==========================================================
-// Зареждане на преводи (i18n)
+// Преводи (i18n)
 // ==========================================================
 // Source кодът е на английски (стандартна WordPress конвенция) - всеки
 // друг език, включително български, идва като превод от languages/.
-// Затова сайт с bg_BG locale автоматично вижда българския интерфейс,
-// без да е нужна промяна в кода.
-function decaldesk_load_textdomain() {
-    load_plugin_textdomain( 'decaldesk', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
-}
-add_action( 'init', 'decaldesk_load_textdomain' );
+// Ръчно load_plugin_textdomain() НЕ е нужно за плъгини, хоствани в
+// WordPress.org директорията - WordPress автоматично зарежда преводите
+// по slug-а на плъгина от версия 4.6 насам.
 
 add_action( 'plugins_loaded', 'decaldesk_check_woocommerce' );
 

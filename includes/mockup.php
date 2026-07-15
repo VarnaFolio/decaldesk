@@ -19,7 +19,29 @@ if ( ! defined( 'DECALDESK_MAX_TEMPLATES_PER_CATEGORY' ) ) {
  * @return int
  */
 function decaldesk_max_template_slots() {
+    /*! <fs_premium_only> */
     return decaldesk_fs()->can_use_premium_code() ? DECALDESK_MAX_TEMPLATES_PER_CATEGORY : 1;
+    /*! </fs_premium_only> */
+    return 1;
+}
+
+/**
+ * Решава кои template_paths реално да се ползват - всички (Pro, ако
+ * $generate_all е зададено) или само първият (Free, или ако потребителят
+ * не е поискал multi-template генериране).
+ *
+ * @param string[] $template_paths
+ * @param bool     $generate_all
+ * @return string[]
+ */
+function decaldesk_resolve_final_template_paths( $template_paths, $generate_all ) {
+    /*! <fs_premium_only> */
+    if ( $generate_all && decaldesk_fs()->can_use_premium_code() ) {
+        return $template_paths;
+    }
+    return array_slice( $template_paths, 0, 1 );
+    /*! </fs_premium_only> */
+    return array_slice( $template_paths, 0, 1 );
 }
 
 /**
@@ -52,13 +74,7 @@ function decaldesk_generate_mockup( $design_path, $category, $generate_all = fal
     $template_paths = decaldesk_resolve_template_paths( $category );
     $zones          = decaldesk_get_template_zones( $category );
     $output_config  = decaldesk_get_mockup_output_config();
-
-    // Множество мокъп шаблони на категория е Pro функция - без валиден
-    // лиценз винаги генерираме само от първия шаблон, независимо от избора
-    // на потребителя при качване.
-    if ( ! $generate_all || ! decaldesk_fs()->can_use_premium_code() ) {
-        $template_paths = array_slice( $template_paths, 0, 1 );
-    }
+    $template_paths = decaldesk_resolve_final_template_paths( $template_paths, $generate_all );
 
     $upload_dir       = wp_upload_dir();
     $mockup_dir       = $upload_dir['basedir'] . '/decaldesk/mockups';
@@ -102,6 +118,23 @@ function decaldesk_generate_mockup( $design_path, $category, $generate_all = fal
 }
 
 /**
+ * WebP/JPEG компресията е Pro функция - без валиден лиценз винаги връща
+ * PNG (без загуба, но по-тежък файл), независимо от избора в настройките.
+ *
+ * @param string $requested_format
+ * @return string
+ */
+function decaldesk_resolve_mockup_format( $requested_format ) {
+    /*! <fs_premium_only> */
+    if ( 'png' !== $requested_format && ! decaldesk_fs()->can_use_premium_code() ) {
+        return 'png';
+    }
+    return $requested_format;
+    /*! </fs_premium_only> */
+    return 'png';
+}
+
+/**
  * Връща конфигурацията за изходния формат на мокъпа от настройките.
  *
  * @return array{format: string, extension: string, quality: int}
@@ -113,11 +146,7 @@ function decaldesk_get_mockup_output_config() {
         ? $settings['mockup_format']
         : 'webp';
 
-    // WebP/JPEG компресията е Pro функция - без валиден лиценз винаги
-    // записваме PNG (без загуба, но по-тежък файл), независимо от избора в настройките.
-    if ( 'png' !== $format && ! decaldesk_fs()->can_use_premium_code() ) {
-        $format = 'png';
-    }
+    $format = decaldesk_resolve_mockup_format( $format );
 
     // Ако е избран WebP, но нито Imagick, нито GD с webp поддръжка са налични -
     // падаме на PNG ОЩЕ ТУК, за да могат разширението на файла и реалния запис

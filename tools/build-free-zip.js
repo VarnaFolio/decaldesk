@@ -58,6 +58,28 @@ function stripPhpFiles(dir, stats) {
   }
 }
 
+// Freemius requires the Free package's own bootstrap to declare
+// is_premium => false (the Premium/Freemius-distributed package keeps
+// is_premium => true) - WP.org reviewers explicitly check for this.
+function setFreemiusFreeFlag(outputDir) {
+  const mainFile = path.join(outputDir, 'decaldesk.php');
+  if (!fs.existsSync(mainFile)) {
+    console.warn('decaldesk.php not found - skipped is_premium flip.');
+    return false;
+  }
+
+  const original = fs.readFileSync(mainFile, 'utf8');
+  const flagRe = /('is_premium'\s*=>\s*)true(\s*,)/;
+
+  if (!flagRe.test(original)) {
+    console.warn("Could not find 'is_premium' => true, in decaldesk.php - is_premium NOT flipped, check manually.");
+    return false;
+  }
+
+  fs.writeFileSync(mainFile, original.replace(flagRe, '$1false$2'), 'utf8');
+  return true;
+}
+
 function main() {
   const sourceDir = path.resolve(process.argv[2] || 'decaldesk');
   const outputParent = path.resolve(process.argv[3] || 'decaldesk-free-build');
@@ -83,6 +105,9 @@ function main() {
   for (const s of stats) {
     console.log(`  - ${s.file}: ${s.count} block(s)`);
   }
+
+  const flipped = setFreemiusFreeFlag(outputDir);
+  console.log(flipped ? "Set is_premium => false in decaldesk.php (Free build)." : "is_premium flip FAILED - check decaldesk.php manually before submitting.");
 }
 
 main();

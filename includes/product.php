@@ -76,6 +76,7 @@ function decaldesk_attach_mockups_and_design( $product_id, $mockup_paths, $desig
  * за да може изобщо да се създаде Variable Product).
  */
 function decaldesk_variants_configured() {
+    /*! <fs_premium_only> */
     // Variable Products (размерни варианти) е Pro функция.
     if ( ! decaldesk_fs()->can_use_premium_code() ) {
         return false;
@@ -83,8 +84,11 @@ function decaldesk_variants_configured() {
 
     $settings = get_option( 'decaldesk_settings', array() );
     return ! empty( $settings['variant_sizes'] );
+    /*! </fs_premium_only> */
+    return false;
 }
 
+/*! <fs_premium_only> */
 /**
  * Създава WooCommerce Variable Product с избираем размер (задължително) и
  * незадължителни материал/цвят - вместо отделен Simple Product на файл.
@@ -246,6 +250,7 @@ function decaldesk_create_variable_product( $parsed, $mockup_paths, $status = 'd
 
     return $product_id;
 }
+/*! </fs_premium_only> */
 
 /**
  * Създава WooCommerce продукт от парснатите данни.
@@ -390,9 +395,9 @@ function decaldesk_get_or_create_category( $category_slug ) {
  * @return int|false ID на новия attachment, или false при грешка.
  */
 function decaldesk_attach_product_image( $product_id, $file_path, $title, $alt_text, $caption_text = '', $description = '' ) {
+    // Само image.php - единствената функция от този клъстер, която реално
+    // ползваме тук, е wp_generate_attachment_metadata() (дефинирана там).
     require_once ABSPATH . 'wp-admin/includes/image.php';
-    require_once ABSPATH . 'wp-admin/includes/file.php';
-    require_once ABSPATH . 'wp-admin/includes/media.php';
 
     $upload_dir = wp_upload_dir();
     $filename   = wp_unique_filename( $upload_dir['path'], basename( $file_path ) );

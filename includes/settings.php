@@ -137,6 +137,124 @@ function decaldesk_ajax_test_ai_connection() {
 add_action( 'wp_ajax_decaldesk_test_ai_connection', 'decaldesk_ajax_test_ai_connection' );
 
 /**
+ * Санитизира масива от категории (slug => display name).
+ *
+ * @param mixed $raw
+ * @return array<string,string>
+ */
+function decaldesk_sanitize_categories( $raw ) {
+    if ( ! is_array( $raw ) ) {
+        return array();
+    }
+
+    $clean = array();
+    foreach ( $raw as $slug => $name ) {
+        $slug = sanitize_key( (string) $slug );
+        if ( '' === $slug ) {
+            continue;
+        }
+        $clean[ $slug ] = sanitize_text_field( (string) $name );
+    }
+
+    return $clean;
+}
+
+/**
+ * Санитизира една зона (rect или polygon) - връща null ако не е валидна структура.
+ *
+ * @param mixed $zone
+ * @return array|null
+ */
+function decaldesk_sanitize_single_zone( $zone ) {
+    if ( ! is_array( $zone ) ) {
+        return null;
+    }
+
+    if ( isset( $zone['type'] ) && 'polygon' === $zone['type'] ) {
+        if ( empty( $zone['points'] ) || ! is_array( $zone['points'] ) ) {
+            return null;
+        }
+
+        $points = array();
+        foreach ( $zone['points'] as $point ) {
+            if ( ! is_array( $point ) || ! isset( $point['x'], $point['y'] ) ) {
+                continue;
+            }
+            $points[] = array(
+                'x' => round( max( 0, min( 100, (float) $point['x'] ) ), 2 ),
+                'y' => round( max( 0, min( 100, (float) $point['y'] ) ), 2 ),
+            );
+        }
+
+        if ( count( $points ) < 3 ) {
+            return null;
+        }
+
+        return array(
+            'type'   => 'polygon',
+            'points' => $points,
+        );
+    }
+
+    $x      = isset( $zone['x'] ) ? max( 0, min( 100, (float) $zone['x'] ) ) : 15;
+    $y      = isset( $zone['y'] ) ? max( 0, min( 100, (float) $zone['y'] ) ) : 15;
+    $width  = isset( $zone['width'] ) ? max( 1, min( 100 - $x, (float) $zone['width'] ) ) : 70;
+    $height = isset( $zone['height'] ) ? max( 1, min( 100 - $y, (float) $zone['height'] ) ) : 70;
+
+    return array(
+        'type'   => 'rect',
+        'x'      => round( $x, 2 ),
+        'y'      => round( $y, 2 ),
+        'width'  => round( $width, 2 ),
+        'height' => round( $height, 2 ),
+    );
+}
+
+/**
+ * Санитизира целия template_zones масив (category slug => зона или списък от зони).
+ *
+ * @param mixed $raw
+ * @return array
+ */
+function decaldesk_sanitize_template_zones( $raw ) {
+    if ( ! is_array( $raw ) ) {
+        return array();
+    }
+
+    $clean = array();
+    foreach ( $raw as $slug => $zones_config ) {
+        $slug = sanitize_key( (string) $slug );
+        if ( '' === $slug || ! is_array( $zones_config ) ) {
+            continue;
+        }
+
+        // Стар формат: единична зона directly (ключ 'x' или 'type' на това ниво)
+        if ( isset( $zones_config['x'] ) || isset( $zones_config['type'] ) ) {
+            $zone = decaldesk_sanitize_single_zone( $zones_config );
+            if ( null !== $zone ) {
+                $clean[ $slug ] = $zone;
+            }
+            continue;
+        }
+
+        // Нов формат: индексиран списък от зони, по една на слот
+        $zone_list = array();
+        foreach ( $zones_config as $zone ) {
+            $sanitized = decaldesk_sanitize_single_zone( $zone );
+            if ( null !== $sanitized ) {
+                $zone_list[] = $sanitized;
+            }
+        }
+
+        if ( ! empty( $zone_list ) ) {
+            $clean[ $slug ] = $zone_list;
+        }
+    }
+
+    return $clean;
+}
+
+/**
  * Санитизира въведените настройки преди запис.
  */
 function decaldesk_sanitize_settings( $input ) {
@@ -229,8 +347,12 @@ function decaldesk_sanitize_settings( $input ) {
     // случай, където $input е цялото обновено settings-масив), и да
     // падаме на старите САМО ако $input изобщо няма тези ключове
     // (истинско save на Settings формата, която няма тези полета).
-    $output['categories']     = isset( $input['categories'] ) ? $input['categories'] : ( isset( $existing['categories'] ) ? $existing['categories'] : array() );
-    $output['template_zones'] = isset( $input['template_zones'] ) ? $input['template_zones'] : ( isset( $existing['template_zones'] ) ? $existing['template_zones'] : array() );
+    $output['categories']     = isset( $input['categories'] )
+        ? decaldesk_sanitize_categories( $input['categories'] )
+        : ( isset( $existing['categories'] ) ? $existing['categories'] : array() );
+    $output['template_zones'] = isset( $input['template_zones'] )
+        ? decaldesk_sanitize_template_zones( $input['template_zones'] )
+        : ( isset( $existing['template_zones'] ) ? $existing['template_zones'] : array() );
 
     return $output;
 }
@@ -322,6 +444,14 @@ function decaldesk_render_settings_page() {
             </table>
 
             <h2><?php esc_html_e( 'Mockup Image Optimization', 'decaldesk' ); ?></h2>
+            <?php if ( ! decaldesk_fs()->can_use_premium_code() ) : ?>
+                <p class="description">
+                    <span class="decaldesk-pro-badge"><?php esc_html_e( 'Pro', 'decaldesk' ); ?></span>
+                    <?php esc_html_e( 'Mockups are always saved as PNG on the Free plan. WebP/JPEG compression (smaller, faster-loading files) requires a Pro license.', 'decaldesk' ); ?>
+                    <a href="<?php echo esc_url( decaldesk_fs()->get_upgrade_url() ); ?>"><?php esc_html_e( 'Upgrade to Pro', 'decaldesk' ); ?></a>
+                </p>
+            <?php else : ?>
+            <?php /*! <fs_premium_only> */ ?>
             <p class="description">
                 <?php esc_html_e( 'Mockups contain a photographic background (the template), so PNG usually ends up needlessly heavy. WebP keeps nearly the same quality at a much smaller file size — a faster site.', 'decaldesk' ); ?>
             </p>
@@ -331,25 +461,17 @@ function decaldesk_render_settings_page() {
                         <label for="decaldesk_mockup_format"><?php esc_html_e( 'Mockup format', 'decaldesk' ); ?></label>
                     </th>
                     <td>
-                        <?php $decaldesk_optimization_is_pro = decaldesk_fs()->can_use_premium_code(); ?>
-                        <select id="decaldesk_mockup_format" name="decaldesk_settings[mockup_format]" <?php disabled( ! $decaldesk_optimization_is_pro ); ?>>
-                            <option value="webp" <?php selected( $settings['mockup_format'], 'webp' ); ?> <?php disabled( ! $decaldesk_optimization_is_pro ); ?>>
+                        <select id="decaldesk_mockup_format" name="decaldesk_settings[mockup_format]">
+                            <option value="webp" <?php selected( $settings['mockup_format'], 'webp' ); ?>>
                                 WebP (<?php esc_html_e( 'recommended — smallest size, good quality', 'decaldesk' ); ?>)
                             </option>
-                            <option value="jpeg" <?php selected( $settings['mockup_format'], 'jpeg' ); ?> <?php disabled( ! $decaldesk_optimization_is_pro ); ?>>
+                            <option value="jpeg" <?php selected( $settings['mockup_format'], 'jpeg' ); ?>>
                                 JPEG (<?php esc_html_e( 'wide compatibility', 'decaldesk' ); ?>)
                             </option>
-                            <option value="png" <?php selected( $decaldesk_optimization_is_pro ? $settings['mockup_format'] : 'png', 'png' ); ?>>
+                            <option value="png" <?php selected( $settings['mockup_format'], 'png' ); ?>>
                                 PNG (<?php esc_html_e( 'lossless, but the heaviest file', 'decaldesk' ); ?>)
                             </option>
                         </select>
-                        <?php if ( ! $decaldesk_optimization_is_pro ) : ?>
-                            <p class="description">
-                                <span class="decaldesk-pro-badge"><?php esc_html_e( 'Pro', 'decaldesk' ); ?></span>
-                                <?php esc_html_e( 'WebP/JPEG compression requires a Pro license — mockups are saved as PNG on the Free plan.', 'decaldesk' ); ?>
-                                <a href="<?php echo esc_url( decaldesk_fs()->get_upgrade_url() ); ?>"><?php esc_html_e( 'Upgrade to Pro', 'decaldesk' ); ?></a>
-                            </p>
-                        <?php endif; ?>
                     </td>
                 </tr>
                 <tr class="decaldesk-mockup-quality-row">
@@ -366,8 +488,8 @@ function decaldesk_render_settings_page() {
                     </td>
                 </tr>
             </table>
-
-            <script>
+            <?php
+            wp_add_inline_script( 'decaldesk-uploader', "
             (function ($) {
                 $(function () {
                     function toggleQualityRow() {
@@ -378,7 +500,10 @@ function decaldesk_render_settings_page() {
                     $('#decaldesk_mockup_format').on('change', toggleQualityRow);
                 });
             })(jQuery);
-            </script>
+            " );
+            ?>
+            <?php /*! </fs_premium_only> */ ?>
+            <?php endif; ?>
 
             <p class="description">
                 <?php
@@ -401,6 +526,7 @@ function decaldesk_render_settings_page() {
                     <a href="<?php echo esc_url( decaldesk_fs()->get_upgrade_url() ); ?>"><?php esc_html_e( 'Upgrade to Pro', 'decaldesk' ); ?></a>
                 </p>
             <?php else : ?>
+            <?php /*! <fs_premium_only> */ ?>
             <p class="description">
                 <?php esc_html_e( 'Generates longer, sales-focused descriptions instead of the static template. Choose a free provider (Google Gemini, with a daily limit) or a paid one (Anthropic Claude, no limit).', 'decaldesk' ); ?>
             </p>
@@ -462,55 +588,56 @@ function decaldesk_render_settings_page() {
                 </tr>
             </table>
 
-            <script>
+            <?php
+            wp_add_inline_script( 'decaldesk-uploader', "
             (function ($) {
                 $(function () {
-                    var $langSelect = $('#decaldesk_ai_content_language');
-                    var $langCustom = $('#decaldesk_ai_content_language_custom');
+                    var \$langSelect = $('#decaldesk_ai_content_language');
+                    var \$langCustom = $('#decaldesk_ai_content_language_custom');
 
-                    $langSelect.on('change', function () {
-                        $langCustom.toggle($(this).val() === 'custom');
+                    \$langSelect.on('change', function () {
+                        \$langCustom.toggle($(this).val() === 'custom');
                     });
                 });
             })(jQuery);
-            </script>
+            " );
 
-            <script>
+            wp_add_inline_script( 'decaldesk-uploader', "
             (function ($) {
                 $(function () {
                     $('#decaldesk-test-ai-btn').on('click', function (e) {
                         e.preventDefault();
-                        var $btn = $(this);
-                        var $spinner = $('#decaldesk-test-ai-spinner');
-                        var $result = $('#decaldesk-test-ai-result');
+                        var \$btn = $(this);
+                        var \$spinner = $('#decaldesk-test-ai-spinner');
+                        var \$result = $('#decaldesk-test-ai-result');
 
-                        $btn.prop('disabled', true);
-                        $spinner.addClass('is-active');
-                        $result.hide().removeClass('notice-success notice-error').empty();
+                        \$btn.prop('disabled', true);
+                        \$spinner.addClass('is-active');
+                        \$result.hide().removeClass('notice-success notice-error').empty();
 
                         $.post(ajaxurl, {
                             action: 'decaldesk_test_ai_connection',
-                            nonce: '<?php echo esc_js( wp_create_nonce( 'decaldesk_test_ai_nonce' ) ); ?>'
+                            nonce: '" . esc_js( wp_create_nonce( 'decaldesk_test_ai_nonce' ) ) . "'
                         }).done(function (response) {
-                            $spinner.removeClass('is-active');
-                            $btn.prop('disabled', false);
+                            \$spinner.removeClass('is-active');
+                            \$btn.prop('disabled', false);
 
                             if (response.success) {
-                                $result
+                                \$result
                                     .css({ background: '#edfaef', borderLeft: '4px solid #00a32a', color: '#00450c' })
-                                    .html('<strong>Success!</strong> The AI responded correctly.<br><pre style="white-space:pre-wrap; margin-top:8px; font-size:12px;">' +
+                                    .html('<strong>Success!</strong> The AI responded correctly.<br><pre style=\"white-space:pre-wrap; margin-top:8px; font-size:12px;\">' +
                                         $('<div>').text(response.data.raw).html() + '</pre>')
                                     .show();
                             } else {
-                                $result
+                                \$result
                                     .css({ background: '#fcf0f1', borderLeft: '4px solid #d63638', color: '#5a0a0d' })
                                     .html('<strong>Error:</strong> ' + $('<div>').text(response.data.message).html())
                                     .show();
                             }
                         }).fail(function () {
-                            $spinner.removeClass('is-active');
-                            $btn.prop('disabled', false);
-                            $result
+                            \$spinner.removeClass('is-active');
+                            \$btn.prop('disabled', false);
+                            \$result
                                 .css({ background: '#fcf0f1', borderLeft: '4px solid #d63638', color: '#5a0a0d' })
                                 .text('The request failed (network error).')
                                 .show();
@@ -518,7 +645,8 @@ function decaldesk_render_settings_page() {
                     });
                 });
             })(jQuery);
-            </script>
+            " );
+            ?>
 
             <h3><?php esc_html_e( 'AI Vision — image analysis', 'decaldesk' ); ?></h3>
             <table class="form-table">
@@ -625,6 +753,7 @@ function decaldesk_render_settings_page() {
                     </td>
                 </tr>
             </table>
+            <?php /*! </fs_premium_only> */ ?>
             <?php endif; ?>
 
             <h2><?php esc_html_e( 'Categories & Mockup Templates', 'decaldesk' ); ?></h2>
