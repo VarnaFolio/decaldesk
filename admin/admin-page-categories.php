@@ -98,6 +98,7 @@ function decaldesk_render_category_card( $slug, $name, $is_template = false ) {
 
             <button type="button" class="button decaldesk-add-template-slot"
                 <?php disabled( $slot_count >= decaldesk_max_template_slots() ); ?>>
+                <?php /*! <fs_premium_only> */ if ( true ) : ?>
                 <?php
                 printf(
                     /* translators: %d: maximum number of templates per category */
@@ -105,13 +106,21 @@ function decaldesk_render_category_card( $slug, $name, $is_template = false ) {
                     (int) decaldesk_max_template_slots()
                 );
                 ?>
+                <?php else : /*! </fs_premium_only> */ ?>
+                <?php esc_html_e( '+ Add another template', 'decaldesk' ); ?>
+                <?php /*! <fs_premium_only> */ endif; /*! </fs_premium_only> */ ?>
             </button>
-            <?php if ( ! decaldesk_fs()->can_use_premium_code() ) : ?>
+            <?php /*! <fs_premium_only> */ if ( decaldesk_fs()->can_use_premium_code() ) : ?>
                 <p class="decaldesk-zone-hint">
                     <?php esc_html_e( 'Multiple templates per category and the freeform zone editor are Pro features.', 'decaldesk' ); ?>
                     <a href="<?php echo esc_url( decaldesk_fs()->get_upgrade_url() ); ?>"><?php esc_html_e( 'Upgrade to Pro', 'decaldesk' ); ?></a>
                 </p>
-            <?php endif; ?>
+            <?php else : /*! </fs_premium_only> */ ?>
+                <p class="decaldesk-zone-hint">
+                    <?php esc_html_e( 'This version supports one template and a rectangular zone per category. Multiple templates per category and the freeform zone editor are available in DecalDesk Pro.', 'decaldesk' ); ?>
+                    <a href="https://decaldesk.com/pro" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Learn more', 'decaldesk' ); ?></a>
+                </p>
+            <?php /*! <fs_premium_only> */ endif; /*! </fs_premium_only> */ ?>
         </div>
     </div>
     <?php
@@ -137,7 +146,10 @@ function decaldesk_render_template_slot( $slug, $slot, $preview_url, $zone, $has
     ?>
     <div class="decaldesk-template-slot" data-slug="<?php echo esc_attr( $slug ); ?>" data-slot="<?php echo esc_attr( $slot ); ?>" data-zone-type="<?php echo esc_attr( $zone_type ); ?>">
         <div class="decaldesk-template-slot-header">
-            <span class="decaldesk-slot-label"><?php printf( esc_html__( 'Template %d', 'decaldesk' ), (int) $slot ); ?></span>
+            <span class="decaldesk-slot-label"><?php
+                /* translators: %d: template slot number */
+                printf( esc_html__( 'Template %d', 'decaldesk' ), (int) $slot );
+            ?></span>
             <button type="button" class="button-link decaldesk-delete-slot" title="<?php esc_attr_e( 'Delete this template', 'decaldesk' ); ?>">
                 <span class="dashicons dashicons-no-alt"></span>
             </button>
@@ -191,11 +203,11 @@ function decaldesk_render_template_slot( $slug, $slot, $preview_url, $zone, $has
                     <?php esc_html_e( 'Rectangle', 'decaldesk' ); ?>
                 </label>
                 <label>
-                    <input type="radio" class="decaldesk-zone-mode-radio" name="decaldesk_zone_mode_<?php echo esc_attr( $slug . '_' . $slot ); ?>" value="polygon" <?php checked( 'polygon', $zone_type ); ?> <?php disabled( ! decaldesk_fs()->can_use_premium_code() ); ?>>
+                    <input type="radio" class="decaldesk-zone-mode-radio" name="decaldesk_zone_mode_<?php echo esc_attr( $slug . '_' . $slot ); ?>" value="polygon" <?php checked( 'polygon', $zone_type ); ?> <?php /*! <fs_premium_only> */ if ( decaldesk_fs()->can_use_premium_code() ) : ?><?php else : /*! </fs_premium_only> */ ?>disabled<?php /*! <fs_premium_only> */ endif; /*! </fs_premium_only> */ ?>>
                     <?php esc_html_e( 'Freeform', 'decaldesk' ); ?>
-                    <?php if ( ! decaldesk_fs()->can_use_premium_code() ) : ?>
-                        <span class="decaldesk-pro-badge"><?php esc_html_e( 'Pro', 'decaldesk' ); ?></span>
-                    <?php endif; ?>
+                    <?php /*! <fs_premium_only> */ if ( decaldesk_fs()->can_use_premium_code() ) : ?><?php else : /*! </fs_premium_only> */ ?>
+                        <span class="decaldesk-pro-badge"><?php esc_html_e( 'DecalDesk Pro', 'decaldesk' ); ?></span>
+                    <?php /*! <fs_premium_only> */ endif; /*! </fs_premium_only> */ ?>
                 </label>
             </div>
 
@@ -425,14 +437,14 @@ function decaldesk_ajax_delete_category() {
     foreach ( $extensions as $ext ) {
         $legacy = $uploads_tpl . '/' . $slug . '.' . $ext;
         if ( file_exists( $legacy ) ) {
-            @unlink( $legacy );
+            wp_delete_file( $legacy );
         }
     }
     for ( $slot = 1; $slot <= DECALDESK_MAX_TEMPLATES_PER_CATEGORY; $slot++ ) {
         foreach ( $extensions as $ext ) {
             $path = $uploads_tpl . '/' . $slug . '-' . $slot . '.' . $ext;
             if ( file_exists( $path ) ) {
-                @unlink( $path );
+                wp_delete_file( $path );
             }
         }
     }
@@ -454,12 +466,12 @@ function decaldesk_ajax_upload_template() {
         wp_send_json_error( array( 'message' => __( 'Missing file or category.', 'decaldesk' ) ), 400 );
     }
 
-    // Сървърна защита: без Pro лиценз, слот 2+ не е позволен, дори ако
-    // заявката дойде директно (bypass на UI-то). Отхвърляме изрично, вместо
-    // тихо да "clamp"-нем към слот 1 - иначе бихме презаписали слот 1 с
-    // файл, предназначен за друг слот.
+    // Сървърна защита: този build поддържа само 1 темплейт на категория,
+    // дори ако заявката дойде директно (bypass на UI-то). Отхвърляме изрично,
+    // вместо тихо да "clamp"-нем към слот 1 - иначе бихме презаписали слот 1
+    // с файл, предназначен за друг слот.
     if ( $slot > decaldesk_max_template_slots() ) {
-        wp_send_json_error( array( 'message' => __( 'Multiple templates per category require a Pro license.', 'decaldesk' ) ), 403 );
+        wp_send_json_error( array( 'message' => __( 'Multiple templates per category are available in DecalDesk Pro.', 'decaldesk' ) ), 403 );
     }
 
     $file = $_FILES['template'];
@@ -490,12 +502,12 @@ function decaldesk_ajax_upload_template() {
     foreach ( array( 'png', 'jpg', 'jpeg', 'webp' ) as $old_ext ) {
         $old_path = $uploads_tpl . '/' . $slug . '-' . $slot . '.' . $old_ext;
         if ( file_exists( $old_path ) ) {
-            @unlink( $old_path );
+            wp_delete_file( $old_path );
         }
         if ( 1 === $slot ) {
             $legacy_path = $uploads_tpl . '/' . $slug . '.' . $old_ext;
             if ( file_exists( $legacy_path ) ) {
-                @unlink( $legacy_path );
+                wp_delete_file( $legacy_path );
             }
         }
     }
@@ -514,7 +526,7 @@ function decaldesk_ajax_upload_template() {
     }
 
     if ( ! @rename( $handled['file'], $target_path ) ) {
-        @unlink( $handled['file'] );
+        wp_delete_file( $handled['file'] );
         wp_send_json_error( array( 'message' => __( 'Failed to save the template.', 'decaldesk' ) ), 500 );
     }
 
@@ -549,7 +561,7 @@ function decaldesk_ajax_delete_template_slot() {
             foreach ( array( $slug . '-' . $slot . '.' . $ext, $slug . '.' . $ext ) as $filename ) {
                 $path = $uploads_tpl . '/' . $filename;
                 if ( file_exists( $path ) ) {
-                    @unlink( $path );
+                    wp_delete_file( $path );
                 }
             }
         }
@@ -557,7 +569,7 @@ function decaldesk_ajax_delete_template_slot() {
         foreach ( $extensions as $ext ) {
             $path = $uploads_tpl . '/' . $slug . '-' . $slot . '.' . $ext;
             if ( file_exists( $path ) ) {
-                @unlink( $path );
+                wp_delete_file( $path );
             }
         }
 
@@ -608,12 +620,17 @@ function decaldesk_ajax_save_zone() {
         wp_send_json_error( array( 'message' => __( 'Missing category.', 'decaldesk' ) ), 400 );
     }
 
+    /*! <fs_premium_only> */
     if ( 'polygon' === $type && ! decaldesk_fs()->can_use_premium_code() ) {
         wp_send_json_error( array( 'message' => __( 'The freeform zone editor requires a Pro license.', 'decaldesk' ) ), 403 );
     }
+    /*! </fs_premium_only> */
+    if ( 'polygon' === $type ) {
+        wp_send_json_error( array( 'message' => __( 'The freeform zone editor is available in DecalDesk Pro.', 'decaldesk' ) ), 403 );
+    }
 
     if ( $slot > decaldesk_max_template_slots() ) {
-        wp_send_json_error( array( 'message' => __( 'Multiple templates per category require a Pro license.', 'decaldesk' ) ), 403 );
+        wp_send_json_error( array( 'message' => __( 'Multiple templates per category are available in DecalDesk Pro.', 'decaldesk' ) ), 403 );
     }
 
     $settings = get_option( 'decaldesk_settings', array() );

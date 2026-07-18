@@ -64,6 +64,7 @@
 			renderFileList();
 		});
 
+		/*! <fs_premium_only> */
 		// ==========================================================
 		// Разгъваема секция за размерни варианти (размер/материал/цвят)
 		// ==========================================================
@@ -126,6 +127,7 @@
 				$status.addClass('is-error').text('Server connection error.');
 			});
 		});
+		/*! </fs_premium_only> */
 
 		function addFiles(fileList) {
 			var skippedBadType = 0;
@@ -217,8 +219,12 @@
 			}
 
 			var status = $('input[name="decaldesk_status"]:checked').val();
-			var useVariants = $('#decaldesk-use-variants').is(':checked');
-			var generateAllMockups = $('#decaldesk-generate-all-mockups').is(':checked');
+			var useVariants = false;
+			var generateAllMockups = false;
+			/*! <fs_premium_only> */
+			useVariants = $('#decaldesk-use-variants').is(':checked');
+			generateAllMockups = $('#decaldesk-generate-all-mockups').is(':checked');
+			/*! </fs_premium_only> */
 
 			$results.empty();
 			$summary.hide().empty();

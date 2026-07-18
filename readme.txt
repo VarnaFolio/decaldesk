@@ -4,7 +4,7 @@ Tags: woocommerce, decals, stickers, product automation, ai
 Requires at least: 6.9
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.3.4
+Stable tag: 1.3.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -72,6 +72,14 @@ Yes (Pro). You can use a free Google Gemini API key (from Google AI Studio, no c
 3. A generated product with AI description and mockup
 
 == Changelog ==
+
+= 1.3.5 =
+* Multi-template mockups and WebP/JPEG output: removed the remaining hardcoded restriction in the free build's mockup generator and its surrounding admin UI, since the underlying capability isn't present in this build at all.
+* Removed leftover license-check code paths and settings storage (variant configuration UI/AJAX, freeform zone save, AI test-connection, AI/variant/mockup-format settings fields) that had no effect in the free build but referenced or stored data for functionality it doesn't contain.
+* Removed non-standard development files (patches, example env, build tooling) from the distributed package; added .distignore for future builds.
+* Added missing translators comments for two translatable strings with placeholders.
+* Escaped admin notice output at the point of echo (defense in depth, matching WordPress escape-late guidance).
+* Switched file deletion calls to wp_delete_file() per WordPress.org coding standards.
 
 = 1.3.4 =
 * WordPress.org review feedback: multi-template mockups, variable products, and WebP/JPEG compression are now fully separate code in the free build too (not just license-locked).

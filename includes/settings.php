@@ -11,6 +11,7 @@ function decaldesk_register_settings() {
 }
 add_action( 'admin_init', 'decaldesk_register_settings' );
 
+/*! <fs_premium_only> */
 /**
  * Санитизира текст с размери "WxH", по един на ред, в чист масив от низове.
  * Невалидни редове (не съвпадащи с шаблона) се пропускат тихо.
@@ -81,6 +82,7 @@ function decaldesk_sanitize_csv_list( $raw ) {
 
     return array_values( array_unique( $clean ) );
 }
+/*! </fs_premium_only> */
 
 /**
  * AJAX: тества връзката с избрания AI доставчик с фиктивни данни и връща
@@ -95,6 +97,7 @@ function decaldesk_ajax_test_ai_connection() {
         wp_send_json_error( array( 'message' => __( 'You don\'t have permission to do this.', 'decaldesk' ) ), 403 );
     }
 
+    /*! <fs_premium_only> */
     if ( ! decaldesk_fs()->can_use_premium_code() ) {
         wp_send_json_error( array( 'message' => __( 'AI descriptions require a Pro license.', 'decaldesk' ) ), 403 );
     }
@@ -133,6 +136,9 @@ function decaldesk_ajax_test_ai_connection() {
     }
 
     wp_send_json_success( array( 'raw' => $result ) );
+    /*! </fs_premium_only> */
+    // AI описанията (Google Gemini / Anthropic Claude) са налични в DecalDesk Pro.
+    wp_send_json_error( array( 'message' => __( 'AI-generated descriptions are available in DecalDesk Pro.', 'decaldesk' ) ), 403 );
 }
 add_action( 'wp_ajax_decaldesk_test_ai_connection', 'decaldesk_ajax_test_ai_connection' );
 
@@ -263,7 +269,7 @@ function decaldesk_sanitize_settings( $input ) {
     // ВАЖНО: дефинираме $existing НАЙ-ОТГОРЕ, преди каквато и да е употреба -
     // намерих реален бъг тук (undefined variable по-долу във функцията заради
     // предишно дублирано обявяване по-надолу), който тихо чупеше fallback-а
-    // за variant_sizes/materials/colors при round-trip през несвързани AJAX
+    // за categories/template_zones при round-trip през несвързани AJAX
     // действия. Сега има само ЕДНО обявяване, най-рано възможното.
     $existing = get_option( 'decaldesk_settings', array() );
 
@@ -272,12 +278,15 @@ function decaldesk_sanitize_settings( $input ) {
     $output['max_dimension_cm'] = isset( $input['max_dimension_cm'] ) ? max( 1, (int) $input['max_dimension_cm'] ) : 1000;
     $output['custom_footer_text'] = isset( $input['custom_footer_text'] ) ? wp_kses_post( wp_unslash( $input['custom_footer_text'] ) ) : '';
 
+    /*! <fs_premium_only> */
     $allowed_formats = array( 'webp', 'jpeg', 'png' );
     $output['mockup_format']  = isset( $input['mockup_format'] ) && in_array( $input['mockup_format'], $allowed_formats, true )
         ? $input['mockup_format']
         : 'webp';
     $output['mockup_quality'] = isset( $input['mockup_quality'] ) ? max( 1, min( 100, (int) $input['mockup_quality'] ) ) : 82;
+    /*! </fs_premium_only> */
 
+    /*! <fs_premium_only> */
     // Размерни варианти (за Variable Products) - размери задължителни за да
     // работи функцията, материал/цвят са изрично незадължителни списъци.
     // ВАЖНО: пазим НОВИТЕ данни ако $input наистина ги носи (независимо дали
@@ -303,14 +312,16 @@ function decaldesk_sanitize_settings( $input ) {
     $output['ai_model']          = isset( $input['ai_model'] ) ? sanitize_text_field( $input['ai_model'] ) : 'claude-sonnet-4-6';
     $output['gemini_daily_limit'] = isset( $input['gemini_daily_limit'] ) ? max( 1, (int) $input['gemini_daily_limit'] ) : 10;
     $output['ai_use_vision']      = ! empty( $input['ai_use_vision'] );
+    /*! </fs_premium_only> */
 
     // Език на AI-генерираното продуктово съдържание - НЕ на admin панела.
-    // Ако е избрано "custom", ползваме свободния текст от отделното поле.
+    // Ползва се и от статичния fallback шаблон (виж decaldesk_build_fallback_content()),
+    // затова остава конфигурируем и в тази версия, независимо от AI provider-а.
     // ВАЖНО: ако $input носи ВЕЧЕ САНИТИЗИРАНА custom стойност (напр. "Czech"
     // от предишен запис, върната обратно през round-trip от СЪВСЕМ ДРУГО
     // AJAX действие - виж бележката за register_setting() по-горе), не я
     // отхвърляме само защото не е в preset списъка - същия клас бъг, който
-    // фиксирахме за categories/template_zones/variant_sizes по-рано.
+    // фиксирахме за categories/template_zones по-рано.
     if ( isset( $input['ai_content_language'] ) && 'custom' === $input['ai_content_language'] ) {
         $custom = isset( $input['ai_content_language_custom'] ) ? sanitize_text_field( $input['ai_content_language_custom'] ) : '';
         $output['ai_content_language'] = '' !== $custom ? $custom : 'Bulgarian';
@@ -324,6 +335,7 @@ function decaldesk_sanitize_settings( $input ) {
     // за да не се изтрият случайно данни при бъдещо преинсталиране на плъгина.
     $output['delete_data_on_uninstall'] = ! empty( $input['delete_data_on_uninstall'] );
 
+    /*! <fs_premium_only> */
     // API ключовете се запазват само ако е въведен нов; иначе пазим стария (за да не се налага
     // да се въвежда наново при всеки Save, ако вече е зададен през wp-config.php константа).
     if ( ! empty( $input['ai_api_key'] ) ) {
@@ -337,6 +349,7 @@ function decaldesk_sanitize_settings( $input ) {
     } else {
         $output['gemini_api_key'] = isset( $existing['gemini_api_key'] ) ? $existing['gemini_api_key'] : '';
     }
+    /*! </fs_premium_only> */
 
     // Категориите и зоните за позициониране се управляват от отделна
     // страница (DecalDesk → Категории) чрез AJAX. ВАЖНО: тъй като
@@ -366,24 +379,28 @@ function decaldesk_render_settings_page() {
         'min_price'          => 15,
         'max_dimension_cm'   => 1000,
         'custom_footer_text' => '',
+        'categories'         => array(),
+        'ai_content_language' => 'Bulgarian',
+        'delete_data_on_uninstall' => false,
+        /*! <fs_premium_only> */
         'mockup_format'      => 'webp',
         'mockup_quality'     => 82,
         'variant_sizes'      => array(),
         'variant_materials'  => array(),
         'variant_colors'     => array(),
-        'categories'         => array(),
         'ai_provider'        => 'none',
         'ai_api_key'         => '',
         'ai_model'           => 'claude-sonnet-4-6',
         'gemini_api_key'     => '',
         'gemini_daily_limit' => 10,
         'ai_use_vision'      => false,
-        'ai_content_language' => 'Bulgarian',
-        'delete_data_on_uninstall' => false,
+        /*! </fs_premium_only> */
     ) );
 
+    /*! <fs_premium_only> */
     $preset_languages = array( 'Bulgarian', 'English', 'German', 'French', 'Spanish', 'Italian', 'Romanian', 'Polish', 'Dutch', 'Portuguese', 'Greek', 'Turkish' );
     $is_custom_language = ! in_array( $settings['ai_content_language'], $preset_languages, true );
+    /*! </fs_premium_only> */
     ?>
     <div class="wrap decaldesk-wrap">
         <h1><?php esc_html_e( 'DecalDesk – Settings', 'decaldesk' ); ?></h1>
@@ -444,14 +461,7 @@ function decaldesk_render_settings_page() {
             </table>
 
             <h2><?php esc_html_e( 'Mockup Image Optimization', 'decaldesk' ); ?></h2>
-            <?php if ( ! decaldesk_fs()->can_use_premium_code() ) : ?>
-                <p class="description">
-                    <span class="decaldesk-pro-badge"><?php esc_html_e( 'Pro', 'decaldesk' ); ?></span>
-                    <?php esc_html_e( 'Mockups are always saved as PNG on the Free plan. WebP/JPEG compression (smaller, faster-loading files) requires a Pro license.', 'decaldesk' ); ?>
-                    <a href="<?php echo esc_url( decaldesk_fs()->get_upgrade_url() ); ?>"><?php esc_html_e( 'Upgrade to Pro', 'decaldesk' ); ?></a>
-                </p>
-            <?php else : ?>
-            <?php /*! <fs_premium_only> */ ?>
+            <?php /*! <fs_premium_only> */ if ( decaldesk_fs()->can_use_premium_code() ) : ?>
             <p class="description">
                 <?php esc_html_e( 'Mockups contain a photographic background (the template), so PNG usually ends up needlessly heavy. WebP keeps nearly the same quality at a much smaller file size — a faster site.', 'decaldesk' ); ?>
             </p>
@@ -502,14 +512,20 @@ function decaldesk_render_settings_page() {
             })(jQuery);
             " );
             ?>
-            <?php /*! </fs_premium_only> */ ?>
-            <?php endif; ?>
+            <?php else : /*! </fs_premium_only> */ ?>
+            <p class="description">
+                <span class="decaldesk-pro-badge"><?php esc_html_e( 'DecalDesk Pro', 'decaldesk' ); ?></span>
+                <?php esc_html_e( 'Mockups are always saved as PNG in this version. WebP/JPEG compression (smaller, faster-loading files) is available in DecalDesk Pro.', 'decaldesk' ); ?>
+                <a href="https://decaldesk.com/pro" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Learn more', 'decaldesk' ); ?></a>
+            </p>
+            <?php /*! <fs_premium_only> */ endif; /*! </fs_premium_only> */ ?>
 
+            <?php /*! <fs_premium_only> */ if ( decaldesk_fs()->can_use_premium_code() ) : ?>
             <p class="description">
                 <?php
                 printf(
-                    /* translators: %s: link to the Upload page */
                     wp_kses(
+                        /* translators: %s: link to the Upload page */
                         __( 'The variant sizing setup (Variable Products) now lives in <a href="%s">DecalDesk → Upload</a>, right next to the variants option — easier to edit there while you upload.', 'decaldesk' ),
                         array( 'a' => array( 'href' => array() ) )
                     ),
@@ -517,16 +533,14 @@ function decaldesk_render_settings_page() {
                 );
                 ?>
             </p>
+            <?php else : /*! </fs_premium_only> */ ?>
+            <p class="description">
+                <?php esc_html_e( 'Every uploaded design is created as a Simple Product in this version. Selectable size/material/color variants (Variable Products) are available in DecalDesk Pro.', 'decaldesk' ); ?>
+            </p>
+            <?php /*! <fs_premium_only> */ endif; /*! </fs_premium_only> */ ?>
 
             <h2><?php esc_html_e( 'AI-generated descriptions', 'decaldesk' ); ?></h2>
-            <?php if ( ! decaldesk_fs()->can_use_premium_code() ) : ?>
-                <p class="description">
-                    <span class="decaldesk-pro-badge"><?php esc_html_e( 'Pro', 'decaldesk' ); ?></span>
-                    <?php esc_html_e( 'AI-generated descriptions (Google Gemini or Anthropic Claude) require a Pro license. The static template is used on the Free plan.', 'decaldesk' ); ?>
-                    <a href="<?php echo esc_url( decaldesk_fs()->get_upgrade_url() ); ?>"><?php esc_html_e( 'Upgrade to Pro', 'decaldesk' ); ?></a>
-                </p>
-            <?php else : ?>
-            <?php /*! <fs_premium_only> */ ?>
+            <?php /*! <fs_premium_only> */ if ( decaldesk_fs()->can_use_premium_code() ) : ?>
             <p class="description">
                 <?php esc_html_e( 'Generates longer, sales-focused descriptions instead of the static template. Choose a free provider (Google Gemini, with a daily limit) or a paid one (Anthropic Claude, no limit).', 'decaldesk' ); ?>
             </p>
@@ -753,15 +767,20 @@ function decaldesk_render_settings_page() {
                     </td>
                 </tr>
             </table>
-            <?php /*! </fs_premium_only> */ ?>
-            <?php endif; ?>
+            <?php else : /*! </fs_premium_only> */ ?>
+            <p class="description">
+                <span class="decaldesk-pro-badge"><?php esc_html_e( 'DecalDesk Pro', 'decaldesk' ); ?></span>
+                <?php esc_html_e( 'This version always uses the static description template. AI-generated descriptions (Google Gemini or Anthropic Claude) are available in DecalDesk Pro.', 'decaldesk' ); ?>
+                <a href="https://decaldesk.com/pro" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Learn more', 'decaldesk' ); ?></a>
+            </p>
+            <?php /*! <fs_premium_only> */ endif; /*! </fs_premium_only> */ ?>
 
             <h2><?php esc_html_e( 'Categories & Mockup Templates', 'decaldesk' ); ?></h2>
             <p class="description">
                 <?php
                 printf(
-                    /* translators: %s: link to the Categories page */
                     wp_kses(
+                        /* translators: %s: link to the Categories page */
                         __( 'Category management (slug/name), mockup templates, and design positioning now live on a separate page: <a href="%s">DecalDesk → Categories</a>.', 'decaldesk' ),
                         array( 'a' => array( 'href' => array() ) )
                     ),

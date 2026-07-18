@@ -267,7 +267,7 @@ class DecalDesk_Jobs_List_Table extends WP_List_Table {
                         $skipped
                     );
                 }
-                echo '<div class="notice notice-success is-dismissible"><p>' . $message . '</p></div>';
+                echo '<div class="notice notice-success is-dismissible"><p>' . wp_kses_post( $message ) . '</p></div>';
             } );
         }
     }

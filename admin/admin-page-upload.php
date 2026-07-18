@@ -51,6 +51,7 @@ function decaldesk_render_upload_page() {
                 </label>
             </div>
 
+            <?php /*! <fs_premium_only> */ if ( true ) : ?>
             <?php
             $variant_sizes     = isset( $settings['variant_sizes'] ) ? $settings['variant_sizes'] : array();
             $variant_materials = isset( $settings['variant_materials'] ) ? $settings['variant_materials'] : array();
@@ -145,6 +146,15 @@ function decaldesk_render_upload_page() {
                     <?php endif; ?>
                 </p>
             </div>
+            <?php else : /*! </fs_premium_only> */ ?>
+            <div class="decaldesk-options decaldesk-variants-option">
+                <p class="description">
+                    <span class="decaldesk-pro-badge"><?php esc_html_e( 'DecalDesk Pro', 'decaldesk' ); ?></span>
+                    <?php esc_html_e( 'Selectable size/material/color variants (Variable Products) are available in DecalDesk Pro. Every design uploaded here is created as a Simple Product.', 'decaldesk' ); ?>
+                    <a href="https://decaldesk.com/pro" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Learn more', 'decaldesk' ); ?></a>
+                </p>
+            </div>
+            <?php /*! <fs_premium_only> */ endif; /*! </fs_premium_only> */ ?>
 
             <button id="decaldesk-upload-btn" class="button button-primary button-hero">
                 <?php esc_html_e( 'Upload files', 'decaldesk' ); ?>
@@ -261,7 +271,7 @@ function decaldesk_handle_upload() {
     }
 
     if ( ! @rename( $handled['file'], $target_path ) ) {
-        @unlink( $handled['file'] );
+        wp_delete_file( $handled['file'] );
         wp_send_json_error( array( 'message' => __( 'Failed to save the file to the server.', 'decaldesk' ) ), 500 );
     }
 
@@ -281,6 +291,7 @@ function decaldesk_handle_upload() {
 }
 add_action( 'wp_ajax_decaldesk_upload', 'decaldesk_handle_upload' );
 
+/*! <fs_premium_only> */
 /**
  * AJAX handler: запазва конфигурацията за размерни варианти (размери/материали/
  * цветове) директно от екрана "Качване" - вместо да се налага да се ходи до
@@ -315,3 +326,4 @@ function decaldesk_ajax_save_variant_config() {
     ) );
 }
 add_action( 'wp_ajax_decaldesk_save_variant_config', 'decaldesk_ajax_save_variant_config' );
+/*! </fs_premium_only> */

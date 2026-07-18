@@ -18,32 +18,66 @@
 const fs = require('fs');
 const path = require('path');
 
-const MARKER_RE = /\/\*!\s*<fs_premium_only>\s*\*\/[\s\S]*?\/\*!\s*<\/fs_premium_only>\s*\*\/\n?/g;
+// Leading [ \t]* absorbs same-line indentation before the opening marker so
+// a marker on its own indented line doesn't leave that indent behind to
+// double up with the next (unwrapped fallback) line's own indent once the
+// closing marker's trailing newline is also consumed.
+const MARKER_RE = /[ \t]*\/\*!\s*<fs_premium_only>\s*\*\/[\s\S]*?\/\*!\s*<\/fs_premium_only>\s*\*\/\n?/g;
 // 'tools' excluded so this dev-only script doesn't ship inside the plugin
 // it builds; '.gitignore' is dev-repo bookkeeping, not plugin runtime.
 const EXCLUDE_DIRS = new Set(['.git', 'tools']);
 const EXCLUDE_FILES = new Set(['.gitignore']);
 
+// vendor/freemius ships its own dev/build tooling (composer, gulp, phpcs,
+// its own README/CONTRIBUTING) that has no runtime role - scoped to that
+// directory only, so this doesn't touch the plugin's own root README.md
+// or package.json.
+const VENDOR_FREEMIUS_EXCLUDE_DIRS = new Set(['.github', 'gulptasks', 'patches', '.phpstan']);
+const VENDOR_FREEMIUS_EXCLUDE_FILES = new Set([
+  '.editorconfig',
+  '.example.env',
+  '.gitattributes',
+  'CONTRIBUTING.md',
+  'README.md',
+  'composer.json',
+  'composer.lock',
+  'gulpfile.js',
+  'package-lock.json',
+  'package.json',
+  'phpcompat.xml',
+  'phpcs.xml',
+  'phpstan.neon',
+]);
+const STRIPPABLE_EXTENSIONS = new Set(['.php', '.js']);
+
+function isInsideVendorFreemius(fullPath) {
+  const normalized = fullPath.split(path.sep).join('/');
+  return normalized.includes('/vendor/freemius/');
+}
+
 function copyRecursive(src, dest) {
   const stat = fs.statSync(src);
+  const scoped = isInsideVendorFreemius(src);
   if (stat.isDirectory()) {
     if (EXCLUDE_DIRS.has(path.basename(src))) return;
+    if (scoped && VENDOR_FREEMIUS_EXCLUDE_DIRS.has(path.basename(src))) return;
     fs.mkdirSync(dest, { recursive: true });
     for (const entry of fs.readdirSync(src)) {
       copyRecursive(path.join(src, entry), path.join(dest, entry));
     }
   } else {
     if (EXCLUDE_FILES.has(path.basename(src))) return;
+    if (scoped && VENDOR_FREEMIUS_EXCLUDE_FILES.has(path.basename(src))) return;
     fs.copyFileSync(src, dest);
   }
 }
 
-function stripPhpFiles(dir, stats) {
+function stripMarkedFiles(dir, root, stats) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) {
-      stripPhpFiles(full, stats);
-    } else if (entry.name.endsWith('.php')) {
+      stripMarkedFiles(full, root, stats);
+    } else if (STRIPPABLE_EXTENSIONS.has(path.extname(entry.name))) {
       const original = fs.readFileSync(full, 'utf8');
       let count = 0;
       const stripped = original.replace(MARKER_RE, () => {
@@ -52,7 +86,7 @@ function stripPhpFiles(dir, stats) {
       });
       if (count > 0) {
         fs.writeFileSync(full, stripped, 'utf8');
-        stats.push({ file: path.relative(dir, full), count });
+        stats.push({ file: path.relative(root, full), count });
       }
     }
   }
@@ -76,7 +110,19 @@ function setFreemiusFreeFlag(outputDir) {
     return false;
   }
 
-  fs.writeFileSync(mainFile, original.replace(flagRe, '$1false$2'), 'utf8');
+  let updated = original.replace(flagRe, '$1false$2');
+
+  // Same reasoning for the JS-facing 'isPro' localize flag - no live
+  // can_use_premium_code() call should remain anywhere in the Free source,
+  // even for a client-side-only informational flag.
+  const isProRe = /('isPro'\s*=>\s*)decaldesk_fs\(\)->can_use_premium_code\(\)(\s*,)/;
+  if (isProRe.test(updated)) {
+    updated = updated.replace(isProRe, '$1false$2');
+  } else {
+    console.warn("Could not find the 'isPro' => decaldesk_fs()->can_use_premium_code() line - check decaldesk.php manually.");
+  }
+
+  fs.writeFileSync(mainFile, updated, 'utf8');
   return true;
 }
 
@@ -97,7 +143,7 @@ function main() {
   copyRecursive(sourceDir, outputDir);
 
   const stats = [];
-  stripPhpFiles(outputDir, stats);
+  stripMarkedFiles(outputDir, outputDir, stats);
 
   console.log(`Stripped folder built at: ${outputDir}`);
   const totalBlocks = stats.reduce((sum, s) => sum + s.count, 0);

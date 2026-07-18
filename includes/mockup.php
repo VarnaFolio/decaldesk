@@ -8,13 +8,9 @@ if ( ! defined( 'DECALDESK_MAX_TEMPLATES_PER_CATEGORY' ) ) {
 }
 
 /**
- * Колко темплейт слота има право да КОНФИГУРИРА текущият потребител на
- * категория - 1 без валиден лиценз (Free), до DECALDESK_MAX_TEMPLATES_PER_CATEGORY
- * с Pro лиценз. Отделно от DECALDESK_MAX_TEMPLATES_PER_CATEGORY (абсолютният
- * hard cap), за да можем да продължим да ЧЕТЕМ/показваме вече качени слотове
- * 2-4 на потребител, който е имал Pro и е свалил лиценза - просто не му
- * позволяваме да добавя нови, нито да ги ползва при генериране (виж
- * decaldesk_generate_mockup()).
+ * Този build поддържа един темплейт на категория. Множество темплейти
+ * (до DECALDESK_MAX_TEMPLATES_PER_CATEGORY на категория) се предлагат в
+ * DecalDesk Pro - отделен плъгин, не lock/unlock на този код.
  *
  * @return int
  */
@@ -26,12 +22,12 @@ function decaldesk_max_template_slots() {
 }
 
 /**
- * Решава кои template_paths реално да се ползват - всички (Pro, ако
- * $generate_all е зададено) или само първият (Free, или ако потребителят
- * не е поискал multi-template генериране).
+ * Връща само първия темплейт - това издание генерира мокъпи от един
+ * темплейт на категория. Параметърът $generate_all се пази за съвместимост
+ * на сигнатурата с извикващия код, но няма ефект в този build.
  *
  * @param string[] $template_paths
- * @param bool     $generate_all
+ * @param bool     $generate_all Без ефект в тази версия.
  * @return string[]
  */
 function decaldesk_resolve_final_template_paths( $template_paths, $generate_all ) {
@@ -116,37 +112,42 @@ function decaldesk_generate_mockup( $design_path, $category, $generate_all = fal
 
     return $mockup_paths;
 }
-
+/*! <fs_premium_only> */
 /**
- * WebP/JPEG компресията е Pro функция - без валиден лиценз винаги връща
- * PNG (без загуба, но по-тежък файл), независимо от избора в настройките.
- *
- * @param string $requested_format
- * @return string
+ * Проверява дали текущият сървър реално може да записва WebP - или чрез
+ * Imagick (с webp coder), или чрез GD с imagewebp().
  */
-function decaldesk_resolve_mockup_format( $requested_format ) {
-    /*! <fs_premium_only> */
-    if ( 'png' !== $requested_format && ! decaldesk_fs()->can_use_premium_code() ) {
-        return 'png';
+function decaldesk_webp_supported() {
+    if ( class_exists( 'Imagick' ) ) {
+        $formats = @Imagick::queryFormats( 'WEBP' );
+        if ( ! empty( $formats ) ) {
+            return true;
+        }
     }
-    return $requested_format;
-    /*! </fs_premium_only> */
-    return 'png';
+
+    return function_exists( 'imagewebp' );
 }
+/*! </fs_premium_only> */
 
 /**
- * Връща конфигурацията за изходния формат на мокъпа от настройките.
+ * Връща конфигурацията за изходния формат на мокъпа. Този build винаги
+ * извежда PNG - WebP/JPEG компресията е в DecalDesk Pro.
  *
  * @return array{format: string, extension: string, quality: int}
  */
 function decaldesk_get_mockup_output_config() {
+    /*! <fs_premium_only> */
     $settings = get_option( 'decaldesk_settings', array() );
 
     $format = isset( $settings['mockup_format'] ) && in_array( $settings['mockup_format'], array( 'webp', 'jpeg', 'png' ), true )
         ? $settings['mockup_format']
         : 'webp';
 
-    $format = decaldesk_resolve_mockup_format( $format );
+    // WebP/JPEG компресията е Pro функция - без валиден лиценз винаги
+    // записваме PNG (без загуба, но по-тежък файл), независимо от избора в настройките.
+    if ( 'png' !== $format && ! decaldesk_fs()->can_use_premium_code() ) {
+        $format = 'png';
+    }
 
     // Ако е избран WebP, но нито Imagick, нито GD с webp поддръжка са налични -
     // падаме на PNG ОЩЕ ТУК, за да могат разширението на файла и реалния запис
@@ -166,21 +167,12 @@ function decaldesk_get_mockup_output_config() {
         'extension' => $extension,
         'quality'   => $quality,
     );
-}
-
-/**
- * Проверява дали текущият сървър реално може да записва WebP - или чрез
- * Imagick (с webp coder), или чрез GD с imagewebp().
- */
-function decaldesk_webp_supported() {
-    if ( class_exists( 'Imagick' ) ) {
-        $formats = @Imagick::queryFormats( 'WEBP' );
-        if ( ! empty( $formats ) ) {
-            return true;
-        }
-    }
-
-    return function_exists( 'imagewebp' );
+    /*! </fs_premium_only> */
+    return array(
+        'format'    => 'png',
+        'extension' => 'png',
+        'quality'   => 82,
+    );
 }
 
 /**
@@ -297,16 +289,15 @@ function decaldesk_get_template_zones( $category ) {
 }
 
 /**
- * Freeform (polygon) зоните са Pro функция. Без валиден лиценз, всяка
- * запазена polygon зона (напр. от преди изтичане на лиценз) пада обратно
- * на правоъгълна зона по подразбиране - вместо да гърми или тихо да
- * прилага premium позициониране без лиценз.
+ * Този build няма freeform (polygon) mockup renderer - предлага се в
+ * DecalDesk Pro. Ако зона е записана като polygon (напр. данни от Pro),
+ * пада обратно на правоъгълна зона по подразбиране вместо да гърми.
  *
  * @param array $zone
  * @return array
  */
 function decaldesk_maybe_downgrade_zone( $zone ) {
-    if ( isset( $zone['type'] ) && 'polygon' === $zone['type'] && ! decaldesk_fs()->can_use_premium_code() ) {
+    if ( isset( $zone['type'] ) && 'polygon' === $zone['type']/*! <fs_premium_only> */ && ! decaldesk_fs()->can_use_premium_code()/*! </fs_premium_only> */ ) {
         return array( 'x' => 15, 'y' => 15, 'width' => 70, 'height' => 70 );
     }
 

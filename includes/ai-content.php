@@ -37,6 +37,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * }
  */
 function decaldesk_generate_ai_content( $parsed, $design_path = '' ) {
+    /*! <fs_premium_only> */
     $settings = wp_parse_args( get_option( 'decaldesk_settings', array() ), array(
         'ai_provider'         => 'none', // none | free_gemini | claude
         'ai_api_key'          => '',
@@ -54,7 +55,6 @@ function decaldesk_generate_ai_content( $parsed, $design_path = '' ) {
         $provider = 'none';
     }
 
-    /*! <fs_premium_only> */
     // Подготвяме изображението само ако vision е включен, доставчикът поддържа снимки,
     // и файлът реално съществува. При грешка просто продължаваме без изображение.
     $image_payload = '';
@@ -111,8 +111,8 @@ function decaldesk_generate_ai_content( $parsed, $design_path = '' ) {
         return $fallback;
     }
     /*! </fs_premium_only> */
-
-    // provider === 'none'
+    // Този build генерира само статичното шаблонно съдържание. AI-генерирани
+    // описания (Google Gemini / Anthropic Claude) са налични в DecalDesk Pro.
     $fallback = decaldesk_build_fallback_content( $parsed );
     $fallback['source'] = 'fallback';
     return $fallback;

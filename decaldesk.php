@@ -3,7 +3,7 @@
  * Plugin Name:       DecalDesk
  * Plugin URI:        https://decaldesk.com
  * Description:       Автоматизирано създаване на WooCommerce продукти от дизайн файлове — парсване на име, ценообразуване по площ, AI описания, мокъп генериране, размерни варианти.
- * Version:           1.3.4
+ * Version:           1.3.5
  * Requires at least: 6.9
  * Requires PHP:      7.4
  * Tested up to:      7.0
@@ -26,8 +26,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 // ==========================================================
 // Трябва да се зареди възможно най-рано - преди всичко останало в плъгина.
 // Заменя предишния GitHub Plugin Update Checker: Freemius вече е
-// каноничният update/license сървър (виж decaldesk_fs()->can_use_premium_code()
-// на местата, където Pro функциите се заключват).
+// каноничният update/license сървър. Тази версия (WP.org) е is_premium=false
+// и не съдържа код за Pro-only функции (те живеят само в DecalDesk Pro).
 if ( ! function_exists( 'decaldesk_fs' ) ) {
     function decaldesk_fs() {
         global $decaldesk_fs;
@@ -69,7 +69,7 @@ if ( ! function_exists( 'decaldesk_fs' ) ) {
 // ==========================================================
 // Константи
 // ==========================================================
-define( 'DECALDESK_VERSION', '1.3.4' );
+define( 'DECALDESK_VERSION', '1.3.5' );
 define( 'DECALDESK_PATH', plugin_dir_path( __FILE__ ) );
 define( 'DECALDESK_URL', plugin_dir_url( __FILE__ ) );
 
@@ -372,7 +372,7 @@ function decaldesk_recursive_delete_dir( $dir ) {
         if ( is_dir( $path ) ) {
             decaldesk_recursive_delete_dir( $path );
         } else {
-            @unlink( $path );
+            wp_delete_file( $path );
         }
     }
 

@@ -48,6 +48,7 @@ function decaldesk_render_admin_notices() {
 
     $health = decaldesk_get_recent_job_health( 7 );
 
+    /*! <fs_premium_only> */
     // --- Notice 1: висок дял fallback описания вместо AI ---
     $settings = get_option( 'decaldesk_settings', array() );
     $ai_provider = ! empty( $settings['ai_provider'] ) ? $settings['ai_provider'] : 'none';
@@ -77,6 +78,7 @@ function decaldesk_render_admin_notices() {
         </div>
         <?php
     }
+    /*! </fs_premium_only> */
 
     // --- Notice 2: грешки при обработка ---
     if ( $health['error_count'] > 0 && ! decaldesk_notice_dismissed( 'processing_errors' ) ) {
