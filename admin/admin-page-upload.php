@@ -13,7 +13,8 @@ function decaldesk_render_upload_page() {
         <h1><?php esc_html_e( 'DecalDesk – Upload Designs', 'decaldesk' ); ?></h1>
 
         <div class="decaldesk-upload-box">
-            <div id="decaldesk-dropzone" class="decaldesk-dropzone">
+            <div id="decaldesk-dropzone" class="decaldesk-dropzone" tabindex="0" role="button"
+                 aria-label="<?php esc_attr_e( 'Drop files here or press Enter to browse for files', 'decaldesk' ); ?>">
                 <p><?php esc_html_e( 'Drop files here or click to browse', 'decaldesk' ); ?></p>
                 <p class="decaldesk-hint">
                     <?php esc_html_e( 'Filename format: name_widthxheight_material_category.extension', 'decaldesk' ); ?><br>

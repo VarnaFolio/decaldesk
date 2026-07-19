@@ -217,12 +217,12 @@ function decaldesk_render_template_slot( $slug, $slot, $preview_url, $zone, $has
                 </label>
             </div>
 
-            <label class="button">
+            <label class="button decaldesk-file-label" tabindex="0" role="button">
                 <?php esc_html_e( 'Upload template', 'decaldesk' ); ?>
                 <input type="file" class="decaldesk-template-upload-input" accept="image/png,image/jpeg,image/webp" hidden>
             </label>
 
-            <label class="button">
+            <label class="button decaldesk-file-label" tabindex="0" role="button">
                 <?php esc_html_e( 'Test with a design', 'decaldesk' ); ?>
                 <input type="file" class="decaldesk-zone-test-input" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
             </label>

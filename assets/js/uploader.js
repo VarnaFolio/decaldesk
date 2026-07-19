@@ -28,6 +28,15 @@
 			$fileInput.trigger('click');
 		});
 
+		// Клавиатурен еквивалент на click-а по-горе - dropzone-ът е фокусируем div
+		// (role="button"), Enter/Space трябва да отварят file picker-а както при мишка.
+		$dropzone.on('keydown', function (e) {
+			if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+				e.preventDefault();
+				$fileInput.trigger('click');
+			}
+		});
+
 		// Предпазител: спираме bubbling-а на click от input-а, за да не се
 		// провокира отново click handler-a на dropzone (безкраен цикъл).
 		$fileInput.on('click', function (e) {

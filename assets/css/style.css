@@ -26,6 +26,11 @@
 	border-color: #2271b1;
 }
 
+.decaldesk-dropzone:focus-visible {
+	outline: 2px solid #135e96;
+	outline-offset: 2px;
+}
+
 .decaldesk-dropzone p {
 	margin: 0 0 8px;
 	font-size: 14px;
@@ -495,7 +500,8 @@
 
 .decaldesk-zone-box:focus-visible,
 .decaldesk-zone-handle:focus-visible,
-.decaldesk-zone-polygon-point:focus-visible {
+.decaldesk-zone-polygon-point:focus-visible,
+.decaldesk-file-label:focus-visible {
 	outline: 2px solid #135e96;
 	outline-offset: 2px;
 }

@@ -21,6 +21,17 @@
 			}
 		});
 
+		// "Upload template" / "Test with a design" са <label> около hidden file
+		// input-и - естествено кликат се с мишка, но label не е focusable/keyboard
+		// operable по подразбиране. Правим го достъпно: tabindex+Enter/Space
+		// отваря file picker-а на вложения input (същото, което прави реален клик).
+		$list.on('keydown', '.decaldesk-file-label', function (e) {
+			if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+				e.preventDefault();
+				$(this).find('input[type="file"]').trigger('click');
+			}
+		});
+
 		// ==========================================================
 		// Добавяне на нова категория
 		// ==========================================================
