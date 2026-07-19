@@ -120,7 +120,7 @@ function decaldesk_render_category_card( $slug, $name, $is_template = false ) {
             <?php else : /*! </fs_premium_only> */ ?>
                 <p class="decaldesk-zone-hint">
                     <?php esc_html_e( 'This version supports one template and a rectangular zone per category. Multiple templates per category and the freeform zone editor are available in DecalDesk Pro.', 'decaldesk' ); ?>
-                    <a href="https://decaldesk.com/pro" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Learn more', 'decaldesk' ); ?></a>
+                    <a href="https://decaldesk.com/#pricing-calc" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Learn more', 'decaldesk' ); ?></a>
                 </p>
             <?php /*! <fs_premium_only> */ endif; /*! </fs_premium_only> */ ?>
         </div>

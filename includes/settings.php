@@ -516,7 +516,7 @@ function decaldesk_render_settings_page() {
             <p class="description">
                 <span class="decaldesk-pro-badge"><?php esc_html_e( 'DecalDesk Pro', 'decaldesk' ); ?></span>
                 <?php esc_html_e( 'Mockups are always saved as PNG in this version. WebP/JPEG compression (smaller, faster-loading files) is available in DecalDesk Pro.', 'decaldesk' ); ?>
-                <a href="https://decaldesk.com/pro" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Learn more', 'decaldesk' ); ?></a>
+                <a href="https://decaldesk.com/#pricing-calc" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Learn more', 'decaldesk' ); ?></a>
             </p>
             <?php /*! <fs_premium_only> */ endif; /*! </fs_premium_only> */ ?>
 
@@ -771,7 +771,7 @@ function decaldesk_render_settings_page() {
             <p class="description">
                 <span class="decaldesk-pro-badge"><?php esc_html_e( 'DecalDesk Pro', 'decaldesk' ); ?></span>
                 <?php esc_html_e( 'This version always uses the static description template. AI-generated descriptions (Google Gemini or Anthropic Claude) are available in DecalDesk Pro.', 'decaldesk' ); ?>
-                <a href="https://decaldesk.com/pro" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Learn more', 'decaldesk' ); ?></a>
+                <a href="https://decaldesk.com/#pricing-calc" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Learn more', 'decaldesk' ); ?></a>
             </p>
             <?php /*! <fs_premium_only> */ endif; /*! </fs_premium_only> */ ?>
 

@@ -152,7 +152,7 @@ function decaldesk_render_upload_page() {
                 <p class="description">
                     <span class="decaldesk-pro-badge"><?php esc_html_e( 'DecalDesk Pro', 'decaldesk' ); ?></span>
                     <?php esc_html_e( 'Selectable size/material/color variants (Variable Products) are available in DecalDesk Pro. Every design uploaded here is created as a Simple Product.', 'decaldesk' ); ?>
-                    <a href="https://decaldesk.com/pro" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Learn more', 'decaldesk' ); ?></a>
+                    <a href="https://decaldesk.com/#pricing-calc" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Learn more', 'decaldesk' ); ?></a>
                 </p>
             </div>
             <?php /*! <fs_premium_only> */ endif; /*! </fs_premium_only> */ ?>
