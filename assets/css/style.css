@@ -493,6 +493,13 @@
 	box-sizing: border-box;
 }
 
+.decaldesk-zone-box:focus-visible,
+.decaldesk-zone-handle:focus-visible,
+.decaldesk-zone-polygon-point:focus-visible {
+	outline: 2px solid #135e96;
+	outline-offset: 2px;
+}
+
 .decaldesk-zone-test-preview {
 	width: 100%;
 	height: 100%;

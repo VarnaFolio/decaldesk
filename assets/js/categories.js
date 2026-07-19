@@ -393,6 +393,43 @@
 			$(document).on('mouseup', onMouseUp);
 		});
 
+		// Клавиатурно преместване на фокусирана точка (стрелки), Delete/Backspace
+		// за премахване - полезно за клавиатурни потребители, за които влаченето
+		// с мишка не е достатъчно прецизно за точно позициониране.
+		$list.on('keydown', '.decaldesk-zone-polygon-point', function (e) {
+			var $point = $(this);
+			var $slot = $point.closest('.decaldesk-template-slot');
+
+			if (e.key === 'Delete' || e.key === 'Backspace') {
+				e.preventDefault();
+				var $points = $slot.find('.decaldesk-zone-polygon-point');
+				var index = $points.index($point);
+				var $next = $points.eq(index + 1).length ? $points.eq(index + 1) : $points.eq(index - 1);
+
+				$point.remove();
+				updatePolygonVisuals($slot);
+				markDirty($slot);
+
+				if ($next.length) {
+					$next.trigger('focus');
+				}
+				return;
+			}
+
+			if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].indexOf(e.key) === -1) {
+				return;
+			}
+			e.preventDefault();
+
+			var step = nudgeStep(e);
+			var x = clamp((parseFloat($point.css('left')) || 0) + (e.key === 'ArrowLeft' ? -step : e.key === 'ArrowRight' ? step : 0), 0, 100);
+			var y = clamp((parseFloat($point.css('top')) || 0) + (e.key === 'ArrowUp' ? -step : e.key === 'ArrowDown' ? step : 0), 0, 100);
+
+			$point.css({ left: x + '%', top: y + '%' });
+			updatePolygonVisuals($slot);
+			markDirty($slot);
+		});
+
 		// "Clear points"
 		$list.on('click', '.decaldesk-clear-polygon-btn', function () {
 			var $slot = $(this).closest('.decaldesk-template-slot');
@@ -407,6 +444,9 @@
 
 			var $point = $('<span class="decaldesk-zone-polygon-point"></span>')
 				.attr('data-index', index)
+				.attr('tabindex', '0')
+				.attr('role', 'button')
+				.attr('aria-label', 'Freeform point. Use arrow keys to move, Shift+arrow to move faster, Delete to remove.')
 				.css({ left: xPercent + '%', top: yPercent + '%' });
 
 			$points.append($point);
@@ -559,6 +599,44 @@
 			$(document).on('mouseup', onMouseUp);
 		});
 
+		// Изчислява новите left/top/width/height за дадения ъгъл спрямо
+		// начална позиция + делта (в проценти) - споделено между мишка и клавиатура.
+		function resizeFromCorner(corner, startLeft, startTop, startWidth, startHeight, deltaXPercent, deltaYPercent) {
+			var newLeft = startLeft, newTop = startTop, newWidth = startWidth, newHeight = startHeight;
+
+			if (corner === 'se') {
+				newWidth = clamp(startWidth + deltaXPercent, 5, 100 - startLeft);
+				newHeight = clamp(startHeight + deltaYPercent, 5, 100 - startTop);
+			} else if (corner === 'sw') {
+				newWidth = clamp(startWidth - deltaXPercent, 5, startLeft + startWidth);
+				newLeft = startLeft + startWidth - newWidth;
+				newHeight = clamp(startHeight + deltaYPercent, 5, 100 - startTop);
+			} else if (corner === 'ne') {
+				newWidth = clamp(startWidth + deltaXPercent, 5, 100 - startLeft);
+				newHeight = clamp(startHeight - deltaYPercent, 5, startTop + startHeight);
+				newTop = startTop + startHeight - newHeight;
+			} else if (corner === 'nw') {
+				newWidth = clamp(startWidth - deltaXPercent, 5, startLeft + startWidth);
+				newLeft = startLeft + startWidth - newWidth;
+				newHeight = clamp(startHeight - deltaYPercent, 5, startTop + startHeight);
+				newTop = startTop + startHeight - newHeight;
+			}
+
+			return { left: newLeft, top: newTop, width: newWidth, height: newHeight };
+		}
+
+		function handleCorner($handle) {
+			return $handle.hasClass('decaldesk-zone-handle-nw') ? 'nw'
+				: $handle.hasClass('decaldesk-zone-handle-ne') ? 'ne'
+				: $handle.hasClass('decaldesk-zone-handle-sw') ? 'sw'
+				: 'se';
+		}
+
+		// Стъпка при клавиатурно преместване - по-голяма със Shift, за по-бърза корекция.
+		function nudgeStep(e) {
+			return e.shiftKey ? 5 : 1;
+		}
+
 		$list.on('mousedown', '.decaldesk-zone-handle', function (e) {
 			e.preventDefault();
 			e.stopPropagation();
@@ -567,11 +645,7 @@
 			var $box = $handle.closest('.decaldesk-zone-box');
 			var $wrap = $box.closest('.decaldesk-template-preview-wrap');
 			var wrapRect = $wrap[0].getBoundingClientRect();
-
-			var corner = $handle.hasClass('decaldesk-zone-handle-nw') ? 'nw'
-				: $handle.hasClass('decaldesk-zone-handle-ne') ? 'ne'
-				: $handle.hasClass('decaldesk-zone-handle-sw') ? 'sw'
-				: 'se';
+			var corner = handleCorner($handle);
 
 			var startX = e.clientX;
 			var startY = e.clientY;
@@ -585,28 +659,8 @@
 				moved = true;
 				var deltaXPercent = ((e.clientX - startX) / wrapRect.width) * 100;
 				var deltaYPercent = ((e.clientY - startY) / wrapRect.height) * 100;
-
-				var newLeft = startLeft, newTop = startTop, newWidth = startWidth, newHeight = startHeight;
-
-				if (corner === 'se') {
-					newWidth = clamp(startWidth + deltaXPercent, 5, 100 - startLeft);
-					newHeight = clamp(startHeight + deltaYPercent, 5, 100 - startTop);
-				} else if (corner === 'sw') {
-					newWidth = clamp(startWidth - deltaXPercent, 5, startLeft + startWidth);
-					newLeft = startLeft + startWidth - newWidth;
-					newHeight = clamp(startHeight + deltaYPercent, 5, 100 - startTop);
-				} else if (corner === 'ne') {
-					newWidth = clamp(startWidth + deltaXPercent, 5, 100 - startLeft);
-					newHeight = clamp(startHeight - deltaYPercent, 5, startTop + startHeight);
-					newTop = startTop + startHeight - newHeight;
-				} else if (corner === 'nw') {
-					newWidth = clamp(startWidth - deltaXPercent, 5, startLeft + startWidth);
-					newLeft = startLeft + startWidth - newWidth;
-					newHeight = clamp(startHeight - deltaYPercent, 5, startTop + startHeight);
-					newTop = startTop + startHeight - newHeight;
-				}
-
-				$box.css({ left: newLeft + '%', top: newTop + '%', width: newWidth + '%', height: newHeight + '%' });
+				var next = resizeFromCorner(corner, startLeft, startTop, startWidth, startHeight, deltaXPercent, deltaYPercent);
+				$box.css({ left: next.left + '%', top: next.top + '%', width: next.width + '%', height: next.height + '%' });
 			}
 
 			function onMouseUp() {
@@ -619,6 +673,59 @@
 
 			$(document).on('mousemove', onMouseMove);
 			$(document).on('mouseup', onMouseUp);
+		});
+
+		// Клавиатурно преместване на целия zone box (стрелки), пропуска се ако
+		// фокусът реално е върху някой resize handle (той си има собствен handler).
+		$list.on('keydown', '.decaldesk-zone-box', function (e) {
+			if ($(e.target).hasClass('decaldesk-zone-handle')) {
+				return;
+			}
+			if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].indexOf(e.key) === -1) {
+				return;
+			}
+			e.preventDefault();
+
+			var $box = $(this);
+			var step = nudgeStep(e);
+			var width = parseFloat($box[0].style.width) || 70;
+			var height = parseFloat($box[0].style.height) || 70;
+			var left = parseFloat($box[0].style.left) || 0;
+			var top = parseFloat($box[0].style.top) || 0;
+
+			if (e.key === 'ArrowUp') top = clamp(top - step, 0, 100 - height);
+			if (e.key === 'ArrowDown') top = clamp(top + step, 0, 100 - height);
+			if (e.key === 'ArrowLeft') left = clamp(left - step, 0, 100 - width);
+			if (e.key === 'ArrowRight') left = clamp(left + step, 0, 100 - width);
+
+			$box.css({ left: left + '%', top: top + '%' });
+			markDirty($box.closest('.decaldesk-template-slot'));
+		});
+
+		// Клавиатурно преоразмеряване от даден ъгъл (стрелки).
+		$list.on('keydown', '.decaldesk-zone-handle', function (e) {
+			if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].indexOf(e.key) === -1) {
+				return;
+			}
+			e.preventDefault();
+			e.stopPropagation();
+
+			var $handle = $(this);
+			var $box = $handle.closest('.decaldesk-zone-box');
+			var corner = handleCorner($handle);
+			var step = nudgeStep(e);
+
+			var startLeft = parseFloat($box[0].style.left) || 0;
+			var startTop = parseFloat($box[0].style.top) || 0;
+			var startWidth = parseFloat($box[0].style.width) || 70;
+			var startHeight = parseFloat($box[0].style.height) || 70;
+
+			var deltaXPercent = e.key === 'ArrowLeft' ? -step : e.key === 'ArrowRight' ? step : 0;
+			var deltaYPercent = e.key === 'ArrowUp' ? -step : e.key === 'ArrowDown' ? step : 0;
+
+			var next = resizeFromCorner(corner, startLeft, startTop, startWidth, startHeight, deltaXPercent, deltaYPercent);
+			$box.css({ left: next.left + '%', top: next.top + '%', width: next.width + '%', height: next.height + '%' });
+			markDirty($box.closest('.decaldesk-template-slot'));
 		});
 
 		function slotKey($slot) {

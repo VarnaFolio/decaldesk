@@ -33,7 +33,9 @@ function decaldesk_render_categories_page() {
         <div class="decaldesk-add-category-box">
             <h2><?php esc_html_e( 'Add new category', 'decaldesk' ); ?></h2>
             <div class="decaldesk-add-category-fields">
+                <label class="screen-reader-text" for="decaldesk-new-category-name"><?php esc_html_e( 'Category name', 'decaldesk' ); ?></label>
                 <input type="text" id="decaldesk-new-category-name" placeholder="<?php esc_attr_e( 'Name (e.g. Kitchen Backsplash)', 'decaldesk' ); ?>" class="regular-text">
+                <label class="screen-reader-text" for="decaldesk-new-category-slug"><?php esc_html_e( 'Category slug', 'decaldesk' ); ?></label>
                 <input type="text" id="decaldesk-new-category-slug" placeholder="<?php esc_attr_e( 'slug (e.g. kitchen)', 'decaldesk' ); ?>" class="regular-text">
                 <button type="button" id="decaldesk-add-category-btn" class="button button-primary">
                     <?php esc_html_e( 'Add category', 'decaldesk' ); ?>
@@ -76,10 +78,10 @@ function decaldesk_render_category_card( $slug, $name, $is_template = false ) {
     ?>
     <div class="decaldesk-category-card" data-slug="<?php echo esc_attr( $slug ); ?>">
         <div class="decaldesk-category-header">
-            <input type="text" class="decaldesk-category-name-input" value="<?php echo esc_attr( $name ); ?>">
+            <input type="text" class="decaldesk-category-name-input" value="<?php echo esc_attr( $name ); ?>" aria-label="<?php esc_attr_e( 'Category name', 'decaldesk' ); ?>">
             <code class="decaldesk-category-slug"><?php echo esc_html( $slug ); ?></code>
-            <button type="button" class="button-link decaldesk-delete-category" title="<?php esc_attr_e( 'Delete category', 'decaldesk' ); ?>">
-                <span class="dashicons dashicons-trash"></span>
+            <button type="button" class="button-link decaldesk-delete-category" title="<?php esc_attr_e( 'Delete category', 'decaldesk' ); ?>" aria-label="<?php esc_attr_e( 'Delete category', 'decaldesk' ); ?>">
+                <span class="dashicons dashicons-trash" aria-hidden="true"></span>
             </button>
         </div>
 
@@ -150,8 +152,8 @@ function decaldesk_render_template_slot( $slug, $slot, $preview_url, $zone, $has
                 /* translators: %d: template slot number */
                 printf( esc_html__( 'Template %d', 'decaldesk' ), (int) $slot );
             ?></span>
-            <button type="button" class="button-link decaldesk-delete-slot" title="<?php esc_attr_e( 'Delete this template', 'decaldesk' ); ?>">
-                <span class="dashicons dashicons-no-alt"></span>
+            <button type="button" class="button-link decaldesk-delete-slot" title="<?php esc_attr_e( 'Delete this template', 'decaldesk' ); ?>" aria-label="<?php esc_attr_e( 'Delete this template', 'decaldesk' ); ?>">
+                <span class="dashicons dashicons-no-alt" aria-hidden="true"></span>
             </button>
         </div>
 
@@ -165,12 +167,14 @@ function decaldesk_render_template_slot( $slug, $slot, $preview_url, $zone, $has
             <?php endif; ?>
 
             <!-- Правоъгълна зона (показва се само в режим "Правоъгълник") -->
-            <div class="decaldesk-zone-box" style="display:<?php echo 'rect' === $zone_type ? 'block' : 'none'; ?>; left:<?php echo esc_attr( $zone['x'] ?? 15 ); ?>%; top:<?php echo esc_attr( $zone['y'] ?? 15 ); ?>%; width:<?php echo esc_attr( $zone['width'] ?? 70 ); ?>%; height:<?php echo esc_attr( $zone['height'] ?? 70 ); ?>%;">
+            <div class="decaldesk-zone-box" tabindex="0"
+                 aria-label="<?php esc_attr_e( 'Design zone. Use arrow keys to move, Shift+arrow to move faster.', 'decaldesk' ); ?>"
+                 style="display:<?php echo 'rect' === $zone_type ? 'block' : 'none'; ?>; left:<?php echo esc_attr( $zone['x'] ?? 15 ); ?>%; top:<?php echo esc_attr( $zone['y'] ?? 15 ); ?>%; width:<?php echo esc_attr( $zone['width'] ?? 70 ); ?>%; height:<?php echo esc_attr( $zone['height'] ?? 70 ); ?>%;">
                 <img class="decaldesk-zone-test-preview" src="" alt="" style="display:none;">
-                <span class="decaldesk-zone-handle decaldesk-zone-handle-nw"></span>
-                <span class="decaldesk-zone-handle decaldesk-zone-handle-ne"></span>
-                <span class="decaldesk-zone-handle decaldesk-zone-handle-sw"></span>
-                <span class="decaldesk-zone-handle decaldesk-zone-handle-se"></span>
+                <span class="decaldesk-zone-handle decaldesk-zone-handle-nw" tabindex="0" role="button" aria-label="<?php esc_attr_e( 'Resize from top-left corner. Use arrow keys, Shift+arrow to move faster.', 'decaldesk' ); ?>"></span>
+                <span class="decaldesk-zone-handle decaldesk-zone-handle-ne" tabindex="0" role="button" aria-label="<?php esc_attr_e( 'Resize from top-right corner. Use arrow keys, Shift+arrow to move faster.', 'decaldesk' ); ?>"></span>
+                <span class="decaldesk-zone-handle decaldesk-zone-handle-sw" tabindex="0" role="button" aria-label="<?php esc_attr_e( 'Resize from bottom-left corner. Use arrow keys, Shift+arrow to move faster.', 'decaldesk' ); ?>"></span>
+                <span class="decaldesk-zone-handle decaldesk-zone-handle-se" tabindex="0" role="button" aria-label="<?php esc_attr_e( 'Resize from bottom-right corner. Use arrow keys, Shift+arrow to move faster.', 'decaldesk' ); ?>"></span>
             </div>
 
             <!-- Полигонална зона (показва се само в режим "Свободна форма") -->
@@ -182,6 +186,8 @@ function decaldesk_render_template_slot( $slug, $slot, $preview_url, $zone, $has
                 <div class="decaldesk-zone-polygon-points">
                     <?php foreach ( $points as $index => $point ) : ?>
                         <span class="decaldesk-zone-polygon-point" data-index="<?php echo esc_attr( $index ); ?>"
+                              tabindex="0" role="button"
+                              aria-label="<?php esc_attr_e( 'Freeform point. Use arrow keys to move, Shift+arrow to move faster, Delete to remove.', 'decaldesk' ); ?>"
                               style="left:<?php echo esc_attr( $point['x'] ); ?>%; top:<?php echo esc_attr( $point['y'] ); ?>%;"></span>
                     <?php endforeach; ?>
                 </div>
