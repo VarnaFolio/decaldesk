@@ -3,7 +3,7 @@
  * Plugin Name:       DecalDesk
  * Plugin URI:        https://decaldesk.com
  * Description:       Автоматизирано създаване на WooCommerce продукти от дизайн файлове — парсване на име, ценообразуване по площ, AI описания, мокъп генериране, размерни варианти.
- * Version:           1.3.5
+ * Version:           1.3.6
  * Requires at least: 6.9
  * Requires PHP:      7.4
  * Tested up to:      7.0
@@ -69,7 +69,7 @@ if ( ! function_exists( 'decaldesk_fs' ) ) {
 // ==========================================================
 // Константи
 // ==========================================================
-define( 'DECALDESK_VERSION', '1.3.5' );
+define( 'DECALDESK_VERSION', '1.3.6' );
 define( 'DECALDESK_PATH', plugin_dir_path( __FILE__ ) );
 define( 'DECALDESK_URL', plugin_dir_url( __FILE__ ) );
 
@@ -237,22 +237,33 @@ function decaldesk_check_woocommerce() {
 // WordPress.org директорията - WordPress автоматично зарежда преводите
 // по slug-а на плъгина от версия 4.6 насам.
 
-add_action( 'plugins_loaded', 'decaldesk_check_woocommerce' );
-
 // ==========================================================
-// Includes
+// Инициализация - includes/admin менюто се зареждат САМО ако WooCommerce
+// е активен. Това предпазва от ситуацията, в която WooCommerce бъде
+// деактивиран, докато DecalDesk остава активен (напр. по невнимание) -
+// без тази проверка менюто, AJAX handler-ите и admin_init хуковете щяха
+// да се регистрират и изпълняват независимо от липсващия WooCommerce,
+// с риск от fatal грешки при извикване на WC-специфични функции
+// (напр. wc_price(), wc_get_product()).
 // ==========================================================
-require_once DECALDESK_PATH . 'includes/parser.php';
-require_once DECALDESK_PATH . 'includes/pricing.php';
-require_once DECALDESK_PATH . 'includes/ai-content.php';
-require_once DECALDESK_PATH . 'includes/mockup.php';
-require_once DECALDESK_PATH . 'includes/product.php';
-require_once DECALDESK_PATH . 'includes/database.php';
-require_once DECALDESK_PATH . 'includes/background.php';
-require_once DECALDESK_PATH . 'includes/notices.php';
-require_once DECALDESK_PATH . 'includes/settings.php';
+function decaldesk_init_plugin() {
+    if ( ! decaldesk_check_woocommerce() ) {
+        return;
+    }
 
-require_once DECALDESK_PATH . 'admin/admin-menu.php';
+    require_once DECALDESK_PATH . 'includes/parser.php';
+    require_once DECALDESK_PATH . 'includes/pricing.php';
+    require_once DECALDESK_PATH . 'includes/ai-content.php';
+    require_once DECALDESK_PATH . 'includes/mockup.php';
+    require_once DECALDESK_PATH . 'includes/product.php';
+    require_once DECALDESK_PATH . 'includes/database.php';
+    require_once DECALDESK_PATH . 'includes/background.php';
+    require_once DECALDESK_PATH . 'includes/notices.php';
+    require_once DECALDESK_PATH . 'includes/settings.php';
+
+    require_once DECALDESK_PATH . 'admin/admin-menu.php';
+}
+add_action( 'plugins_loaded', 'decaldesk_init_plugin', 20 );
 
 // ==========================================================
 // Активиране / Деактивиране
@@ -294,6 +305,10 @@ register_activation_hook( __FILE__, 'decaldesk_activate' );
  * защото activation hook не се задейства при обикновено презаписване.
  */
 function decaldesk_maybe_create_upload_dirs() {
+    if ( ! class_exists( 'WooCommerce' ) ) {
+        return;
+    }
+
     $upload_dir = wp_upload_dir();
     $base       = $upload_dir['basedir'] . '/decaldesk';
 
@@ -305,6 +320,31 @@ function decaldesk_maybe_create_upload_dirs() {
     }
 }
 add_action( 'admin_init', 'decaldesk_maybe_create_upload_dirs' );
+
+// ==========================================================
+// Деактивиране
+// ==========================================================
+// НЕ трие потребителски данни (опции, DB таблица, качени файлове) - само
+// спира чакащите фонови задачи (Action Scheduler), за да не се изпълнят
+// докато плъгинът е неактивен и после плъгинът бъде премахнат другояче.
+function decaldesk_deactivate() {
+    // Ползваме литералния hook name, а не DECALDESK_JOB_HOOK константата -
+    // тя се дефинира в includes/background.php, който се зарежда само ако
+    // WooCommerce е активен (виж decaldesk_init_plugin()); при деактивиране
+    // на DecalDesk точно защото WooCommerce вече липсва, константата няма
+    // да съществува.
+    $job_hook = 'decaldesk_process_design';
+
+    if ( function_exists( 'as_unschedule_all_actions' ) ) {
+        as_unschedule_all_actions( '', array(), 'decaldesk' );
+    }
+
+    $timestamp = wp_next_scheduled( $job_hook );
+    if ( $timestamp ) {
+        wp_unschedule_event( $timestamp, $job_hook );
+    }
+}
+register_deactivation_hook( __FILE__, 'decaldesk_deactivate' );
 
 // ==========================================================
 // Деинсталиране (през Freemius after_uninstall hook)
@@ -319,10 +359,14 @@ add_action( 'admin_init', 'decaldesk_maybe_create_upload_dirs' );
 // плъгина. Тук чистим само собствените опции/файлове на DecalDesk
 // (настройки, дневна AI квота, лог, временни файлове).
 //
-// Ползваме decaldesk_fs()->add_action('after_uninstall', ...) вместо
-// стандартния WordPress uninstall.php механизъм, защото Freemius сам
-// прихваща/показва диалога за деинсталиране и managing-ва собствения си
-// license/site cleanup - паралелен uninstall.php би влязъл в конфликт.
+// Ползваме decaldesk_fs()->add_action('after_uninstall', ...) като основен
+// механизъм, защото Freemius сам прихваща/показва диалога за деинсталиране.
+// Плъгинът съдържа и самостоятелен uninstall.php (виж корена на плъгина) със
+// същата, идемпотентна логика - той служи като резервен механизъм за
+// стандартния WordPress uninstall flow (напр. ако Freemius hook-ът по някаква
+// причина не се задейства); изпълнението и на двата е безопасно, защото всяка
+// стъпка (delete_option, DROP TABLE IF EXISTS, изтриване на директория) е
+// idempotent - повторното ѝ изпълнение е no-op.
 function decaldesk_run_uninstall_cleanup() {
     $settings = get_option( 'decaldesk_settings', array() );
 
