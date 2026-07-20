@@ -208,6 +208,10 @@ class DecalDesk_Jobs_List_Table extends WP_List_Table {
             return;
         }
 
+        if ( ! current_user_can( 'manage_woocommerce' ) ) {
+            wp_die( esc_html__( 'You don\'t have permission to do this.', 'decaldesk' ) );
+        }
+
         if ( 'delete' === $this->current_action() ) {
             check_admin_referer( 'bulk-' . $this->_args['plural'] );
             decaldesk_delete_jobs( $job_ids );

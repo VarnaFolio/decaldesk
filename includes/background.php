@@ -42,10 +42,11 @@ function decaldesk_queue_design_job( $file_path, $original_filename, $status, $f
     if ( decaldesk_background_processing_available() ) {
         as_schedule_single_action( time(), DECALDESK_JOB_HOOK, array( $args ), 'decaldesk' );
     } else {
-        // Fallback: ако Action Scheduler по някаква причина липсва (напр.
-        // WooCommerce деактивиран въпреки декларираната зависимост),
-        // обработваме веднага синхронно, за да не увисне качването.
-        decaldesk_process_design_job( $args );
+        // Fallback: ако Action Scheduler по някаква причина липсва, пак не
+        // обработваме синхронно (AI/мокъп генерирането е твърде бавно за
+        // изпълнение вътре в AJAX заявката) - вместо това заявяваме еднократно
+        // WP-Cron събитие, което си остава асинхронно спрямо текущата заявка.
+        wp_schedule_single_event( time(), DECALDESK_JOB_HOOK, array( $args ) );
     }
 
     return $job_id;

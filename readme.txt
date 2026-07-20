@@ -4,7 +4,7 @@ Tags: woocommerce, decals, stickers, product automation, ai
 Requires at least: 6.9
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.3.5
+Stable tag: 1.3.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -72,6 +72,13 @@ Yes (Pro). You can use a free Google Gemini API key (from Google AI Studio, no c
 3. A generated product with AI description and mockup
 
 == Changelog ==
+
+= 1.3.6 =
+* Added standalone uninstall.php for standard WordPress-compliant cleanup, alongside the existing Freemius-driven cleanup hook.
+* The plugin now fully stops initializing (menu, AJAX handlers, admin_init tasks) if WooCommerce is deactivated while DecalDesk remains active, instead of only showing a notice.
+* Added a deactivation hook that unschedules any pending background jobs.
+* Added a capability check to the History screen's bulk-action handler, on top of the existing nonce check.
+* The Action Scheduler fallback path (used only if Action Scheduler is unavailable) now queues via WP-Cron instead of processing AI/mockup generation synchronously inside the request.
 
 = 1.3.5 =
 * Multi-template mockups and WebP/JPEG output: removed the remaining hardcoded restriction in the free build's mockup generator and its surrounding admin UI, since the underlying capability isn't present in this build at all.
