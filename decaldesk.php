@@ -277,6 +277,12 @@ add_action( 'plugins_loaded', 'decaldesk_init_plugin', 20 );
 // Активиране / Деактивиране
 // ==========================================================
 function decaldesk_activate() {
+	// register_activation_hook се задейства веднага при клик на "Активирай",
+	// в същата заявка, но ПРЕДИ plugins_loaded (decaldesk_init_plugin()) да
+	// е стигнал до зареждане на includes/database.php - затова тук изрично
+	// изискваме файла, вместо да разчитаме на обичайния ред на зареждане.
+	require_once DECALDESK_PATH . 'includes/database.php';
+
 	// Създаваме папки за качване, ако не съществуват
 	$upload_dir = wp_upload_dir();
 	$base       = $upload_dir['basedir'] . '/decaldesk';
