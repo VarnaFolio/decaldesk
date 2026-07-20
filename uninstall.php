@@ -17,79 +17,79 @@
  */
 
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
-    exit;
+	exit;
 }
 
 /**
  * Чисти опциите, DB таблицата и качените файлове на DecalDesk за текущия сайт.
  */
 function decaldesk_uninstall_cleanup_site() {
-    $settings = get_option( 'decaldesk_settings', array() );
+	$settings = get_option( 'decaldesk_settings', array() );
 
-    if ( empty( $settings['delete_data_on_uninstall'] ) ) {
-        return;
-    }
+	if ( empty( $settings['delete_data_on_uninstall'] ) ) {
+		return;
+	}
 
-    delete_option( 'decaldesk_settings' );
-    delete_option( 'decaldesk_ai_daily_usage' );
-    delete_option( 'decaldesk_db_version' );
-    delete_option( 'decaldesk_migrated_from_productops' );
+	delete_option( 'decaldesk_settings' );
+	delete_option( 'decaldesk_ai_daily_usage' );
+	delete_option( 'decaldesk_db_version' );
+	delete_option( 'decaldesk_migrated_from_productops' );
 
-    global $wpdb;
-    $wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . 'decaldesk_jobs' );
+	global $wpdb;
+	$wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . 'decaldesk_jobs' );
 
-    if ( function_exists( 'as_unschedule_all_actions' ) ) {
-        as_unschedule_all_actions( '', array(), 'decaldesk' );
-    }
+	if ( function_exists( 'as_unschedule_all_actions' ) ) {
+		as_unschedule_all_actions( '', array(), 'decaldesk' );
+	}
 
-    $upload_dir    = wp_upload_dir();
-    $decaldesk_dir = $upload_dir['basedir'] . '/decaldesk';
+	$upload_dir    = wp_upload_dir();
+	$decaldesk_dir = $upload_dir['basedir'] . '/decaldesk';
 
-    if ( is_dir( $decaldesk_dir ) ) {
-        decaldesk_uninstall_recursive_delete_dir( $decaldesk_dir );
-    }
+	if ( is_dir( $decaldesk_dir ) ) {
+		decaldesk_uninstall_recursive_delete_dir( $decaldesk_dir );
+	}
 }
 
 /**
  * Рекурсивно изтрива директория и цялото ѝ съдържание.
  */
 function decaldesk_uninstall_recursive_delete_dir( $dir ) {
-    if ( ! is_dir( $dir ) ) {
-        return;
-    }
+	if ( ! is_dir( $dir ) ) {
+		return;
+	}
 
-    $items = scandir( $dir );
-    if ( false === $items ) {
-        return;
-    }
+	$items = scandir( $dir );
+	if ( false === $items ) {
+		return;
+	}
 
-    foreach ( $items as $item ) {
-        if ( '.' === $item || '..' === $item ) {
-            continue;
-        }
+	foreach ( $items as $item ) {
+		if ( '.' === $item || '..' === $item ) {
+			continue;
+		}
 
-        $path = $dir . '/' . $item;
+		$path = $dir . '/' . $item;
 
-        if ( is_dir( $path ) ) {
-            decaldesk_uninstall_recursive_delete_dir( $path );
-        } else {
-            wp_delete_file( $path );
-        }
-    }
+		if ( is_dir( $path ) ) {
+			decaldesk_uninstall_recursive_delete_dir( $path );
+		} else {
+			wp_delete_file( $path );
+		}
+	}
 
-    @rmdir( $dir );
+	@rmdir( $dir );
 }
 
 // Поддръжка на multisite: ако плъгинът е бил активиран мрежово, чистим за
 // всеки сайт в мрежата поотделно (всеки сайт си има собствени опции/uploads).
 if ( is_multisite() ) {
-    $decaldesk_site_ids = get_sites( array( 'fields' => 'ids' ) );
+	$decaldesk_site_ids = get_sites( array( 'fields' => 'ids' ) );
 
-    foreach ( $decaldesk_site_ids as $decaldesk_site_id ) {
-        switch_to_blog( $decaldesk_site_id );
-        decaldesk_uninstall_cleanup_site();
-        restore_current_blog();
-    }
+	foreach ( $decaldesk_site_ids as $decaldesk_site_id ) {
+		switch_to_blog( $decaldesk_site_id );
+		decaldesk_uninstall_cleanup_site();
+		restore_current_blog();
+	}
 } else {
-    decaldesk_uninstall_cleanup_site();
+	decaldesk_uninstall_cleanup_site();
 }

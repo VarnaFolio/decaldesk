@@ -1,6 +1,6 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) {
-    exit;
+	exit;
 }
 
 /**
@@ -12,25 +12,28 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return float Крайна цена, закръглена до 2 знака.
  */
 function decaldesk_calculate_price( $width_cm, $height_cm ) {
-    $settings = wp_parse_args( get_option( 'decaldesk_settings', array() ), array(
-        'price_per_sqm' => 60,
-        'min_price'     => 15,
-    ) );
+	$settings = wp_parse_args(
+		get_option( 'decaldesk_settings', array() ),
+		array(
+			'price_per_sqm' => 60,
+			'min_price'     => 15,
+		)
+	);
 
-    $price_per_sqm = (float) $settings['price_per_sqm'];
-    $min_price     = (float) $settings['min_price'];
+	$price_per_sqm = (float) $settings['price_per_sqm'];
+	$min_price     = (float) $settings['min_price'];
 
-    // см -> м
-    $width_m  = $width_cm / 100;
-    $height_m = $height_cm / 100;
+	// см -> м
+	$width_m  = $width_cm / 100;
+	$height_m = $height_cm / 100;
 
-    $area_sqm = $width_m * $height_m;
-    $price    = $area_sqm * $price_per_sqm;
+	$area_sqm = $width_m * $height_m;
+	$price    = $area_sqm * $price_per_sqm;
 
-    // Прилагаме минимална цена
-    $price = max( $price, $min_price );
+	// Прилагаме минимална цена
+	$price = max( $price, $min_price );
 
-    return round( $price, 2 );
+	return round( $price, 2 );
 }
 
 /**
@@ -41,5 +44,5 @@ function decaldesk_calculate_price( $width_cm, $height_cm ) {
  * @return float
  */
 function decaldesk_calculate_area_sqm( $width_cm, $height_cm ) {
-    return round( ( $width_cm / 100 ) * ( $height_cm / 100 ), 4 );
+	return round( ( $width_cm / 100 ) * ( $height_cm / 100 ), 4 );
 }

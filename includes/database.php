@@ -1,6 +1,6 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) {
-    exit;
+	exit;
 }
 
 /**
@@ -16,19 +16,19 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 
 if ( ! defined( 'DECALDESK_DB_VERSION' ) ) {
-    define( 'DECALDESK_DB_VERSION', '1.1' );
+	define( 'DECALDESK_DB_VERSION', '1.1' );
 }
 
 /**
  * Създава (или обновява чрез dbDelta) таблицата decaldesk_jobs.
  */
 function decaldesk_create_jobs_table() {
-    global $wpdb;
+	global $wpdb;
 
-    $table_name      = $wpdb->prefix . 'decaldesk_jobs';
-    $charset_collate = $wpdb->get_charset_collate();
+	$table_name      = $wpdb->prefix . 'decaldesk_jobs';
+	$charset_collate = $wpdb->get_charset_collate();
 
-    $sql = "CREATE TABLE {$table_name} (
+	$sql = "CREATE TABLE {$table_name} (
         id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
         filename VARCHAR(255) NOT NULL,
         file_hash VARCHAR(64) NULL,
@@ -45,10 +45,10 @@ function decaldesk_create_jobs_table() {
         KEY file_hash (file_hash)
     ) {$charset_collate};";
 
-    require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-    dbDelta( $sql );
+	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+	dbDelta( $sql );
 
-    update_option( 'decaldesk_db_version', DECALDESK_DB_VERSION );
+	update_option( 'decaldesk_db_version', DECALDESK_DB_VERSION );
 }
 
 /**
@@ -59,19 +59,18 @@ function decaldesk_create_jobs_table() {
  * изпълни в такъв случай.
  */
 function decaldesk_maybe_upgrade_db() {
-    if ( get_option( 'decaldesk_db_version' ) !== DECALDESK_DB_VERSION ) {
-        decaldesk_create_jobs_table();
-    }
+	if ( get_option( 'decaldesk_db_version' ) !== DECALDESK_DB_VERSION ) {
+		decaldesk_create_jobs_table();
+	}
 }
 add_action( 'plugins_loaded', 'decaldesk_maybe_upgrade_db' );
 
 /**
  * Помощни функции за работа с таблицата
  */
-
 function decaldesk_jobs_table() {
-    global $wpdb;
-    return $wpdb->prefix . 'decaldesk_jobs';
+	global $wpdb;
+	return $wpdb->prefix . 'decaldesk_jobs';
 }
 
 /**
@@ -82,23 +81,23 @@ function decaldesk_jobs_table() {
  * @return int ID на новосъздадения job.
  */
 function decaldesk_create_job( $filename, $file_hash = '' ) {
-    global $wpdb;
+	global $wpdb;
 
-    $now = current_time( 'mysql' );
+	$now = current_time( 'mysql' );
 
-    $wpdb->insert(
-        decaldesk_jobs_table(),
-        array(
-            'filename'   => $filename,
-            'file_hash'  => $file_hash,
-            'status'     => 'pending',
-            'created_at' => $now,
-            'updated_at' => $now,
-        ),
-        array( '%s', '%s', '%s', '%s', '%s' )
-    );
+	$wpdb->insert(
+		decaldesk_jobs_table(),
+		array(
+			'filename'   => $filename,
+			'file_hash'  => $file_hash,
+			'status'     => 'pending',
+			'created_at' => $now,
+			'updated_at' => $now,
+		),
+		array( '%s', '%s', '%s', '%s', '%s' )
+	);
 
-    return (int) $wpdb->insert_id;
+	return (int) $wpdb->insert_id;
 }
 
 /**
@@ -109,23 +108,23 @@ function decaldesk_create_job( $filename, $file_hash = '' ) {
  * @return array|null Job записът, ако е намерен дубликат, иначе null.
  */
 function decaldesk_find_duplicate_job( $file_hash ) {
-    global $wpdb;
+	global $wpdb;
 
-    if ( empty( $file_hash ) ) {
-        return null;
-    }
+	if ( empty( $file_hash ) ) {
+		return null;
+	}
 
-    $row = $wpdb->get_row(
-        $wpdb->prepare(
-            "SELECT * FROM " . decaldesk_jobs_table() . "
+	$row = $wpdb->get_row(
+		$wpdb->prepare(
+			'SELECT * FROM ' . decaldesk_jobs_table() . "
              WHERE file_hash = %s AND status IN ('pending', 'processing', 'done')
              ORDER BY id DESC LIMIT 1",
-            $file_hash
-        ),
-        ARRAY_A
-    );
+			$file_hash
+		),
+		ARRAY_A
+	);
 
-    return $row ?: null;
+	return $row ?: null;
 }
 
 /**
@@ -135,15 +134,15 @@ function decaldesk_find_duplicate_job( $file_hash ) {
  * @param array $fields Асоциативен масив колона => стойност.
  */
 function decaldesk_update_job( $job_id, $fields ) {
-    global $wpdb;
+	global $wpdb;
 
-    $fields['updated_at'] = current_time( 'mysql' );
+	$fields['updated_at'] = current_time( 'mysql' );
 
-    $wpdb->update(
-        decaldesk_jobs_table(),
-        $fields,
-        array( 'id' => (int) $job_id )
-    );
+	$wpdb->update(
+		decaldesk_jobs_table(),
+		$fields,
+		array( 'id' => (int) $job_id )
+	);
 }
 
 /**
@@ -153,14 +152,14 @@ function decaldesk_update_job( $job_id, $fields ) {
  * @return array|null
  */
 function decaldesk_get_job( $job_id ) {
-    global $wpdb;
+	global $wpdb;
 
-    $row = $wpdb->get_row(
-        $wpdb->prepare( 'SELECT * FROM ' . decaldesk_jobs_table() . ' WHERE id = %d', $job_id ),
-        ARRAY_A
-    );
+	$row = $wpdb->get_row(
+		$wpdb->prepare( 'SELECT * FROM ' . decaldesk_jobs_table() . ' WHERE id = %d', $job_id ),
+		ARRAY_A
+	);
 
-    return $row ?: null;
+	return $row ?: null;
 }
 
 /**
@@ -170,19 +169,19 @@ function decaldesk_get_job( $job_id ) {
  * @return array[]
  */
 function decaldesk_get_jobs( $job_ids ) {
-    global $wpdb;
+	global $wpdb;
 
-    $job_ids = array_map( 'intval', $job_ids );
-    $job_ids = array_filter( $job_ids );
+	$job_ids = array_map( 'intval', $job_ids );
+	$job_ids = array_filter( $job_ids );
 
-    if ( empty( $job_ids ) ) {
-        return array();
-    }
+	if ( empty( $job_ids ) ) {
+		return array();
+	}
 
-    $placeholders = implode( ',', array_fill( 0, count( $job_ids ), '%d' ) );
-    $sql          = 'SELECT * FROM ' . decaldesk_jobs_table() . " WHERE id IN ({$placeholders})";
+	$placeholders = implode( ',', array_fill( 0, count( $job_ids ), '%d' ) );
+	$sql          = 'SELECT * FROM ' . decaldesk_jobs_table() . " WHERE id IN ({$placeholders})";
 
-    return $wpdb->get_results( $wpdb->prepare( $sql, $job_ids ), ARRAY_A );
+	return $wpdb->get_results( $wpdb->prepare( $sql, $job_ids ), ARRAY_A );
 }
 
 /**
@@ -200,46 +199,46 @@ function decaldesk_get_jobs( $job_ids ) {
  * @return array[]
  */
 function decaldesk_query_jobs( $args = array() ) {
-    global $wpdb;
-    $table = decaldesk_jobs_table();
+	global $wpdb;
+	$table = decaldesk_jobs_table();
 
-    $defaults = array(
-        'status'   => '',
-        'search'   => '',
-        'orderby'  => 'id',
-        'order'    => 'DESC',
-        'per_page' => 20,
-        'page'     => 1,
-    );
-    $args = wp_parse_args( $args, $defaults );
+	$defaults = array(
+		'status'   => '',
+		'search'   => '',
+		'orderby'  => 'id',
+		'order'    => 'DESC',
+		'per_page' => 20,
+		'page'     => 1,
+	);
+	$args     = wp_parse_args( $args, $defaults );
 
-    $where  = array( '1=1' );
-    $params = array();
+	$where  = array( '1=1' );
+	$params = array();
 
-    if ( ! empty( $args['status'] ) ) {
-        $where[]  = 'status = %s';
-        $params[] = $args['status'];
-    }
+	if ( ! empty( $args['status'] ) ) {
+		$where[]  = 'status = %s';
+		$params[] = $args['status'];
+	}
 
-    if ( ! empty( $args['search'] ) ) {
-        $where[]  = 'filename LIKE %s';
-        $params[] = '%' . $wpdb->esc_like( $args['search'] ) . '%';
-    }
+	if ( ! empty( $args['search'] ) ) {
+		$where[]  = 'filename LIKE %s';
+		$params[] = '%' . $wpdb->esc_like( $args['search'] ) . '%';
+	}
 
-    $allowed_orderby = array( 'id', 'filename', 'status', 'price', 'created_at' );
-    $orderby = in_array( $args['orderby'], $allowed_orderby, true ) ? $args['orderby'] : 'id';
-    $order   = 'ASC' === strtoupper( $args['order'] ) ? 'ASC' : 'DESC';
+	$allowed_orderby = array( 'id', 'filename', 'status', 'price', 'created_at' );
+	$orderby         = in_array( $args['orderby'], $allowed_orderby, true ) ? $args['orderby'] : 'id';
+	$order           = 'ASC' === strtoupper( $args['order'] ) ? 'ASC' : 'DESC';
 
-    $per_page = max( 1, (int) $args['per_page'] );
-    $offset   = ( max( 1, (int) $args['page'] ) - 1 ) * $per_page;
+	$per_page = max( 1, (int) $args['per_page'] );
+	$offset   = ( max( 1, (int) $args['page'] ) - 1 ) * $per_page;
 
-    $sql = "SELECT * FROM {$table} WHERE " . implode( ' AND ', $where )
-        . " ORDER BY {$orderby} {$order} LIMIT %d OFFSET %d";
+	$sql = "SELECT * FROM {$table} WHERE " . implode( ' AND ', $where )
+		. " ORDER BY {$orderby} {$order} LIMIT %d OFFSET %d";
 
-    $params[] = $per_page;
-    $params[] = $offset;
+	$params[] = $per_page;
+	$params[] = $offset;
 
-    return $wpdb->get_results( $wpdb->prepare( $sql, $params ), ARRAY_A );
+	return $wpdb->get_results( $wpdb->prepare( $sql, $params ), ARRAY_A );
 }
 
 /**
@@ -247,29 +246,29 @@ function decaldesk_query_jobs( $args = array() ) {
  * (без LIMIT/OFFSET) - за пагинацията.
  */
 function decaldesk_count_jobs( $args = array() ) {
-    global $wpdb;
-    $table = decaldesk_jobs_table();
+	global $wpdb;
+	$table = decaldesk_jobs_table();
 
-    $where  = array( '1=1' );
-    $params = array();
+	$where  = array( '1=1' );
+	$params = array();
 
-    if ( ! empty( $args['status'] ) ) {
-        $where[]  = 'status = %s';
-        $params[] = $args['status'];
-    }
+	if ( ! empty( $args['status'] ) ) {
+		$where[]  = 'status = %s';
+		$params[] = $args['status'];
+	}
 
-    if ( ! empty( $args['search'] ) ) {
-        $where[]  = 'filename LIKE %s';
-        $params[] = '%' . $wpdb->esc_like( $args['search'] ) . '%';
-    }
+	if ( ! empty( $args['search'] ) ) {
+		$where[]  = 'filename LIKE %s';
+		$params[] = '%' . $wpdb->esc_like( $args['search'] ) . '%';
+	}
 
-    $sql = "SELECT COUNT(*) FROM {$table} WHERE " . implode( ' AND ', $where );
+	$sql = "SELECT COUNT(*) FROM {$table} WHERE " . implode( ' AND ', $where );
 
-    if ( empty( $params ) ) {
-        return (int) $wpdb->get_var( $sql );
-    }
+	if ( empty( $params ) ) {
+		return (int) $wpdb->get_var( $sql );
+	}
 
-    return (int) $wpdb->get_var( $wpdb->prepare( $sql, $params ) );
+	return (int) $wpdb->get_var( $wpdb->prepare( $sql, $params ) );
 }
 
 /**
@@ -280,17 +279,17 @@ function decaldesk_count_jobs( $args = array() ) {
  * @return int Брой изтрити редове.
  */
 function decaldesk_delete_jobs( $job_ids ) {
-    global $wpdb;
+	global $wpdb;
 
-    $job_ids = array_filter( array_map( 'intval', $job_ids ) );
-    if ( empty( $job_ids ) ) {
-        return 0;
-    }
+	$job_ids = array_filter( array_map( 'intval', $job_ids ) );
+	if ( empty( $job_ids ) ) {
+		return 0;
+	}
 
-    $placeholders = implode( ',', array_fill( 0, count( $job_ids ), '%d' ) );
-    $sql          = 'DELETE FROM ' . decaldesk_jobs_table() . " WHERE id IN ({$placeholders})";
+	$placeholders = implode( ',', array_fill( 0, count( $job_ids ), '%d' ) );
+	$sql          = 'DELETE FROM ' . decaldesk_jobs_table() . " WHERE id IN ({$placeholders})";
 
-    return $wpdb->query( $wpdb->prepare( $sql, $job_ids ) );
+	return $wpdb->query( $wpdb->prepare( $sql, $job_ids ) );
 }
 
 /**
@@ -300,12 +299,12 @@ function decaldesk_delete_jobs( $job_ids ) {
  * @return array[]
  */
 function decaldesk_get_recent_jobs( $limit = 50 ) {
-    global $wpdb;
+	global $wpdb;
 
-    return $wpdb->get_results(
-        $wpdb->prepare( 'SELECT * FROM ' . decaldesk_jobs_table() . ' ORDER BY id DESC LIMIT %d', $limit ),
-        ARRAY_A
-    );
+	return $wpdb->get_results(
+		$wpdb->prepare( 'SELECT * FROM ' . decaldesk_jobs_table() . ' ORDER BY id DESC LIMIT %d', $limit ),
+		ARRAY_A
+	);
 }
 
 /**
@@ -314,18 +313,23 @@ function decaldesk_get_recent_jobs( $limit = 50 ) {
  * @return array{pending:int,processing:int,done:int,error:int}
  */
 function decaldesk_get_job_stats() {
-    global $wpdb;
+	global $wpdb;
 
-    $rows = $wpdb->get_results( 'SELECT status, COUNT(*) as cnt FROM ' . decaldesk_jobs_table() . ' GROUP BY status', ARRAY_A );
+	$rows = $wpdb->get_results( 'SELECT status, COUNT(*) as cnt FROM ' . decaldesk_jobs_table() . ' GROUP BY status', ARRAY_A );
 
-    $stats = array( 'pending' => 0, 'processing' => 0, 'done' => 0, 'error' => 0 );
-    foreach ( $rows as $row ) {
-        if ( isset( $stats[ $row['status'] ] ) ) {
-            $stats[ $row['status'] ] = (int) $row['cnt'];
-        }
-    }
+	$stats = array(
+		'pending'    => 0,
+		'processing' => 0,
+		'done'       => 0,
+		'error'      => 0,
+	);
+	foreach ( $rows as $row ) {
+		if ( isset( $stats[ $row['status'] ] ) ) {
+			$stats[ $row['status'] ] = (int) $row['cnt'];
+		}
+	}
 
-    return $stats;
+	return $stats;
 }
 
 /**
@@ -341,38 +345,46 @@ function decaldesk_get_job_stats() {
  * }
  */
 function decaldesk_get_recent_job_health( $days = 7 ) {
-    global $wpdb;
-    $table = decaldesk_jobs_table();
+	global $wpdb;
+	$table = decaldesk_jobs_table();
 
-    // ВАЖНО: created_at се пази чрез current_time('mysql') (локално време на
-    // сайта), затова границата тук трябва да се смята по същия начин - не
-    // през GMT - иначе сравнението е леко изместено при сайтове извън UTC.
-    $since = date( 'Y-m-d H:i:s', current_time( 'timestamp' ) - ( (int) $days * DAY_IN_SECONDS ) );
+	// ВАЖНО: created_at се пази чрез current_time('mysql') (локално време на
+	// сайта), затова границата тук трябва да се смята по същия начин - не
+	// през GMT - иначе сравнението е леко изместено при сайтове извън UTC.
+	$since = date( 'Y-m-d H:i:s', current_time( 'timestamp' ) - ( (int) $days * DAY_IN_SECONDS ) );
 
-    $fallback_count = (int) $wpdb->get_var( $wpdb->prepare(
-        "SELECT COUNT(*) FROM {$table} WHERE status = 'done' AND ai_source = 'fallback' AND created_at >= %s",
-        $since
-    ) );
+	$fallback_count = (int) $wpdb->get_var(
+		$wpdb->prepare(
+			"SELECT COUNT(*) FROM {$table} WHERE status = 'done' AND ai_source = 'fallback' AND created_at >= %s",
+			$since
+		)
+	);
 
-    $ai_success_count = (int) $wpdb->get_var( $wpdb->prepare(
-        "SELECT COUNT(*) FROM {$table} WHERE status = 'done' AND ai_source IN ('ai_free', 'ai_claude') AND created_at >= %s",
-        $since
-    ) );
+	$ai_success_count = (int) $wpdb->get_var(
+		$wpdb->prepare(
+			"SELECT COUNT(*) FROM {$table} WHERE status = 'done' AND ai_source IN ('ai_free', 'ai_claude') AND created_at >= %s",
+			$since
+		)
+	);
 
-    $error_count = (int) $wpdb->get_var( $wpdb->prepare(
-        "SELECT COUNT(*) FROM {$table} WHERE status = 'error' AND created_at >= %s",
-        $since
-    ) );
+	$error_count = (int) $wpdb->get_var(
+		$wpdb->prepare(
+			"SELECT COUNT(*) FROM {$table} WHERE status = 'error' AND created_at >= %s",
+			$since
+		)
+	);
 
-    $last_error_message = $wpdb->get_var( $wpdb->prepare(
-        "SELECT message FROM {$table} WHERE status = 'error' AND created_at >= %s ORDER BY id DESC LIMIT 1",
-        $since
-    ) );
+	$last_error_message = $wpdb->get_var(
+		$wpdb->prepare(
+			"SELECT message FROM {$table} WHERE status = 'error' AND created_at >= %s ORDER BY id DESC LIMIT 1",
+			$since
+		)
+	);
 
-    return array(
-        'fallback_count'      => $fallback_count,
-        'ai_success_count'    => $ai_success_count,
-        'error_count'         => $error_count,
-        'last_error_message'  => $last_error_message ?: null,
-    );
+	return array(
+		'fallback_count'     => $fallback_count,
+		'ai_success_count'   => $ai_success_count,
+		'error_count'        => $error_count,
+		'last_error_message' => $last_error_message ?: null,
+	);
 }
