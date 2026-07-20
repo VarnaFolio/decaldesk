@@ -329,11 +329,11 @@ function decaldesk_sanitize_settings( $input ) {
 	// фиксирахме за categories/template_zones по-рано.
 	if ( isset( $input['ai_content_language'] ) && 'custom' === $input['ai_content_language'] ) {
 		$custom                        = isset( $input['ai_content_language_custom'] ) ? sanitize_text_field( $input['ai_content_language_custom'] ) : '';
-		$output['ai_content_language'] = '' !== $custom ? $custom : 'Bulgarian';
+		$output['ai_content_language'] = '' !== $custom ? $custom : 'English';
 	} elseif ( isset( $input['ai_content_language'] ) && '' !== trim( (string) $input['ai_content_language'] ) ) {
 		$output['ai_content_language'] = sanitize_text_field( $input['ai_content_language'] );
 	} else {
-		$output['ai_content_language'] = isset( $existing['ai_content_language'] ) ? $existing['ai_content_language'] : 'Bulgarian';
+		$output['ai_content_language'] = isset( $existing['ai_content_language'] ) ? $existing['ai_content_language'] : 'English';
 	}
 
 	// По подразбиране ИЗКЛЮЧЕНО (безопасно) - изисква се съзнателно съгласие,
@@ -388,7 +388,7 @@ function decaldesk_render_settings_page() {
 			'max_dimension_cm'         => 1000,
 			'custom_footer_text'       => '',
 			'categories'               => array(),
-			'ai_content_language'      => 'Bulgarian',
+			'ai_content_language'      => 'English',
 			'delete_data_on_uninstall' => false,
 			/*! <fs_premium_only> */
 			'mockup_format'            => 'webp',

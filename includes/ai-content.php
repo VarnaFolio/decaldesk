@@ -735,7 +735,7 @@ function decaldesk_get_ai_content_language() {
 	$settings = get_option( 'decaldesk_settings', array() );
 	$language = isset( $settings['ai_content_language'] ) ? trim( $settings['ai_content_language'] ) : '';
 
-	return '' !== $language ? $language : 'Bulgarian';
+	return '' !== $language ? $language : 'English';
 }
 
 /*! <fs_premium_only> */
