@@ -1,70 +1,70 @@
 # DecalDesk
 
-WordPress/WooCommerce плъгин за автоматично създаване на продукти от дизайни (PNG, JPG/JPEG, WEBP, GIF).
+WordPress/WooCommerce plugin for automatically creating products from design files (PNG, JPG/JPEG, WEBP, GIF).
 
-**Поддръжка:** [support@decaldesk.com](mailto:support@decaldesk.com) · **Сайт:** [decaldesk.com](https://decaldesk.com)
+**Support:** [support@decaldesk.com](mailto:support@decaldesk.com) · **Website:** [decaldesk.com](https://decaldesk.com)
 
-## Инсталация
+## Installation
 
-1. Качи папката `decaldesk/` в `wp-content/plugins/`.
-2. Активирай плъгина от WP Admin → Приставки.
-3. Отиди в **DecalDesk → Настройки** и провери/добави цена на м², минимална цена и категории (slug трябва да съвпада с частта "category" от името на файла).
-4. (По желание) Включи **AI генериране на описания** и въведи Anthropic API ключ — виж секцията по-долу.
-5. Отиди в **DecalDesk → Категории** — добави категории и качи мокъп шаблон за всяка (директно през браузъра, не е нужен FTP). Настрой и позицията на дизайна върху шаблона с влачене на рамката.
+1. Upload the `decaldesk/` folder to `wp-content/plugins/`.
+2. Activate the plugin from WP Admin → Plugins.
+3. Go to **DecalDesk → Settings** and check/set the price per m², minimum price, and categories (the slug must match the "category" part of the filename).
+4. (Optional) Enable **AI-generated descriptions** and enter your Anthropic API key — see the section below.
+5. Go to **DecalDesk → Categories** — add categories and upload a mockup template for each one (directly through the browser, no FTP needed). Also set the design's position on the template by dragging the frame.
 
-## AI описания (безплатен Gemini или платен Claude)
+## AI descriptions (free Gemini or paid Claude)
 
-От **DecalDesk → Настройки** избираш един от три режима:
-- **Изключено** — статичен шаблон (без AI)
-- **Безплатно (Google Gemini)** — с дневен лимит (по подразбиране 10 продукта/ден, настройваем). Безплатен API ключ вземаш от https://aistudio.google.com/app/apikey — не изисква карта.
-- **Платено (Anthropic Claude)** — без вграден лимит от плъгина, реалният лимит е този на твоя Anthropic план.
+From **DecalDesk → Settings**, choose one of three modes:
+- **Off** — static template (no AI)
+- **Free (Google Gemini)** — with a daily limit (10 products/day by default, configurable). Get a free API key from https://aistudio.google.com/app/apikey — no card required.
+- **Paid (Anthropic Claude)** — no plugin-enforced limit; the real limit is whatever your Anthropic plan allows.
 
-И при двата AI режима се генерират: дълго описание, кратко описание и SEO мета описание (записва се и в Yoast SEO, и в RankMath). Мета описанието се вгражда и директно в PNG файла на мокъпа (Title/Description/Comment metadata чрез Imagick).
+Both AI modes generate: a long description, a short description, and an SEO meta description (saved to both Yoast SEO and RankMath). The meta description is also embedded directly into the mockup's PNG file (Title/Description/Comment metadata via Imagick).
 
-### AI Vision (анализ на самото изображение)
+### AI Vision (analyzing the design image itself)
 
-От същата страница можеш да включиш **"Разглеждай самия дизайн"** — тогава AI-то реално гледа PNG файла (не само името му) и пише описание на база това, което вижда (мотив, цветове, стил), а не само от размери/материал/категория. Работи и с двата доставчика. Изображението се смалява автоматично до 1024px преди изпращане, за да пести трафик и токени.
+From the same page you can enable **"Look at the design itself"** — the AI then actually looks at the PNG file (not just its filename) and writes the description based on what it sees (motif, colors, style), not just size/material/category. Works with both providers. The image is automatically downscaled to 1024px before sending, to save bandwidth and tokens.
 
-Дневният брояч за безплатния режим се пази в опция в базата (`decaldesk_ai_daily_usage`) и се нулира автоматично в полунощ по часовата зона на сайта. Ако лимитът е достигнат за деня, следващите продукти автоматично падат на статичния шаблон — без грешки, без прекъсване на работата.
+The daily counter for the free mode is stored in a database option (`decaldesk_ai_daily_usage`) and resets automatically at midnight in the site's timezone. If the daily limit is reached, subsequent products automatically fall back to the static template — no errors, no interruption to the workflow.
 
-**За API ключовете:** най-сигурният вариант е да ги дефинираш в `wp-config.php`, вместо да ги пазиш в базата:
+**About API keys:** the safest option is to define them in `wp-config.php` instead of storing them in the database:
 ```php
 define( 'DECALDESK_GEMINI_API_KEY', 'AIza...' );
 define( 'DECALDESK_AI_API_KEY', 'sk-ant-...' );
 ```
 
-Ако AI е изключено или заявката се провали (мрежов проблем, изчерпан лимит и т.н.), плъгинът автоматично пада обратно на статичен шаблон — качването никога не гърми заради AI.
+If AI is disabled or the request fails (network issue, quota exhausted, etc.), the plugin automatically falls back to the static template — an upload never fails because of AI.
 
-В настройките има и бутон **"Тествай връзката с AI доставчика"** — вика API-то директно и показва точния отговор или точната грешка, без да чака реално качване на файл.
+Settings also has a **"Test AI provider connection"** button — it calls the API directly and shows the exact response or the exact error, without waiting for a real file upload.
 
-## Адрес на продукта (slug) на латиница
+## Latin product slug
 
-Заглавието на продукта остава точно както е зададено в името на файла (обикновено на кирилица), но **краткият адрес (slug) винаги се генерира на латиница** чрез транслитерация по стандартната българска система (напр. "Коледа" → `koleda-50x70-kitchen`). Няма нужда от допълнителен плъгин за транслитерация.
+The product title stays exactly as given in the filename (often in Cyrillic), but the **slug is always generated in Latin script** via transliteration using the standard Bulgarian system (e.g. "Коледа" → `koleda-50x70-kitchen`). No extra transliteration plugin needed.
 
-## Формат на името на файла
+## Filename format
 
 ```
-name_widthxheight_material_category.разширение
+name_widthxheight_material_category.extension
 ```
 
-Пример: `koleda_50x70_matte_kitchen.jpg` (или `.png`, `.webp`, `.gif`)
+Example: `koleda_50x70_matte_kitchen.jpg` (or `.png`, `.webp`, `.gif`)
 
-- `name` — име на дизайна (за продукта)
-- `width x height` — размери в сантиметри
-- `material` — материал (matte, gloss, transparent...)
-- `category` — категория, трябва да съвпада с slug от настройките
-- **Разширението няма значение за парсването** — поддържат се PNG, JPG/JPEG, WEBP, GIF
+- `name` — the design's name (used as the product title)
+- `width x height` — dimensions in centimeters
+- `material` — material (matte, gloss, transparent...)
+- `category` — category, must match a slug configured in settings
+- **The extension doesn't matter for parsing** — PNG, JPG/JPEG, WEBP, and GIF are all supported
 
-## Как работи
+## How it works
 
-1. Качваш файл (PNG/JPG/WEBP/GIF) чрез drag & drop в **DecalDesk → Качване**.
-2. Плъгинът парсва името на файла (`includes/parser.php`).
-3. Изчислява цена на база площ (`includes/pricing.php`).
-4. Генерира описания чрез AI или fallback шаблон (`includes/ai-content.php`).
-5. Генерира мокъп (формат по избор — WebP/JPEG/PNG от настройките, виж по-долу) чрез Imagick/GD и вгражда мета описание в него (`includes/mockup.php`).
-6. Създава WooCommerce продукт — чернова или публикуван, с латиница в адреса и SEO мета описание (`includes/product.php`).
+1. Upload a file (PNG/JPG/WEBP/GIF) via drag & drop in **DecalDesk → Upload**.
+2. The plugin parses the filename (`includes/parser.php`).
+3. Calculates the price based on area (`includes/pricing.php`).
+4. Generates descriptions via AI or the fallback template (`includes/ai-content.php`).
+5. Generates the mockup (format configurable — WebP/JPEG/PNG, see settings below) via Imagick/GD and embeds the meta description into it (`includes/mockup.php`).
+6. Creates a WooCommerce product — draft or published, with a Latin-script slug and SEO meta description (`includes/product.php`).
 
-## Структура
+## Structure
 
 ```
 decaldesk/
@@ -73,74 +73,74 @@ decaldesk/
 ├── admin/
 │   ├── admin-menu.php
 │   ├── admin-page-upload.php
-│   ├── admin-page-history.php     (WP_List_Table с всички обработени дизайни)
-│   └── admin-page-categories.php  (категории + мокъп шаблони + zone editor)
+│   ├── admin-page-history.php     (WP_List_Table with all processed designs)
+│   └── admin-page-categories.php  (categories + mockup templates + zone editor)
 ├── includes/
 │   ├── parser.php
 │   ├── pricing.php
-│   ├── ai-content.php   (AI описания + транслитерация на кирилица)
-│   ├── mockup.php        (zone-базирано позициониране на дизайна в шаблона)
+│   ├── ai-content.php   (AI descriptions + Cyrillic transliteration)
+│   ├── mockup.php        (zone-based design placement on the template)
 │   ├── product.php
-│   ├── database.php      (DB таблица за фонови задачи + query helper-и)
-│   ├── background.php    (Action Scheduler опашка)
-│   ├── notices.php       (admin известия за AI fallback/грешки)
+│   ├── database.php      (DB table for background jobs + query helpers)
+│   ├── background.php    (Action Scheduler queue)
+│   ├── notices.php       (admin notices for AI fallback/errors)
 │   └── settings.php
 └── assets/
     ├── js/uploader.js
-    ├── js/categories.js  (drag-box редактор за позициониране)
+    ├── js/categories.js  (drag-box editor for positioning)
     ├── css/style.css
-    └── templates/ (вградени default мокъп фонове; собствени шаблони се качват през UI в uploads/decaldesk/templates/)
+    └── templates/ (built-in default mockup backgrounds; custom templates are uploaded through the UI into uploads/decaldesk/templates/)
 ```
 
-## Категории и мокъп шаблони
+## Categories and mockup templates
 
-От **DecalDesk → Категории**:
-- Добавяш категория (име + slug — slug-ът трябва да съвпада с "category" частта от името на файла)
-- Всяка категория може да има **до 4 различни шаблона** ("Добави още шаблон") — полезно напр. за категория "коли", където искаш дизайнът да се покаже върху няколко различни модела за по-убедителна презентация
-- Качваш мокъп шаблон за всеки слот директно през браузъра (PNG/JPG/WEBP)
-- Настройваш позицията на дизайна за всеки шаблон поотделно — избираш между **"Правоъгълник"** (влачене на рамка, contain-fit — дизайнът се вписва цял) или **"Свободна форма"** (Pen tool-подобен редактор, cover-fit — запълва цялата очертана форма, реалистична "фира" по краищата, точно както при реално рязане/лепене)
-- В режим "Свободна форма": кликваш върху шаблона, за да добавяш точки, влачиш ги за да ги преместиш — очертаваш произволен контур (полезно за неправилни повърхности, напр. врата на кола под ъгъл)
-- По желание — качваш временен тестов дизайн (само в браузъра, не се записва на сървъра) за по-точна преценка преди запис
+From **DecalDesk → Categories**:
+- Add a category (name + slug — the slug must match the "category" part of the filename)
+- Each category can have **up to 4 different templates** ("Add another template") — useful, for example, for a "cars" category where you want the design shown on several different models for a more convincing presentation
+- Upload a mockup template for each slot directly through the browser (PNG/JPG/WEBP)
+- Set the design's position for each template individually — choose between **"Rectangle"** (drag a frame, contain-fit — the whole design fits inside) or **"Freeform"** (a pen-tool-like editor, cover-fit — fills the entire outlined shape, with a realistic "bleed" at the edges, just like actual cutting/application)
+- In "Freeform" mode: click on the template to add points, drag them to move them — outline any shape you like (useful for irregular surfaces, e.g. a car door at an angle)
+- Optionally upload a temporary test design (browser-only, never saved to the server) to preview the result more precisely before saving
 
-При качване на дизайн, чекбокс **"Генерирай мокъпи от всички шаблони на категорията"** (изключен по подразбиране, защото е по-бавно) определя дали продуктът получава само 1 мокъп (от първия шаблон), или по един мокъп за всеки конфигуриран шаблон — първият става главна снимка, останалите отиват в галерията заедно с оригиналния дизайн.
+When uploading a design, the **"Generate mockups from all templates in the category"** checkbox (off by default, since it's slower) determines whether the product gets just 1 mockup (from the first template), or one mockup per configured template — the first becomes the featured image, the rest go into the gallery alongside the original design.
 
-Настройката е **на категория, не на всяко качване** — конфигурираш веднъж, всички бъдещи качвания в тази категория автоматично ползват зададените шаблони/позиции. Ако категория няма зададена собствена зона, се ползва разумен default (центрирана правоъгълна зона, 70% от ширината и височината на шаблона).
+The setting is **per category, not per upload** — configure it once, and all future uploads to that category automatically use the configured templates/positions. If a category has no custom zone set, a sensible default is used (a centered rectangular zone, 70% of the template's width and height).
 
-## Размерни варианти (Variable Products)
+## Size variants (Variable Products)
 
-Вместо да преименуваш/дублираш един и същ дизайн за всеки размер, можеш да конфигурираш веднъж списък със стандартни размери (+ незадължителни материал/цвят) директно в **DecalDesk → Качване**, в разгъваема секция под чекбокса "Създай с избираеми варианти" ("Настрой размери / материали / цветове"):
+Instead of renaming/duplicating the same design for every size, you can configure a list of standard sizes (+ optional material/color) once, directly in **DecalDesk → Upload**, in a collapsible section under the "Create with selectable variants" checkbox ("Configure sizes / materials / colors"):
 
-- **Размери** (задължителни за да работи функцията) — по един на ред, формат `ширинаxвисочина` в см (напр. `50x70`)
-- **Материали** (незадължително) — разделени със запетая, напр. `матово, гланц, прозрачно`
-- **Цветове** (незадължително) — разделени със запетая, напр. `бяло, черно, прозрачно фолио`
+- **Sizes** (required for the feature to work) — one per line, format `widthxheight` in cm (e.g. `50x70`)
+- **Materials** (optional) — comma-separated, e.g. `matte, gloss, transparent`
+- **Colors** (optional) — comma-separated, e.g. `white, black, clear film`
 
-При качване, отмяташ **"Създай с избираеми варианти"** вместо статуса чернова/публикувай да важи за отделен продукт по размер. Плъгинът създава **един WooCommerce Variable Product** с dropdown за размер (и материал/цвят, ако са конфигурирани) — клиентът избира комбинацията директно в продукта. Всяка вариация получава:
-- Собствена автоматично изчислена цена по формулата €/м² според конкретния ѝ размер
-- Уникален SKU (транслитериран на латиница, независимо от кирилица в материал/цвят) — напр. `koleda-50x70-matovo-byalo`
+When uploading, check **"Create with selectable variants"** instead of the draft/publish status applying to a single product per size. The plugin creates **one WooCommerce Variable Product** with a dropdown for size (and material/color, if configured) — the customer picks the combination directly on the product page. Each variation gets:
+- Its own automatically calculated price using the €/m² formula for that specific size
+- A unique SKU (transliterated to Latin script, regardless of Cyrillic in material/color) — e.g. `koleda-50x70-matte-white`
 
-Ако не е конфигуриран поне един размер, чекбоксът е неактивен и плъгинът пада на обичайния Simple Product (един файл = един продукт), точно както досега.
+If no size is configured, the checkbox is disabled and the plugin falls back to a regular Simple Product (one file = one product), exactly as before.
 
-## Оптимизация на мокъп изображенията
+## Mockup image optimization
 
-От **DecalDesk → Настройки → Оптимизация на мокъп изображенията**:
-- **Формат**: WebP (препоръчан, ~75% по-малък от PNG при сравнимо качество), JPEG (най-широка съвместимост), или PNG (без загуба, но най-тежък)
-- **Качество на компресията** (1-100, прилага се само за WebP/JPEG) — 80-85 е разумен баланс
+From **DecalDesk → Settings → Mockup image optimization**:
+- **Format**: WebP (recommended, ~75% smaller than PNG at comparable quality), JPEG (widest compatibility), or PNG (lossless, but heaviest)
+- **Compression quality** (1-100, applies only to WebP/JPEG) — 80-85 is a sensible balance
 
-Ако сървърът няма WebP поддръжка (нито Imagick, нито GD с `imagewebp`), плъгинът автоматично пада на PNG вместо да гърми.
+If the server has no WebP support (neither Imagick nor GD with `imagewebp`), the plugin automatically falls back to PNG instead of failing.
 
-## Език на интерфейса (i18n)
+## Interface language (i18n)
 
-От версия 1.2.0, source кодът на плъгина е на **английски** (стандартна WordPress конвенция — source винаги е "универсалният" език, а всеки друг език идва като превод). Включен е готов **български превод**:
+As of version 1.2.0, the plugin's source code is in **English** (standard WordPress convention — source is always the "universal" language, and every other language comes in as a translation). A ready-made **Bulgarian translation** is included:
 
 ```
 languages/
-├── decaldesk.pot        (шаблон за нови преводи)
-├── decaldesk-bg_BG.po   (човекочетим български превод)
-└── decaldesk-bg_BG.mo   (компилиран, реално зареждан от WordPress)
+├── decaldesk.pot        (template for new translations)
+├── decaldesk-bg_BG.po   (human-readable Bulgarian translation)
+└── decaldesk-bg_BG.mo   (compiled, actually loaded by WordPress)
 ```
 
-Ако WordPress сайтът е с `Language: български` в Settings → General, интерфейсът на DecalDesk автоматично излиза на български — нищо не трябва да пипаш. На всеки друг език (включително английски по подразбиране), излиза на английски.
+If the WordPress site's `Language` is set to Bulgarian in Settings → General, DecalDesk's interface automatically shows in Bulgarian — nothing to configure. In any other language (including English by default), it shows in English.
 
-**За нов превод на друг език:** отвори `languages/decaldesk.pot` с Poedit (безплатен) или подобен инструмент, преведи всички низове, запази като `decaldesk-{locale}.po` (напр. `decaldesk-de_DE.po` за немски), компилирай `.mo` и качи в `languages/` папката.
+**To add a translation for another language:** open `languages/decaldesk.pot` with Poedit (free) or a similar tool, translate all the strings, save as `decaldesk-{locale}.po` (e.g. `decaldesk-de_DE.po` for German), compile the `.mo` file, and upload it to the `languages/` folder.
 
-Забележка: AI-генерираните описания на продуктите (тези, които виждат клиентите в магазина) остават на български по дизайн — те не зависят от езика на админ панела, а от езика на клиентите на конкретния магазин. Ако това трябва да стане configurable, е отделна бъдеща задача.
+Note: AI-generated product descriptions (the ones store customers see) are controlled separately from the admin interface language, via **DecalDesk → Settings → AI content language** — they follow the language your store's customers read, not the admin's locale. This defaults to English and can be changed to Bulgarian or any other language.
