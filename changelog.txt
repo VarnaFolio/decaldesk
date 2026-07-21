@@ -8,7 +8,7 @@
 = 1.3.5 =
 * Multi-template mockups and WebP/JPEG output: removed the remaining hardcoded restriction in the free build's mockup generator and its surrounding admin UI, since the underlying capability isn't present in this build at all.
 * Removed leftover license-check code paths and settings storage (variant configuration UI/AJAX, freeform zone save, AI test-connection, AI/variant/mockup-format settings fields) that had no effect in the free build but referenced or stored data for functionality it doesn't contain.
-* Removed non-standard development files (patches, example env, build tooling) from the distributed package; added .distignore for future builds.
+* Removed non-standard development files (patches, example env, build tooling) from the distributed package; the build script (tools/build-free-zip.js) now excludes them for future builds.
 * Added missing translators comments for two translatable strings with placeholders.
 * Escaped admin notice output at the point of echo (defense in depth, matching WordPress escape-late guidance).
 * Switched file deletion calls to wp_delete_file() per WordPress.org coding standards.

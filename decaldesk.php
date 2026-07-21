@@ -18,7 +18,7 @@
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-    exit; // Директен достъп забранен
+	exit; // Директен достъп забранен
 }
 
 // ==========================================================
@@ -29,41 +29,43 @@ if ( ! defined( 'ABSPATH' ) ) {
 // каноничният update/license сървър. Тази версия (WP.org) е is_premium=false
 // и не съдържа код за Pro-only функции (те живеят само в DecalDesk Pro).
 if ( ! function_exists( 'decaldesk_fs' ) ) {
-    function decaldesk_fs() {
-        global $decaldesk_fs;
+	function decaldesk_fs() {
+		global $decaldesk_fs;
 
-        if ( ! isset( $decaldesk_fs ) ) {
-            require_once dirname( __FILE__ ) . '/vendor/freemius/start.php';
+		if ( ! isset( $decaldesk_fs ) ) {
+			require_once __DIR__ . '/vendor/freemius/start.php';
 
-            $decaldesk_fs = fs_dynamic_init( array(
-                'id'                  => '34508',
-                'slug'                => 'decaldesk',
-                'type'                => 'plugin',
-                'public_key'          => 'pk_5f71bbda1294ec97ace8d99c33f3b',
-                'is_premium'          => true,
-                'premium_suffix'      => 'Pro',
-                // Ако плъгинът е "serviceware" (работи само през външен сървър,
-                // без реален premium код в самия плъгин), тази опция трябва да е false.
-                'has_premium_version' => true,
-                'has_addons'          => false,
-                'has_paid_plans'      => true,
-                'is_org_compliant'    => true,
-                // Ползва се само ако/когато Freemius автоматично генерира
-                // WP.org-съвместима free версия от този код (маркирани блокове).
-                // Премахва се автоматично в тази free версия, ако въобще стигнем
-                // дотам - засега няма ефект, докато не активираме тази функция.
-                'wp_org_gatekeeper'   => 'OA7#BoRiBNqdf52FvzEf!!074aRLPs8fspif$7K1#4u4Csys1fQlCecVcUTOs2mcpeVHi#C2j9d09fOTvbC0HloPT7fFee5WdS3G',
-                'menu'                => array(
-                    'support'        => false,
-                ),
-            ) );
-        }
+			$decaldesk_fs = fs_dynamic_init(
+				array(
+					'id'                  => '34508',
+					'slug'                => 'decaldesk',
+					'type'                => 'plugin',
+					'public_key'          => 'pk_5f71bbda1294ec97ace8d99c33f3b',
+					'is_premium'          => true,
+					'premium_suffix'      => 'Pro',
+					// Ако плъгинът е "serviceware" (работи само през външен сървър,
+					// без реален premium код в самия плъгин), тази опция трябва да е false.
+					'has_premium_version' => true,
+					'has_addons'          => false,
+					'has_paid_plans'      => true,
+					'is_org_compliant'    => true,
+					// Ползва се само ако/когато Freemius автоматично генерира
+					// WP.org-съвместима free версия от този код (маркирани блокове).
+					// Премахва се автоматично в тази free версия, ако въобще стигнем
+					// дотам - засега няма ефект, докато не активираме тази функция.
+					'wp_org_gatekeeper'   => 'OA7#BoRiBNqdf52FvzEf!!074aRLPs8fspif$7K1#4u4Csys1fQlCecVcUTOs2mcpeVHi#C2j9d09fOTvbC0HloPT7fFee5WdS3G',
+					'menu'                => array(
+						'support' => false,
+					),
+				)
+			);
+		}
 
-        return $decaldesk_fs;
-    }
+		return $decaldesk_fs;
+	}
 
-    decaldesk_fs();
-    do_action( 'decaldesk_fs_loaded' );
+	decaldesk_fs();
+	do_action( 'decaldesk_fs_loaded' );
 }
 
 // ==========================================================
@@ -75,12 +77,12 @@ define( 'DECALDESK_URL', plugin_dir_url( __FILE__ ) );
 
 // Максимален брой PNG файлове, качвани наведнъж (пакетно качване)
 if ( ! defined( 'DECALDESK_MAX_BATCH_FILES' ) ) {
-    define( 'DECALDESK_MAX_BATCH_FILES', 50 );
+	define( 'DECALDESK_MAX_BATCH_FILES', 50 );
 }
 
 // Позволени файлови формати за качване на дизайни (най-разпространените за графика)
 if ( ! defined( 'DECALDESK_ALLOWED_EXTENSIONS' ) ) {
-    define( 'DECALDESK_ALLOWED_EXTENSIONS', array( 'png', 'jpg', 'jpeg', 'webp', 'gif' ) );
+	define( 'DECALDESK_ALLOWED_EXTENSIONS', array( 'png', 'jpg', 'jpeg', 'webp', 'gif' ) );
 }
 
 // ==========================================================
@@ -91,11 +93,14 @@ if ( ! defined( 'DECALDESK_ALLOWED_EXTENSIONS' ) ) {
 // нормално - DecalDesk не пипа директно order таблиците изобщо (работи
 // само с продукти и собствена jobs таблица), затова е безопасно да
 // декларираме пълна съвместимост.
-add_action( 'before_woocommerce_init', function () {
-    if ( class_exists( '\Automattic\WooCommerce\Utilities\FeaturesUtil' ) ) {
-        \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
-    }
-} );
+add_action(
+	'before_woocommerce_init',
+	function () {
+		if ( class_exists( '\Automattic\WooCommerce\Utilities\FeaturesUtil' ) ) {
+			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+		}
+	}
+);
 
 // ==========================================================
 // Миграция от старото име "ProductOps" (ако сайтът е ъпдейтнат от
@@ -107,60 +112,60 @@ add_action( 'before_woocommerce_init', function () {
 // прехвърля настройките, историята (jobs таблицата) и качените шаблони/
 // файлове от старите имена към новите, автоматично и еднократно.
 function decaldesk_maybe_migrate_from_productops() {
-    if ( get_option( 'decaldesk_migrated_from_productops' ) ) {
-        return; // Вече мигрирано - нищо за правене
-    }
+	if ( get_option( 'decaldesk_migrated_from_productops' ) ) {
+		return; // Вече мигрирано - нищо за правене
+	}
 
-    global $wpdb;
-    $migrated_anything = false;
+	global $wpdb;
+	$migrated_anything = false;
 
-    // 1) Основни настройки
-    $old_settings = get_option( 'productops_settings', false );
-    if ( false !== $old_settings && false === get_option( 'decaldesk_settings', false ) ) {
-        add_option( 'decaldesk_settings', $old_settings );
-        $migrated_anything = true;
-    }
+	// 1) Основни настройки
+	$old_settings = get_option( 'productops_settings', false );
+	if ( false !== $old_settings && false === get_option( 'decaldesk_settings', false ) ) {
+		add_option( 'decaldesk_settings', $old_settings );
+		$migrated_anything = true;
+	}
 
-    // 2) Дневна AI квота
-    $old_quota = get_option( 'productops_ai_daily_usage', false );
-    if ( false !== $old_quota && false === get_option( 'decaldesk_ai_daily_usage', false ) ) {
-        add_option( 'decaldesk_ai_daily_usage', $old_quota );
-        $migrated_anything = true;
-    }
+	// 2) Дневна AI квота
+	$old_quota = get_option( 'productops_ai_daily_usage', false );
+	if ( false !== $old_quota && false === get_option( 'decaldesk_ai_daily_usage', false ) ) {
+		add_option( 'decaldesk_ai_daily_usage', $old_quota );
+		$migrated_anything = true;
+	}
 
-    // 3) DB таблица с историята (jobs) - RENAME TABLE е бърз, атомарен, не губи данни
-    $old_table = $wpdb->prefix . 'productops_jobs';
-    $new_table = $wpdb->prefix . 'decaldesk_jobs';
+	// 3) DB таблица с историята (jobs) - RENAME TABLE е бърз, атомарен, не губи данни
+	$old_table = $wpdb->prefix . 'productops_jobs';
+	$new_table = $wpdb->prefix . 'decaldesk_jobs';
 
-    $old_table_exists = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $old_table ) ) === $old_table;
-    $new_table_exists = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $new_table ) ) === $new_table;
+	$old_table_exists = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $old_table ) ) === $old_table;
+	$new_table_exists = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $new_table ) ) === $new_table;
 
-    if ( $old_table_exists && ! $new_table_exists ) {
-        $wpdb->query( "RENAME TABLE {$old_table} TO {$new_table}" );
-        $migrated_anything = true;
-    }
+	if ( $old_table_exists && ! $new_table_exists ) {
+		$wpdb->query( "RENAME TABLE {$old_table} TO {$new_table}" );
+		$migrated_anything = true;
+	}
 
-    // 4) Upload директория (качени шаблони, incoming/mockups) - преместваме цялата папка наведнъж
-    $upload_dir = wp_upload_dir();
-    $old_dir    = $upload_dir['basedir'] . '/productops';
-    $new_dir    = $upload_dir['basedir'] . '/decaldesk';
+	// 4) Upload директория (качени шаблони, incoming/mockups) - преместваме цялата папка наведнъж
+	$upload_dir = wp_upload_dir();
+	$old_dir    = $upload_dir['basedir'] . '/productops';
+	$new_dir    = $upload_dir['basedir'] . '/decaldesk';
 
-    if ( is_dir( $old_dir ) && ! is_dir( $new_dir ) ) {
-        if ( @rename( $old_dir, $new_dir ) ) {
-            $migrated_anything = true;
-        } else {
-            // rename() между различни файлови системи понякога не работи на
-            // някои хостинги - fallback на рекурсивно копиране
-            decaldesk_recursive_copy_dir( $old_dir, $new_dir );
-            $migrated_anything = true;
-        }
-    }
+	if ( is_dir( $old_dir ) && ! is_dir( $new_dir ) ) {
+		if ( @rename( $old_dir, $new_dir ) ) {
+			$migrated_anything = true;
+		} else {
+			// rename() между различни файлови системи понякога не работи на
+			// някои хостинги - fallback на рекурсивно копиране
+			decaldesk_recursive_copy_dir( $old_dir, $new_dir );
+			$migrated_anything = true;
+		}
+	}
 
-    update_option( 'decaldesk_migrated_from_productops', current_time( 'mysql' ) );
+	update_option( 'decaldesk_migrated_from_productops', current_time( 'mysql' ) );
 
-    if ( $migrated_anything ) {
-        set_transient( 'decaldesk_migration_notice', true, DAY_IN_SECONDS );
-    }
+	if ( $migrated_anything ) {
+		set_transient( 'decaldesk_migration_notice', true, DAY_IN_SECONDS );
+	}
 }
 add_action( 'plugins_loaded', 'decaldesk_maybe_migrate_from_productops', 5 );
 
@@ -169,48 +174,48 @@ add_action( 'plugins_loaded', 'decaldesk_maybe_migrate_from_productops', 5 );
  * файлови системи не сработи на дадения хостинг).
  */
 function decaldesk_recursive_copy_dir( $source, $destination ) {
-    if ( ! is_dir( $source ) ) {
-        return;
-    }
+	if ( ! is_dir( $source ) ) {
+		return;
+	}
 
-    wp_mkdir_p( $destination );
+	wp_mkdir_p( $destination );
 
-    $items = scandir( $source );
-    foreach ( $items as $item ) {
-        if ( '.' === $item || '..' === $item ) {
-            continue;
-        }
+	$items = scandir( $source );
+	foreach ( $items as $item ) {
+		if ( '.' === $item || '..' === $item ) {
+			continue;
+		}
 
-        $src_path  = $source . '/' . $item;
-        $dest_path = $destination . '/' . $item;
+		$src_path  = $source . '/' . $item;
+		$dest_path = $destination . '/' . $item;
 
-        if ( is_dir( $src_path ) ) {
-            decaldesk_recursive_copy_dir( $src_path, $dest_path );
-        } else {
-            @copy( $src_path, $dest_path );
-        }
-    }
+		if ( is_dir( $src_path ) ) {
+			decaldesk_recursive_copy_dir( $src_path, $dest_path );
+		} else {
+			@copy( $src_path, $dest_path );
+		}
+	}
 }
 
 /**
  * Кратко еднократно известие в админ панела, потвърждаващо успешна миграция.
  */
 function decaldesk_render_migration_notice() {
-    if ( ! get_transient( 'decaldesk_migration_notice' ) ) {
-        return;
-    }
+	if ( ! get_transient( 'decaldesk_migration_notice' ) ) {
+		return;
+	}
 
-    $screen = get_current_screen();
-    if ( ! $screen || strpos( $screen->id, 'decaldesk' ) === false ) {
-        return;
-    }
+	$screen = get_current_screen();
+	if ( ! $screen || strpos( $screen->id, 'decaldesk' ) === false ) {
+		return;
+	}
 
-    delete_transient( 'decaldesk_migration_notice' );
-    ?>
-    <div class="notice notice-success is-dismissible">
-        <p><strong>DecalDesk:</strong> <?php esc_html_e( 'Your settings, history, and uploaded templates were successfully migrated from the previous version (ProductOps). Everything is in place.', 'decaldesk' ); ?></p>
-    </div>
-    <?php
+	delete_transient( 'decaldesk_migration_notice' );
+	?>
+	<div class="notice notice-success is-dismissible">
+		<p><strong>DecalDesk:</strong> <?php esc_html_e( 'Your settings, history, and uploaded templates were successfully migrated from the previous version (ProductOps). Everything is in place.', 'decaldesk' ); ?></p>
+	</div>
+	<?php
 }
 add_action( 'admin_notices', 'decaldesk_render_migration_notice' );
 
@@ -218,15 +223,18 @@ add_action( 'admin_notices', 'decaldesk_render_migration_notice' );
 // Проверка дали WooCommerce е активен
 // ==========================================================
 function decaldesk_check_woocommerce() {
-    if ( ! class_exists( 'WooCommerce' ) ) {
-        add_action( 'admin_notices', function () {
-            echo '<div class="notice notice-error"><p>';
-            echo esc_html__( 'DecalDesk requires WooCommerce to be active in order to work.', 'decaldesk' );
-            echo '</p></div>';
-        } );
-        return false;
-    }
-    return true;
+	if ( ! class_exists( 'WooCommerce' ) ) {
+		add_action(
+			'admin_notices',
+			function () {
+				echo '<div class="notice notice-error"><p>';
+				echo esc_html__( 'DecalDesk requires WooCommerce to be active in order to work.', 'decaldesk' );
+				echo '</p></div>';
+			}
+		);
+		return false;
+	}
+	return true;
 }
 // ==========================================================
 // Преводи (i18n)
@@ -247,21 +255,21 @@ function decaldesk_check_woocommerce() {
 // (напр. wc_price(), wc_get_product()).
 // ==========================================================
 function decaldesk_init_plugin() {
-    if ( ! decaldesk_check_woocommerce() ) {
-        return;
-    }
+	if ( ! decaldesk_check_woocommerce() ) {
+		return;
+	}
 
-    require_once DECALDESK_PATH . 'includes/parser.php';
-    require_once DECALDESK_PATH . 'includes/pricing.php';
-    require_once DECALDESK_PATH . 'includes/ai-content.php';
-    require_once DECALDESK_PATH . 'includes/mockup.php';
-    require_once DECALDESK_PATH . 'includes/product.php';
-    require_once DECALDESK_PATH . 'includes/database.php';
-    require_once DECALDESK_PATH . 'includes/background.php';
-    require_once DECALDESK_PATH . 'includes/notices.php';
-    require_once DECALDESK_PATH . 'includes/settings.php';
+	require_once DECALDESK_PATH . 'includes/parser.php';
+	require_once DECALDESK_PATH . 'includes/pricing.php';
+	require_once DECALDESK_PATH . 'includes/ai-content.php';
+	require_once DECALDESK_PATH . 'includes/mockup.php';
+	require_once DECALDESK_PATH . 'includes/product.php';
+	require_once DECALDESK_PATH . 'includes/database.php';
+	require_once DECALDESK_PATH . 'includes/background.php';
+	require_once DECALDESK_PATH . 'includes/notices.php';
+	require_once DECALDESK_PATH . 'includes/settings.php';
 
-    require_once DECALDESK_PATH . 'admin/admin-menu.php';
+	require_once DECALDESK_PATH . 'admin/admin-menu.php';
 }
 add_action( 'plugins_loaded', 'decaldesk_init_plugin', 20 );
 
@@ -269,33 +277,42 @@ add_action( 'plugins_loaded', 'decaldesk_init_plugin', 20 );
 // Активиране / Деактивиране
 // ==========================================================
 function decaldesk_activate() {
-    // Създаваме папки за качване, ако не съществуват
-    $upload_dir = wp_upload_dir();
-    $base = $upload_dir['basedir'] . '/decaldesk';
+	// register_activation_hook се задейства веднага при клик на "Активирай",
+	// в същата заявка, но ПРЕДИ plugins_loaded (decaldesk_init_plugin()) да
+	// е стигнал до зареждане на includes/database.php - затова тук изрично
+	// изискваме файла, вместо да разчитаме на обичайния ред на зареждане.
+	require_once DECALDESK_PATH . 'includes/database.php';
 
-    foreach ( array( 'incoming', 'mockups', 'templates' ) as $sub ) {
-        $dir = $base . '/' . $sub;
-        if ( ! file_exists( $dir ) ) {
-            wp_mkdir_p( $dir );
-        }
-    }
+	// Създаваме папки за качване, ако не съществуват
+	$upload_dir = wp_upload_dir();
+	$base       = $upload_dir['basedir'] . '/decaldesk';
 
-    // Създаваме DB таблицата за фоновите задачи (jobs)
-    decaldesk_create_jobs_table();
+	foreach ( array( 'incoming', 'mockups', 'templates' ) as $sub ) {
+		$dir = $base . '/' . $sub;
+		if ( ! file_exists( $dir ) ) {
+			wp_mkdir_p( $dir );
+		}
+	}
 
-    // Настройки по подразбиране
-    if ( false === get_option( 'decaldesk_settings' ) ) {
-        add_option( 'decaldesk_settings', array(
-            'price_per_sqm' => 60,
-            'min_price'     => 15,
-            'categories'    => array(
-                'sticker' => 'Stickers',
-                'wrap'    => 'Car Wraps',
-                'wall'    => 'Wall Decals',
-                'kitchen' => 'Kitchen Backsplash',
-            ),
-        ) );
-    }
+	// Създаваме DB таблицата за фоновите задачи (jobs)
+	decaldesk_create_jobs_table();
+
+	// Настройки по подразбиране
+	if ( false === get_option( 'decaldesk_settings' ) ) {
+		add_option(
+			'decaldesk_settings',
+			array(
+				'price_per_sqm' => 60,
+				'min_price'     => 15,
+				'categories'    => array(
+					'sticker' => 'Stickers',
+					'wrap'    => 'Car Wraps',
+					'wall'    => 'Wall Decals',
+					'kitchen' => 'Kitchen Backsplash',
+				),
+			)
+		);
+	}
 }
 register_activation_hook( __FILE__, 'decaldesk_activate' );
 
@@ -305,19 +322,19 @@ register_activation_hook( __FILE__, 'decaldesk_activate' );
  * защото activation hook не се задейства при обикновено презаписване.
  */
 function decaldesk_maybe_create_upload_dirs() {
-    if ( ! class_exists( 'WooCommerce' ) ) {
-        return;
-    }
+	if ( ! class_exists( 'WooCommerce' ) ) {
+		return;
+	}
 
-    $upload_dir = wp_upload_dir();
-    $base       = $upload_dir['basedir'] . '/decaldesk';
+	$upload_dir = wp_upload_dir();
+	$base       = $upload_dir['basedir'] . '/decaldesk';
 
-    foreach ( array( 'incoming', 'mockups', 'templates' ) as $sub ) {
-        $dir = $base . '/' . $sub;
-        if ( ! file_exists( $dir ) ) {
-            wp_mkdir_p( $dir );
-        }
-    }
+	foreach ( array( 'incoming', 'mockups', 'templates' ) as $sub ) {
+		$dir = $base . '/' . $sub;
+		if ( ! file_exists( $dir ) ) {
+			wp_mkdir_p( $dir );
+		}
+	}
 }
 add_action( 'admin_init', 'decaldesk_maybe_create_upload_dirs' );
 
@@ -328,21 +345,21 @@ add_action( 'admin_init', 'decaldesk_maybe_create_upload_dirs' );
 // спира чакащите фонови задачи (Action Scheduler), за да не се изпълнят
 // докато плъгинът е неактивен и после плъгинът бъде премахнат другояче.
 function decaldesk_deactivate() {
-    // Ползваме литералния hook name, а не DECALDESK_JOB_HOOK константата -
-    // тя се дефинира в includes/background.php, който се зарежда само ако
-    // WooCommerce е активен (виж decaldesk_init_plugin()); при деактивиране
-    // на DecalDesk точно защото WooCommerce вече липсва, константата няма
-    // да съществува.
-    $job_hook = 'decaldesk_process_design';
+	// Ползваме литералния hook name, а не DECALDESK_JOB_HOOK константата -
+	// тя се дефинира в includes/background.php, който се зарежда само ако
+	// WooCommerce е активен (виж decaldesk_init_plugin()); при деактивиране
+	// на DecalDesk точно защото WooCommerce вече липсва, константата няма
+	// да съществува.
+	$job_hook = 'decaldesk_process_design';
 
-    if ( function_exists( 'as_unschedule_all_actions' ) ) {
-        as_unschedule_all_actions( '', array(), 'decaldesk' );
-    }
+	if ( function_exists( 'as_unschedule_all_actions' ) ) {
+		as_unschedule_all_actions( '', array(), 'decaldesk' );
+	}
 
-    $timestamp = wp_next_scheduled( $job_hook );
-    if ( $timestamp ) {
-        wp_unschedule_event( $timestamp, $job_hook );
-    }
+	$timestamp = wp_next_scheduled( $job_hook );
+	if ( $timestamp ) {
+		wp_unschedule_event( $timestamp, $job_hook );
+	}
 }
 register_deactivation_hook( __FILE__, 'decaldesk_deactivate' );
 
@@ -368,59 +385,59 @@ register_deactivation_hook( __FILE__, 'decaldesk_deactivate' );
 // стъпка (delete_option, DROP TABLE IF EXISTS, изтриване на директория) е
 // idempotent - повторното ѝ изпълнение е no-op.
 function decaldesk_run_uninstall_cleanup() {
-    $settings = get_option( 'decaldesk_settings', array() );
+	$settings = get_option( 'decaldesk_settings', array() );
 
-    if ( empty( $settings['delete_data_on_uninstall'] ) ) {
-        return;
-    }
+	if ( empty( $settings['delete_data_on_uninstall'] ) ) {
+		return;
+	}
 
-    delete_option( 'decaldesk_settings' );
-    delete_option( 'decaldesk_ai_daily_usage' );
-    delete_option( 'decaldesk_db_version' );
+	delete_option( 'decaldesk_settings' );
+	delete_option( 'decaldesk_ai_daily_usage' );
+	delete_option( 'decaldesk_db_version' );
 
-    global $wpdb;
-    $wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . 'decaldesk_jobs' );
+	global $wpdb;
+	$wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . 'decaldesk_jobs' );
 
-    if ( function_exists( 'as_unschedule_all_actions' ) ) {
-        as_unschedule_all_actions( '', array(), 'decaldesk' );
-    }
+	if ( function_exists( 'as_unschedule_all_actions' ) ) {
+		as_unschedule_all_actions( '', array(), 'decaldesk' );
+	}
 
-    $upload_dir     = wp_upload_dir();
-    $decaldesk_dir  = $upload_dir['basedir'] . '/decaldesk';
+	$upload_dir    = wp_upload_dir();
+	$decaldesk_dir = $upload_dir['basedir'] . '/decaldesk';
 
-    if ( is_dir( $decaldesk_dir ) ) {
-        decaldesk_recursive_delete_dir( $decaldesk_dir );
-    }
+	if ( is_dir( $decaldesk_dir ) ) {
+		decaldesk_recursive_delete_dir( $decaldesk_dir );
+	}
 }
 
 /**
  * Рекурсивно изтрива директория и цялото ѝ съдържание.
  */
 function decaldesk_recursive_delete_dir( $dir ) {
-    if ( ! is_dir( $dir ) ) {
-        return;
-    }
+	if ( ! is_dir( $dir ) ) {
+		return;
+	}
 
-    $items = scandir( $dir );
-    if ( false === $items ) {
-        return;
-    }
+	$items = scandir( $dir );
+	if ( false === $items ) {
+		return;
+	}
 
-    foreach ( $items as $item ) {
-        if ( '.' === $item || '..' === $item ) {
-            continue;
-        }
+	foreach ( $items as $item ) {
+		if ( '.' === $item || '..' === $item ) {
+			continue;
+		}
 
-        $path = $dir . '/' . $item;
+		$path = $dir . '/' . $item;
 
-        if ( is_dir( $path ) ) {
-            decaldesk_recursive_delete_dir( $path );
-        } else {
-            wp_delete_file( $path );
-        }
-    }
+		if ( is_dir( $path ) ) {
+			decaldesk_recursive_delete_dir( $path );
+		} else {
+			wp_delete_file( $path );
+		}
+	}
 
-    @rmdir( $dir );
+	@rmdir( $dir );
 }
 
 /**
@@ -428,17 +445,17 @@ function decaldesk_recursive_delete_dir( $dir ) {
  * за всеки сайт в мрежата поотделно (всеки сайт си има собствени опции/uploads).
  */
 function decaldesk_run_uninstall_cleanup_all_sites() {
-    if ( is_multisite() ) {
-        $site_ids = get_sites( array( 'fields' => 'ids' ) );
+	if ( is_multisite() ) {
+		$site_ids = get_sites( array( 'fields' => 'ids' ) );
 
-        foreach ( $site_ids as $site_id ) {
-            switch_to_blog( $site_id );
-            decaldesk_run_uninstall_cleanup();
-            restore_current_blog();
-        }
-    } else {
-        decaldesk_run_uninstall_cleanup();
-    }
+		foreach ( $site_ids as $site_id ) {
+			switch_to_blog( $site_id );
+			decaldesk_run_uninstall_cleanup();
+			restore_current_blog();
+		}
+	} else {
+		decaldesk_run_uninstall_cleanup();
+	}
 }
 decaldesk_fs()->add_action( 'after_uninstall', 'decaldesk_run_uninstall_cleanup_all_sites' );
 
@@ -446,63 +463,71 @@ decaldesk_fs()->add_action( 'after_uninstall', 'decaldesk_run_uninstall_cleanup_
 // Enqueue admin assets (само на страницата на DecalDesk)
 // ==========================================================
 function decaldesk_enqueue_admin_assets( $hook ) {
-    if ( strpos( $hook, 'decaldesk' ) === false ) {
-        return;
-    }
+	if ( strpos( $hook, 'decaldesk' ) === false ) {
+		return;
+	}
 
-    // Ползваме filemtime() на самите файлове като версия вместо статична
-    // константа - гарантира, че браузърът винаги дърпа свежа версия след
-    // всяка промяна, без риск да забравим ръчно да вдигнем номер (точно
-    // това се случи веднъж и доведе до объркващ "счупен" upload екран,
-    // докато реално причината беше кеширан стар JS файл в браузъра).
-    $style_path    = DECALDESK_PATH . 'assets/css/style.css';
-    $uploader_path = DECALDESK_PATH . 'assets/js/uploader.js';
+	// Ползваме filemtime() на самите файлове като версия вместо статична
+	// константа - гарантира, че браузърът винаги дърпа свежа версия след
+	// всяка промяна, без риск да забравим ръчно да вдигнем номер (точно
+	// това се случи веднъж и доведе до объркващ "счупен" upload екран,
+	// докато реално причината беше кеширан стар JS файл в браузъра).
+	$style_path    = DECALDESK_PATH . 'assets/css/style.css';
+	$uploader_path = DECALDESK_PATH . 'assets/js/uploader.js';
 
-    $style_ver    = file_exists( $style_path ) ? filemtime( $style_path ) : DECALDESK_VERSION;
-    $uploader_ver = file_exists( $uploader_path ) ? filemtime( $uploader_path ) : DECALDESK_VERSION;
+	$style_ver    = file_exists( $style_path ) ? filemtime( $style_path ) : DECALDESK_VERSION;
+	$uploader_ver = file_exists( $uploader_path ) ? filemtime( $uploader_path ) : DECALDESK_VERSION;
 
-    wp_enqueue_style(
-        'decaldesk-style',
-        DECALDESK_URL . 'assets/css/style.css',
-        array(),
-        $style_ver
-    );
+	wp_enqueue_style(
+		'decaldesk-style',
+		DECALDESK_URL . 'assets/css/style.css',
+		array(),
+		$style_ver
+	);
 
-    wp_enqueue_script(
-        'decaldesk-uploader',
-        DECALDESK_URL . 'assets/js/uploader.js',
-        array( 'jquery' ),
-        $uploader_ver,
-        true
-    );
+	wp_enqueue_script(
+		'decaldesk-uploader',
+		DECALDESK_URL . 'assets/js/uploader.js',
+		array( 'jquery' ),
+		$uploader_ver,
+		true
+	);
 
-    wp_localize_script( 'decaldesk-uploader', 'DecalDeskData', array(
-        'ajax_url'  => admin_url( 'admin-ajax.php' ),
-        'nonce'     => wp_create_nonce( 'decaldesk_upload_nonce' ),
-        'maxFiles'  => DECALDESK_MAX_BATCH_FILES,
-        'allowedExtensions' => DECALDESK_ALLOWED_EXTENSIONS,
-    ) );
+	wp_localize_script(
+		'decaldesk-uploader',
+		'DecalDeskData',
+		array(
+			'ajax_url'          => admin_url( 'admin-ajax.php' ),
+			'nonce'             => wp_create_nonce( 'decaldesk_upload_nonce' ),
+			'maxFiles'          => DECALDESK_MAX_BATCH_FILES,
+			'allowedExtensions' => DECALDESK_ALLOWED_EXTENSIONS,
+		)
+	);
 
-    // JS за drag-box редактора на зоните - само на страницата "Категории"
-    if ( false !== strpos( $hook, 'decaldesk-categories' ) ) {
-        $categories_path = DECALDESK_PATH . 'assets/js/categories.js';
-        $categories_ver  = file_exists( $categories_path ) ? filemtime( $categories_path ) : DECALDESK_VERSION;
+	// JS за drag-box редактора на зоните - само на страницата "Категории"
+	if ( false !== strpos( $hook, 'decaldesk-categories' ) ) {
+		$categories_path = DECALDESK_PATH . 'assets/js/categories.js';
+		$categories_ver  = file_exists( $categories_path ) ? filemtime( $categories_path ) : DECALDESK_VERSION;
 
-        wp_enqueue_script(
-            'decaldesk-categories',
-            DECALDESK_URL . 'assets/js/categories.js',
-            array( 'jquery' ),
-            $categories_ver,
-            true
-        );
+		wp_enqueue_script(
+			'decaldesk-categories',
+			DECALDESK_URL . 'assets/js/categories.js',
+			array( 'jquery' ),
+			$categories_ver,
+			true
+		);
 
-        wp_localize_script( 'decaldesk-categories', 'DecalDeskCategoriesData', array(
-            'ajax_url'  => admin_url( 'admin-ajax.php' ),
-            'nonce'     => wp_create_nonce( 'decaldesk_categories_nonce' ),
-            'isPro'     => decaldesk_fs()->can_use_premium_code(),
-            'maxSlots'  => decaldesk_max_template_slots(),
-        ) );
-    }
+		wp_localize_script(
+			'decaldesk-categories',
+			'DecalDeskCategoriesData',
+			array(
+				'ajax_url' => admin_url( 'admin-ajax.php' ),
+				'nonce'    => wp_create_nonce( 'decaldesk_categories_nonce' ),
+				'isPro'    => decaldesk_fs()->can_use_premium_code(),
+				'maxSlots' => decaldesk_max_template_slots(),
+			)
+		);
+	}
 }
 add_action( 'admin_enqueue_scripts', 'decaldesk_enqueue_admin_assets' );
 
@@ -510,7 +535,7 @@ add_action( 'admin_enqueue_scripts', 'decaldesk_enqueue_admin_assets' );
 // Поддръжка / контакт
 // ==========================================================
 if ( ! defined( 'DECALDESK_SUPPORT_EMAIL' ) ) {
-    define( 'DECALDESK_SUPPORT_EMAIL', 'support@decaldesk.com' );
+	define( 'DECALDESK_SUPPORT_EMAIL', 'support@decaldesk.com' );
 }
 
 /**
@@ -518,16 +543,16 @@ if ( ! defined( 'DECALDESK_SUPPORT_EMAIL' ) ) {
  * с линк за поддръжка - само на страниците на DecalDesk, не навсякъде в админа.
  */
 function decaldesk_admin_footer_text( $text ) {
-    $screen = get_current_screen();
+	$screen = get_current_screen();
 
-    if ( ! $screen || strpos( $screen->id, 'decaldesk' ) === false ) {
-        return $text;
-    }
+	if ( ! $screen || strpos( $screen->id, 'decaldesk' ) === false ) {
+		return $text;
+	}
 
-    return sprintf(
-        /* translators: %s: support email address */
-        __( 'DecalDesk — need a hand? Email %s', 'decaldesk' ),
-        '<a href="mailto:' . esc_attr( DECALDESK_SUPPORT_EMAIL ) . '">' . esc_html( DECALDESK_SUPPORT_EMAIL ) . '</a>'
-    );
+	return sprintf(
+		/* translators: %s: support email address */
+		__( 'DecalDesk — need a hand? Email %s', 'decaldesk' ),
+		'<a href="mailto:' . esc_attr( DECALDESK_SUPPORT_EMAIL ) . '">' . esc_html( DECALDESK_SUPPORT_EMAIL ) . '</a>'
+	);
 }
 add_filter( 'admin_footer_text', 'decaldesk_admin_footer_text' );
