@@ -12,7 +12,7 @@ Turn a folder of decal/sticker design files into finished WooCommerce products �
 
 == Description ==
 
-DecalDesk automates turning a folder of design files (PNG, JPG/JPEG, WEBP, GIF) into fully configured WooCommerce products. Built for shops that sell physical products priced by area — vinyl stickers, car wraps, wall decals, kitchen backsplashes, canvas prints, window film, signs.
+DecalDesk automates turning a folder of design files (PNG, JPG/JPEG, WEBP, GIF) into fully configured WooCommerce products. Built for shops that sell physical products priced by area — vinyl stickers, car wraps, wall decals, kitchen backsplashes, canvas prints, window film, and signs.
 
 **Included in the free version:**
 
