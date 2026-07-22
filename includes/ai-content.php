@@ -225,16 +225,26 @@ function decaldesk_gd_load_image( $path ) {
  * е много по-устойчив - няма нужда от escaping и не зависи от JSON коректност.
  */
 function decaldesk_build_ai_prompt( $parsed, $has_image = false ) {
-	$category_name = decaldesk_get_category_display_name( $parsed['category'] );
-	$area_sqm      = decaldesk_calculate_area_sqm( $parsed['width'], $parsed['height'] );
-	$language      = decaldesk_get_ai_content_language();
+	$category_name      = decaldesk_get_category_display_name( $parsed['category'] );
+	$area_sqm           = decaldesk_calculate_area_sqm( $parsed['width'], $parsed['height'] );
+	$language           = decaldesk_get_ai_content_language();
+	$store_description  = decaldesk_get_store_description();
+
+	// Магазинът НЕ продава непременно декали/стикери - DecalDesk работи с
+	// всеки продукт, чиято цена зависи от площта (картини, платове, плочки
+	// и т.н.). Ако собственикът е описал какво продава в Настройки, ползваме
+	// точно тази фраза; иначе падаме на оригиналния default (декали/стикери),
+	// за да не се променя поведението за съществуващи инсталации без промяна.
+	$business_context = '' !== $store_description
+		? $store_description
+		: 'self-adhesive vinyl decals/stickers';
 
 	$vision_instruction = $has_image
 		? "Look carefully at the ATTACHED IMAGE of the design - describe what you actually see (motif, objects, colors, style, mood) and base the product content on that, not just the filename.\n\n"
 		: '';
 
 	return sprintf(
-		"You are a copywriter for an online store selling self-adhesive vinyl decals/stickers.\n" .
+		"You are a copywriter for an online store selling %s, priced by size (width x height).\n" .
 		'%s' .
 		"Write ALL product content in %s for the following product:\n\n" .
 		"- Design name (do NOT translate or transliterate it - use it exactly as given): %s\n" .
@@ -242,7 +252,7 @@ function decaldesk_build_ai_prompt( $parsed, $has_image = false ) {
 		"- Material: %s\n" .
 		"- Category: %s\n\n" .
 		'Reply in EXACTLY the following format, no markdown, no explanation before or after, ' .
-		"no code fences (```), just the four blocks with exactly these markers:\n\n" .
+		"no code fences (```), just the six blocks with exactly these markers:\n\n" .
 		"===DESCRIPTION===\n" .
 		'(long product description, 3-4 sentences, sales tone, mentions size/material/use; ' .
 		"may contain short HTML <p> paragraphs; do NOT put quote marks \" at the start/end here)\n" .
@@ -250,9 +260,16 @@ function decaldesk_build_ai_prompt( $parsed, $has_image = false ) {
 		"(short description, 1 sentence, up to 25 words, plain text only, no HTML)\n" .
 		"===META===\n" .
 		"(SEO meta description, max 150 characters, plain text on a single line, no line breaks)\n" .
+		"===SEO_TITLE===\n" .
+		'(SEO title for the product page, max 60 characters, plain text on a single line, ' .
+		"include the design name and the most important keyword - do NOT just repeat the design name alone)\n" .
+		"===FOCUS_KEYPHRASE===\n" .
+		'(the single SEO focus keyphrase this product page should rank for, 2-4 words, ' .
+		"plain text, lowercase, no punctuation - e.g. \"christmas wall decal\")\n" .
 		"===TAGS===\n" .
 		'(5-8 relevant tags for the product, comma-separated, in %s, lowercase, ' .
 		"no hashtags - e.g. motif/style/use/color - example: holiday, winter motif, kitchen, matte, gift)\n",
+		$business_context,
 		$vision_instruction,
 		$language,
 		$parsed['name'],
@@ -284,7 +301,9 @@ function decaldesk_parse_ai_json_response( $raw_text, $parsed ) {
 
 	$description       = decaldesk_extract_ai_section( $raw_text, 'DESCRIPTION', 'SHORT' );
 	$short_description = decaldesk_extract_ai_section( $raw_text, 'SHORT', 'META' );
-	$meta_description  = decaldesk_extract_ai_section( $raw_text, 'META', 'TAGS' );
+	$meta_description  = decaldesk_extract_ai_section( $raw_text, 'META', 'SEO_TITLE' );
+	$seo_title         = decaldesk_extract_ai_section( $raw_text, 'SEO_TITLE', 'FOCUS_KEYPHRASE' );
+	$focus_keyphrase   = decaldesk_extract_ai_section( $raw_text, 'FOCUS_KEYPHRASE', 'TAGS' );
 	$tags_raw          = decaldesk_extract_ai_section( $raw_text, 'TAGS', null );
 
 	if ( false === $description ) {
@@ -299,6 +318,12 @@ function decaldesk_parse_ai_json_response( $raw_text, $parsed ) {
 		'meta_description'  => false !== $meta_description
 			? mb_substr( sanitize_text_field( trim( $meta_description ) ), 0, 160 )
 			: $fallback['meta_description'],
+		'seo_title'         => false !== $seo_title
+			? mb_substr( sanitize_text_field( trim( $seo_title ) ), 0, 70 )
+			: $fallback['seo_title'],
+		'focus_keyphrase'   => false !== $focus_keyphrase
+			? mb_substr( sanitize_text_field( trim( wp_strip_all_tags( $focus_keyphrase ) ) ), 0, 80 )
+			: $fallback['focus_keyphrase'],
 		'tags'              => false !== $tags_raw
 			? decaldesk_parse_tags_string( $tags_raw )
 			: $fallback['tags'],
@@ -527,9 +552,10 @@ function decaldesk_call_gemini_api( $parsed, $api_key, $image_base64 = '' ) {
  * Fallback съдържание (шаблонно), използва се когато AI е изключен или недостъпен.
  */
 function decaldesk_build_fallback_content( $parsed ) {
-	$area          = decaldesk_calculate_area_sqm( $parsed['width'], $parsed['height'] );
-	$category_name = decaldesk_get_category_display_name( $parsed['category'] );
-	$language      = decaldesk_get_ai_content_language();
+	$area               = decaldesk_calculate_area_sqm( $parsed['width'], $parsed['height'] );
+	$category_name      = decaldesk_get_category_display_name( $parsed['category'] );
+	$language           = decaldesk_get_ai_content_language();
+	$store_description  = decaldesk_get_store_description();
 
 	// Fallback шаблоните НЕ минават през WP gettext система (__()) нарочно -
 	// езикът им следва настройката "Език на AI съдържанието", не locale-а на
@@ -538,10 +564,18 @@ function decaldesk_build_fallback_content( $parsed ) {
 	// вместо да съвпада с реалния AI изход. Засега поддържаме готови шаблони
 	// за български и английски; всеки друг избран език пада на английски
 	// (разумен универсален fallback, когато нямаме специфичен темплейт).
+	//
+	// Магазинът НЕ продава непременно декали/стикери - ако собственикът е
+	// описал какво продава в Настройки, ползваме точно тази фраза вместо
+	// хардкоднатото "самозалепващо се фолио"/"self-adhesive film" - иначе
+	// поведението остава каквото беше преди (обратна съвместимост).
 	if ( 'bulgarian' === strtolower( $language ) ) {
+		$product_phrase = '' !== $store_description ? $store_description : 'самозалепващо се фолио';
+
 		$description = sprintf(
-			'%1$s – самозалепващо се фолио с размери %2$d x %3$d см (%4$s м²). Изработено от %5$s материал с високо качество на печат, подходящо за %6$s.',
+			'%1$s – %2$s с размери %3$d x %4$d см (%5$s м²). Изработено от %6$s материал с високо качество на печат, подходящо за %7$s.',
 			$parsed['name'],
+			$product_phrase,
 			$parsed['width'],
 			$parsed['height'],
 			$area,
@@ -557,17 +591,23 @@ function decaldesk_build_fallback_content( $parsed ) {
 		);
 
 		$meta_description = sprintf(
-			'%1$s – самозалепващо се фолио %2$d x %3$d см. Поръчай онлайн с бърза доставка.',
+			'%1$s – %2$s %3$d x %4$d см. Поръчай онлайн с бърза доставка.',
 			$parsed['name'],
+			$product_phrase,
 			$parsed['width'],
 			$parsed['height']
 		);
 
+		$seo_title = sprintf( '%1$s %2$d x %3$d см – %4$s', $parsed['name'], $parsed['width'], $parsed['height'], $category_name );
+
 		$size_unit = ' см';
 	} else {
+		$product_phrase = '' !== $store_description ? $store_description : 'self-adhesive film';
+
 		$description = sprintf(
-			'%1$s – self-adhesive film, %2$d x %3$d cm (%4$s m²). Made from %5$s material with high-quality printing, suited for %6$s.',
+			'%1$s – %2$s, %3$d x %4$d cm (%5$s m²). Made from %6$s material with high-quality printing, suited for %7$s.',
 			$parsed['name'],
+			$product_phrase,
 			$parsed['width'],
 			$parsed['height'],
 			$area,
@@ -583,14 +623,21 @@ function decaldesk_build_fallback_content( $parsed ) {
 		);
 
 		$meta_description = sprintf(
-			'%1$s – self-adhesive film, %2$d x %3$d cm. Order online with fast delivery.',
+			'%1$s – %2$s, %3$d x %4$d cm. Order online with fast delivery.',
 			$parsed['name'],
+			$product_phrase,
 			$parsed['width'],
 			$parsed['height']
 		);
 
+		$seo_title = sprintf( '%1$s %2$d x %3$d cm – %4$s', $parsed['name'], $parsed['width'], $parsed['height'], $category_name );
+
 		$size_unit = ' cm';
 	}
+
+	// Без AI не измисляме "умна" ключова фраза - просто името + категорията,
+	// с достатъчна точност за повечето магазини и без риск от объркващ резултат.
+	$focus_keyphrase = mb_strtolower( trim( $parsed['name'] . ' ' . $category_name ) );
 
 	// Fallback тагове - базирани на реалните данни от името на файла (без AI),
 	// за да има консистентност дори когато AI е изключен/недостъпен.
@@ -609,6 +656,8 @@ function decaldesk_build_fallback_content( $parsed ) {
 		'description'       => wpautop( esc_html( $description ) ),
 		'short_description' => $short_description,
 		'meta_description'  => mb_substr( $meta_description, 0, 160 ),
+		'seo_title'         => mb_substr( $seo_title, 0, 70 ),
+		'focus_keyphrase'   => mb_substr( $focus_keyphrase, 0, 80 ),
 		'tags'              => array_values( $fallback_tags ),
 	);
 }
@@ -736,6 +785,19 @@ function decaldesk_get_ai_content_language() {
 	$language = isset( $settings['ai_content_language'] ) ? trim( $settings['ai_content_language'] ) : '';
 
 	return '' !== $language ? $language : 'English';
+}
+
+/**
+ * Връща свободния текст, с който потребителят описва какво продава
+ * магазинът (напр. "vinyl decals and stickers", "framed canvas prints",
+ * "ceramic tiles") - празен низ, ако не е конфигуриран. Ползва се и в AI
+ * промпта, и в статичния fallback шаблон, за да звучи съдържанието
+ * коректно за реалния тип продукт - DecalDesk не е ограничен само до
+ * декали/стикери, а до всеки продукт, чиято цена зависи от площта.
+ */
+function decaldesk_get_store_description() {
+	$settings = get_option( 'decaldesk_settings', array() );
+	return isset( $settings['store_description'] ) ? trim( $settings['store_description'] ) : '';
 }
 
 /*! <fs_premium_only> */
@@ -960,6 +1022,31 @@ function decaldesk_generate_slug( $name, $parsed = array() ) {
 	}
 
 	return $slug;
+}
+
+/**
+ * Генерира SKU (продуктов код) за Simple Product по правило, БЕЗ AI - същия
+ * подход, ползван за вариациите на Variable Products (виж
+ * decaldesk_create_variable_product()): slug + размери + материал, за да е
+ * предвидим, уникален и да работи дори когато AI е изключен/недостъпен.
+ * При колизия с вече съществуващ SKU добавя нарастващ суфикс (-2, -3, ...).
+ *
+ * @param array $parsed Резултат от decaldesk_parse_filename().
+ * @return string Уникален SKU.
+ */
+function decaldesk_generate_product_sku( $parsed ) {
+	$base          = decaldesk_generate_slug( $parsed['name'], $parsed );
+	$material_slug = sanitize_title( decaldesk_transliterate_bg( $parsed['material'] ) );
+	$sku           = $material_slug ? $base . '-' . $material_slug : $base;
+
+	$unique_sku = $sku;
+	$suffix     = 2;
+	while ( function_exists( 'wc_get_product_id_by_sku' ) && wc_get_product_id_by_sku( $unique_sku ) ) {
+		$unique_sku = $sku . '-' . $suffix;
+		++$suffix;
+	}
+
+	return $unique_sku;
 }
 
 /**

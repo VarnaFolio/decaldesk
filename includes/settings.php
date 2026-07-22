@@ -311,6 +311,15 @@ function decaldesk_sanitize_settings( $input ) {
 	$output['max_dimension_cm']   = isset( $input['max_dimension_cm'] ) ? max( 1, (int) $input['max_dimension_cm'] ) : 1000;
 	$output['custom_footer_text'] = isset( $input['custom_footer_text'] ) ? wp_kses_post( wp_unslash( $input['custom_footer_text'] ) ) : '';
 
+	// Какъв тип продукти продава магазинът (напр. "vinyl decals and stickers",
+	// "framed canvas prints", "ceramic tiles") - DecalDesk работи с всеки
+	// продукт, чиято цена зависи от площта, не само декали/стикери. Това
+	// описание се вгражда в AI промпта и в статичния fallback шаблон, за да
+	// звучи съдържанието коректно за реалния тип продукт, не само за декали.
+	$output['store_description'] = isset( $input['store_description'] )
+		? sanitize_text_field( wp_unslash( $input['store_description'] ) )
+		: ( isset( $existing['store_description'] ) ? $existing['store_description'] : '' );
+
 	/*! <fs_premium_only> */
 	$allowed_formats          = array( 'webp', 'jpeg', 'png' );
 	$output['mockup_format']  = isset( $input['mockup_format'] ) && in_array( $input['mockup_format'], $allowed_formats, true )
@@ -416,6 +425,7 @@ function decaldesk_render_settings_page() {
 			'min_price'                => 15,
 			'max_dimension_cm'         => 1000,
 			'custom_footer_text'       => '',
+			'store_description'        => '',
 			'categories'               => array(),
 			'ai_content_language'      => 'English',
 			'delete_data_on_uninstall' => false,
@@ -477,6 +487,24 @@ function decaldesk_render_settings_page() {
 								value="<?php echo esc_attr( $settings['max_dimension_cm'] ); ?>" class="regular-text">
 						<p class="description">
 							<?php esc_html_e( 'Protects against typos in the filename (e.g. an extra accidental zero). A file larger than this on either side will be rejected with a clear message.', 'decaldesk' ); ?>
+						</p>
+					</td>
+				</tr>
+			</table>
+
+			<h2><?php esc_html_e( 'Store product type', 'decaldesk' ); ?></h2>
+			<table class="form-table">
+				<tr>
+					<th scope="row">
+						<label for="decaldesk_store_description"><?php esc_html_e( 'What does your store sell?', 'decaldesk' ); ?></label>
+					</th>
+					<td>
+						<input type="text" id="decaldesk_store_description" name="decaldesk_settings[store_description]"
+								class="large-text"
+								placeholder="<?php esc_attr_e( 'e.g. vinyl decals and stickers, framed canvas prints, ceramic tiles, custom fabric panels...', 'decaldesk' ); ?>"
+								value="<?php echo esc_attr( $settings['store_description'] ); ?>">
+						<p class="description">
+							<?php esc_html_e( 'DecalDesk works with any product priced by size, not only decals/stickers. Describe what you actually sell in a few words, in the language you want product content written in - it\'s used both in AI-generated descriptions and in the static fallback template (used when AI is off or unavailable). Leave blank to keep the original decal/sticker wording.', 'decaldesk' ); ?>
 						</p>
 					</td>
 				</tr>

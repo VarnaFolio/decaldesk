@@ -1,3 +1,8 @@
+= 1.5.2 =
+* Added a configurable "Store product type" setting (DecalDesk → Settings) — DecalDesk is no longer decal/sticker-specific wording only; describe what your store actually sells (paintings, fabric, tiles...) and it feeds both the AI prompt and the static fallback description template. Leave blank for unchanged default (decal/sticker) wording.
+* Added automatic SKU generation for every Simple Product, rule-based from name/size/category/material (no AI needed), with automatic numeric-suffix handling on collision.
+* AI-generated content (Pro) now also produces an SEO title and a Yoast/RankMath focus keyphrase, saved to `_yoast_wpseo_title`/`rank_math_title` and `_yoast_wpseo_focuskw`/`rank_math_focus_keyword`. The static fallback template (Free) now also fills in a rule-based SEO title and focus keyphrase, so these fields are never left empty regardless of AI mode.
+
 = 1.5.1 =
 * Fix: variant sizes are now width-only — height is calculated automatically to match each uploaded design's own proportions, so a configured width can no longer produce a variant that looks stretched/mismatched against the shared mockup image (legacy "widthxheight" input is still accepted for backward compatibility, but only the width is used).
 * Fix: checking "Create with selectable variants" and clicking "Upload files" without first clicking the separate "Save" button used to silently create a Simple Product with no variants and no error. Uploading now auto-saves the current width/material/color fields first, and warns instead of silently falling back if no size is configured.

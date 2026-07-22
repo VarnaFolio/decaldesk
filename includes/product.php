@@ -246,6 +246,14 @@ function decaldesk_create_variable_product( $parsed, $mockup_paths, $status = 'd
 		update_post_meta( $product_id, '_yoast_wpseo_metadesc', $ai_content['meta_description'] );
 		update_post_meta( $product_id, 'rank_math_description', $ai_content['meta_description'] );
 	}
+	if ( ! empty( $ai_content['seo_title'] ) ) {
+		update_post_meta( $product_id, '_yoast_wpseo_title', $ai_content['seo_title'] );
+		update_post_meta( $product_id, 'rank_math_title', $ai_content['seo_title'] );
+	}
+	if ( ! empty( $ai_content['focus_keyphrase'] ) ) {
+		update_post_meta( $product_id, '_yoast_wpseo_focuskw', $ai_content['focus_keyphrase'] );
+		update_post_meta( $product_id, 'rank_math_focus_keyword', $ai_content['focus_keyphrase'] );
+	}
 
 	decaldesk_attach_mockups_and_design( $product_id, $mockup_paths, $design_path, $parsed, $ai_content, $description );
 
@@ -331,6 +339,10 @@ function decaldesk_create_product( $parsed, $price, $mockup_paths, $status = 'dr
 	// Кратък адрес (slug) винаги на латиница, независимо от езика на заглавието
 	$product->set_slug( decaldesk_generate_slug( $parsed['name'], $parsed ) );
 
+	// Продуктов код (SKU) - генериран по правило (не от AI), за да е предвидим,
+	// уникален и наличен дори когато AI е изключен/недостъпен.
+	$product->set_sku( decaldesk_generate_product_sku( $parsed ) );
+
 	$product->set_status( $status );
 	$product->set_catalog_visibility( 'visible' );
 	$product->set_regular_price( (string) $price );
@@ -360,10 +372,18 @@ function decaldesk_create_product( $parsed, $price, $mockup_paths, $status = 'dr
 		wp_set_object_terms( $product_id, $ai_content['tags'], 'product_tag', false );
 	}
 
-	// SEO мета описание - записваме за Yoast SEO и RankMath (каквото от двете е активно го използва)
+	// SEO мета - записваме за Yoast SEO и RankMath (каквото от двете е активно го използва)
 	if ( ! empty( $ai_content['meta_description'] ) ) {
 		update_post_meta( $product_id, '_yoast_wpseo_metadesc', $ai_content['meta_description'] );
 		update_post_meta( $product_id, 'rank_math_description', $ai_content['meta_description'] );
+	}
+	if ( ! empty( $ai_content['seo_title'] ) ) {
+		update_post_meta( $product_id, '_yoast_wpseo_title', $ai_content['seo_title'] );
+		update_post_meta( $product_id, 'rank_math_title', $ai_content['seo_title'] );
+	}
+	if ( ! empty( $ai_content['focus_keyphrase'] ) ) {
+		update_post_meta( $product_id, '_yoast_wpseo_focuskw', $ai_content['focus_keyphrase'] );
+		update_post_meta( $product_id, 'rank_math_focus_keyword', $ai_content['focus_keyphrase'] );
 	}
 
 	// Прикачваме мокъпа(ите) - първият става featured image, останалите (+
