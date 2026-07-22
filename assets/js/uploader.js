@@ -85,28 +85,35 @@
 			$variantPanel.slideToggle(150);
 		});
 
-		$('#decaldesk-save-variant-config-btn').on('click', function () {
-			var $btn = $(this);
-			var $status = $('#decaldesk-variant-config-status');
+		// Чекването на "Създай с избираеми варианти" автоматично отваря панела
+		// с размери/материали/цветове - потребителят не трябва отделно да го
+		// търси/отваря сам, за да си довърши конфигурацията.
+		$useVariantsCheckbox.on('change', function () {
+			if ($(this).is(':checked') && !$variantPanel.is(':visible')) {
+				$variantPanel.slideDown(150);
+			}
+		});
 
+		/**
+		 * Записва текущото съдържание на полетата размери/материали/цветове
+		 * в базата. Връща jQuery Deferred (resolve-ва се и при success:false
+		 * отговор от сървъра - викащият код проверява response.success).
+		 * Използва се както от ръчния бутон "Save", така и автоматично при
+		 * клик на "Upload files" (виж по-долу).
+		 */
+		function saveVariantConfig() {
 			var sizes = $('#decaldesk-variant-sizes-input').val();
 			var materials = $('#decaldesk-variant-materials-input').val();
 			var colors = $('#decaldesk-variant-colors-input').val();
 
-			$btn.prop('disabled', true);
-			$status.removeClass('is-success is-error').text('Saving...');
-
-			$.post(DecalDeskData.ajax_url, {
+			return $.post(DecalDeskData.ajax_url, {
 				action: 'decaldesk_save_variant_config',
 				nonce: DecalDeskData.nonce,
 				sizes: sizes,
 				materials: materials,
 				colors: colors
 			}).done(function (response) {
-				$btn.prop('disabled', false);
-
 				if (!response.success) {
-					$status.addClass('is-error').text((response.data && response.data.message) || 'Error saving.');
 					return;
 				}
 
@@ -125,6 +132,23 @@
 				} else {
 					$useVariantsCheckbox.prop('checked', false);
 					$('#decaldesk-variants-summary').text('No variant sizes configured yet — add at least one below to enable this option.');
+				}
+			});
+		}
+
+		$('#decaldesk-save-variant-config-btn').on('click', function () {
+			var $btn = $(this);
+			var $status = $('#decaldesk-variant-config-status');
+
+			$btn.prop('disabled', true);
+			$status.removeClass('is-success is-error').text('Saving...');
+
+			saveVariantConfig().done(function (response) {
+				$btn.prop('disabled', false);
+
+				if (!response.success) {
+					$status.addClass('is-error').text((response.data && response.data.message) || 'Error saving.');
+					return;
 				}
 
 				$status.addClass('is-success').text('Saved.');
@@ -235,16 +259,45 @@
 			generateAllMockups = $('#decaldesk-generate-all-mockups').is(':checked');
 			/*! </fs_premium_only> */
 
-			$results.empty();
-			$summary.hide().empty();
-			$progress.show();
-			$progressBar.css('width', '0%');
-			$uploadBtn.prop('disabled', true);
+			function startUpload() {
+				$results.empty();
+				$summary.hide().empty();
+				$progress.show();
+				$progressBar.css('width', '0%');
+				$uploadBtn.prop('disabled', true);
 
-			var uploadStats = { queued: 0, failed: 0, total: selectedFiles.length };
-			var jobRows = {}; // job_id -> { $row: jQuery, filename: string }
+				var uploadStats = { queued: 0, failed: 0, total: selectedFiles.length };
+				var jobRows = {}; // job_id -> { $row: jQuery, filename: string }
 
-			uploadFilesSequentially(selectedFiles.slice(), status, useVariants, generateAllMockups, 0, uploadStats, jobRows);
+				uploadFilesSequentially(selectedFiles.slice(), status, useVariants, generateAllMockups, 0, uploadStats, jobRows);
+			}
+
+			/*! <fs_premium_only> */
+			// Ако "Създай с избираеми варианти" е чекнато, записваме автоматично
+			// каквото е въведено в полетата размери/материали/цветове ПРЕДИ да
+			// започне качването - потребителят вече не трябва да помни отделен
+			// клик на "Save" (по-рано: пропуснат "Save" => продуктът тихо се
+			// създаваше БЕЗ варианти, без каквато и да е грешка).
+			if (useVariants) {
+				$uploadBtn.prop('disabled', true);
+				saveVariantConfig().done(function (response) {
+					$uploadBtn.prop('disabled', false);
+
+					if (!response.success || !(response.data.sizes && response.data.sizes.length)) {
+						alert('Add at least one size before uploading with variants (or uncheck "Create with selectable variants").');
+						return;
+					}
+
+					startUpload();
+				}).fail(function () {
+					$uploadBtn.prop('disabled', false);
+					alert('Could not save the variant configuration (server connection error). Please try again.');
+				});
+				return;
+			}
+			/*! </fs_premium_only> */
+
+			startUpload();
 		});
 
 		/**
