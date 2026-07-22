@@ -4,7 +4,7 @@ Tags: woocommerce, decals, stickers, product automation, ai
 Requires at least: 6.9
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.5
+Stable tag: 1.5.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -72,6 +72,12 @@ Yes (Pro). You can use a free Google Gemini API key (from Google AI Studio, no c
 3. A generated product with AI description and mockup
 
 == Changelog ==
+
+= 1.5.1 =
+* Fix: variant sizes are now width-only — height is calculated automatically to match each uploaded design's own proportions, so a configured width can no longer produce a variant that looks stretched/mismatched against the shared mockup image (legacy "widthxheight" input is still accepted for backward compatibility, but only the width is used).
+* Fix: checking "Create with selectable variants" and clicking "Upload files" without first clicking the separate "Save" button used to silently create a Simple Product with no variants and no error. Uploading now auto-saves the current width/material/color fields first, and warns instead of silently falling back if no size is configured.
+* Checking "Create with selectable variants" now automatically expands the width/material/color configuration panel.
+* Fixed hardcoded Cyrillic "см" unit label on the Size attribute/variation values, regardless of the configured content language - now "cm".
 
 = 1.5 =
 * Version bump for the Premium (Freemius) build — full feature set (AI descriptions, freeform zone editor, multi-template mockups, variable products, mockup compression).

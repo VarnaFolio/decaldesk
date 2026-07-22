@@ -107,17 +107,20 @@ The setting is **per category, not per upload** — configure it once, and all f
 
 ## Size variants (Variable Products)
 
-Instead of renaming/duplicating the same design for every size, you can configure a list of standard sizes (+ optional material/color) once, directly in **DecalDesk → Upload**, in a collapsible section under the "Create with selectable variants" checkbox ("Configure sizes / materials / colors"):
+Instead of renaming/duplicating the same design for every size, you can configure a list of widths (+ optional material/color) once, directly in **DecalDesk → Upload**, in a collapsible section under the "Create with selectable variants" checkbox ("Configure widths / materials / colors"):
 
-- **Sizes** (required for the feature to work) — one per line, format `widthxheight` in cm (e.g. `50x70`)
+- **Widths** (required for the feature to work) — one number per line, in cm (e.g. `30`, `50`, `90`). **Enter only the width — never a full `widthxheight` pair.** The height for each variant is calculated automatically to match that specific design's own proportions (from its filename), so a variant never ends up looking stretched or mismatched against the shared mockup image.
 - **Materials** (optional) — comma-separated, e.g. `matte, gloss, transparent`
 - **Colors** (optional) — comma-separated, e.g. `white, black, clear film`
 
-When uploading, check **"Create with selectable variants"** instead of the draft/publish status applying to a single product per size. The plugin creates **one WooCommerce Variable Product** with a dropdown for size (and material/color, if configured) — the customer picks the combination directly on the product page. Each variation gets:
-- Its own automatically calculated price using the €/m² formula for that specific size
-- A unique SKU (transliterated to Latin script, regardless of Cyrillic in material/color) — e.g. `koleda-50x70-matte-white`
+Checking **"Create with selectable variants"** automatically expands this panel, and clicking **"Upload files"** automatically saves whatever is currently in these fields first — you no longer need a separate manual "Save" click before uploading.
 
-If no size is configured, the checkbox is disabled and the plugin falls back to a regular Simple Product (one file = one product), exactly as before.
+When uploading, check **"Create with selectable variants"** instead of the draft/publish status applying to a single product per size. The plugin creates **one WooCommerce Variable Product** with a dropdown for size (and material/color, if configured) — the customer picks the combination directly on the product page. Each variation gets:
+- Its own width **and a proportionally-calculated height**, based on that design's real aspect ratio — e.g. a design uploaded as `60x40` (3:2) with configured widths `30`, `50`, `90` produces variants `30x20`, `50x33`, `90x60`
+- Its own automatically calculated price using the €/m² formula for that specific size
+- A unique SKU (transliterated to Latin script, regardless of Cyrillic in material/color) — e.g. `koleda-50x33-matte-white`
+
+If no width is configured, the checkbox is disabled and the plugin falls back to a regular Simple Product (one file = one product), exactly as before.
 
 ## Mockup image optimization
 

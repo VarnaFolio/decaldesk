@@ -91,13 +91,41 @@ function decaldesk_variants_configured() {
 
 /*! <fs_premium_only> */
 /**
+ * Изчислява реалната ширина/височина (в см) на един размерен вариант,
+ * запазвайки пропорциите на КОНКРЕТНИЯ качен дизайн. Потребителят конфигурира
+ * само целева ширина в Настройки - височината никога не се въвежда ръчно,
+ * за да не се разминава с реалните пропорции на файла (напр. потребителски
+ * въведено "50x70" върху дизайн с пропорции 60x40 би дало подвеждащ вариант:
+ * етикетът и цената да не съответстват визуално на споделения мокъп).
+ *
+ * @param int $target_width Целева ширина в см (от конфигурацията).
+ * @param int $base_width   Реална ширина на качения дизайн (от името на файла).
+ * @param int $base_height  Реална височина на качения дизайн (от името на файла).
+ * @return array{0:int,1:int} [ width, height ] в см, височина закръглена до цяло, минимум 1.
+ */
+function decaldesk_compute_variant_dimensions( $target_width, $base_width, $base_height ) {
+	$target_width = max( 1, (int) $target_width );
+
+	if ( $base_width <= 0 || $base_height <= 0 ) {
+		return array( $target_width, $target_width );
+	}
+
+	$height = (int) round( $target_width * ( $base_height / $base_width ) );
+
+	return array( $target_width, max( 1, $height ) );
+}
+
+/**
  * Създава WooCommerce Variable Product с избираем размер (задължително) и
  * незадължителни материал/цвят - вместо отделен Simple Product на файл.
  * Всяка вариация получава собствена автоматично изчислена цена по формулата
- * €/м² според конкретния размер на вариацията.
+ * €/м² според конкретния размер на вариацията. Височината на всеки размерен
+ * вариант се изчислява пропорционално спрямо реалните пропорции на ТОЗИ
+ * качен дизайн (виж decaldesk_compute_variant_dimensions()) - потребителят
+ * конфигурира само списък от целеви ширини, не пълни WxH двойки.
  *
- * @param array    $parsed      Резултат от decaldesk_parse_filename() (използва се само за
- *                               име/категория - размерите идват от глобалната конфигурация).
+ * @param array    $parsed      Резултат от decaldesk_parse_filename() - размерите му
+ *                               (width/height) определят пропорциите за всички варианти.
  * @param string[] $mockup_paths Списък с пътища до генерираните мокъп файлове (поне 1).
  * @param string   $status      'draft' или 'publish'.
  * @param array    $ai_content  Резултат от decaldesk_generate_ai_content().
@@ -109,14 +137,24 @@ function decaldesk_create_variable_product( $parsed, $mockup_paths, $status = 'd
 		return new WP_Error( 'decaldesk_product_error', __( 'WooCommerce is not active.', 'decaldesk' ) );
 	}
 
-	$settings  = get_option( 'decaldesk_settings', array() );
-	$sizes     = isset( $settings['variant_sizes'] ) ? $settings['variant_sizes'] : array();
-	$materials = isset( $settings['variant_materials'] ) ? $settings['variant_materials'] : array();
-	$colors    = isset( $settings['variant_colors'] ) ? $settings['variant_colors'] : array();
+	$settings       = get_option( 'decaldesk_settings', array() );
+	$target_widths  = isset( $settings['variant_sizes'] ) ? $settings['variant_sizes'] : array();
+	$materials      = isset( $settings['variant_materials'] ) ? $settings['variant_materials'] : array();
+	$colors         = isset( $settings['variant_colors'] ) ? $settings['variant_colors'] : array();
 
-	if ( empty( $sizes ) ) {
+	if ( empty( $target_widths ) ) {
 		return new WP_Error( 'decaldesk_product_error', __( 'No variant sizes configured in Settings.', 'decaldesk' ) );
 	}
+
+	// Всяка целева ширина -> [width, height] пропорционално на ТОЗИ дизайн,
+	// после форматирана като "WxH" низ (за атрибут/SKU) - веднъж тук, за да
+	// не се преизчислява отделно за всяка материал×цвят комбинация по-долу.
+	$sizes = array();
+	foreach ( $target_widths as $target_width ) {
+		list( $w, $h ) = decaldesk_compute_variant_dimensions( (int) $target_width, $parsed['width'], $parsed['height'] );
+		$sizes[]       = $w . 'x' . $h;
+	}
+	$sizes = array_values( array_unique( $sizes ) );
 
 	$status = in_array( $status, array( 'draft', 'publish' ), true ) ? $status : 'draft';
 
@@ -160,7 +198,7 @@ function decaldesk_create_variable_product( $parsed, $mockup_paths, $status = 'd
 	$size_attr->set_options(
 		array_map(
 			function ( $s ) {
-				return $s . ' см';
+				return $s . ' cm';
 			},
 			$sizes
 		)
@@ -231,7 +269,7 @@ function decaldesk_create_variable_product( $parsed, $mockup_paths, $status = 'd
 				$variation = new WC_Product_Variation();
 				$variation->set_parent_id( $product_id );
 
-				$variation_attributes = array( $size_key => $size_str . ' см' );
+				$variation_attributes = array( $size_key => $size_str . ' cm' );
 				$sku_parts            = array( $base_slug, $size_str );
 
 				if ( $has_material && null !== $material_value ) {

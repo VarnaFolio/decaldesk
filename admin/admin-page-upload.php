@@ -74,12 +74,12 @@ function decaldesk_render_upload_page() {
 						<?php esc_html_e( 'Selectable size/material/color variants require a Pro license.', 'decaldesk' ); ?>
 						<a href="<?php echo esc_url( decaldesk_fs()->get_upgrade_url() ); ?>"><?php esc_html_e( 'Upgrade to Pro', 'decaldesk' ); ?></a>
 					<?php elseif ( empty( $variant_sizes ) ) : ?>
-						<?php esc_html_e( 'No variant sizes configured yet — add at least one below to enable this option.', 'decaldesk' ); ?>
+						<?php esc_html_e( 'No variant widths configured yet — add at least one below to enable this option.', 'decaldesk' ); ?>
 					<?php else : ?>
 						<?php
 						printf(
-							/* translators: %s: list of configured sizes */
-							esc_html__( 'Every uploaded design will become one product with a choice of: %s', 'decaldesk' ),
+							/* translators: %s: list of configured widths */
+							esc_html__( 'Every uploaded design will become one product with a choice of width: %s (height is calculated automatically to match each design\'s proportions).', 'decaldesk' ),
 							esc_html( implode( ', ', $variant_sizes ) . ' cm' )
 						);
 						?>
@@ -87,19 +87,19 @@ function decaldesk_render_upload_page() {
 				</p>
 
 				<button type="button" id="decaldesk-toggle-variant-config" class="button-link" <?php disabled( ! $decaldesk_variants_is_pro ); ?>>
-					<?php esc_html_e( 'Configure sizes / materials / colors ▾', 'decaldesk' ); ?>
+					<?php esc_html_e( 'Configure widths / materials / colors ▾', 'decaldesk' ); ?>
 				</button>
 
 				<div id="decaldesk-variant-config-panel" style="display:none;">
 					<table class="form-table">
 						<tr>
 							<th scope="row">
-								<label for="decaldesk-variant-sizes-input"><?php esc_html_e( 'Sizes (required)', 'decaldesk' ); ?></label>
+								<label for="decaldesk-variant-sizes-input"><?php esc_html_e( 'Widths (required)', 'decaldesk' ); ?></label>
 							</th>
 							<td>
 								<textarea id="decaldesk-variant-sizes-input" rows="4" class="regular-text"
-											placeholder="30x40&#10;50x70&#10;70x100"><?php echo esc_textarea( implode( "\n", $variant_sizes ) ); ?></textarea>
-								<p class="description"><?php esc_html_e( 'One size per line, format "widthxheight" in cm.', 'decaldesk' ); ?></p>
+											placeholder="30&#10;50&#10;90"><?php echo esc_textarea( implode( "\n", $variant_sizes ) ); ?></textarea>
+								<p class="description"><?php esc_html_e( 'One width per line, in cm. The height for each variant is calculated automatically to match this design\'s own proportions — do not enter the height yourself.', 'decaldesk' ); ?></p>
 							</td>
 						</tr>
 						<tr>

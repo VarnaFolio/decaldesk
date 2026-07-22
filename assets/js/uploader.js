@@ -128,10 +128,10 @@
 				$useVariantsCheckbox.prop('disabled', savedSizes.length === 0);
 
 				if (savedSizes.length > 0) {
-					$('#decaldesk-variants-summary').text('Every uploaded design will become one product with a choice of: ' + savedSizes.join(', ') + ' cm');
+					$('#decaldesk-variants-summary').text('Every uploaded design will become one product with a choice of width: ' + savedSizes.join(', ') + ' cm (height is calculated automatically to match each design\'s proportions).');
 				} else {
 					$useVariantsCheckbox.prop('checked', false);
-					$('#decaldesk-variants-summary').text('No variant sizes configured yet — add at least one below to enable this option.');
+					$('#decaldesk-variants-summary').text('No variant widths configured yet — add at least one below to enable this option.');
 				}
 			});
 		}
@@ -284,7 +284,7 @@
 					$uploadBtn.prop('disabled', false);
 
 					if (!response.success || !(response.data.sizes && response.data.sizes.length)) {
-						alert('Add at least one size before uploading with variants (or uncheck "Create with selectable variants").');
+						alert('Add at least one width before uploading with variants (or uncheck "Create with selectable variants").');
 						return;
 					}
 

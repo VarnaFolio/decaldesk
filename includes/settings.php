@@ -13,11 +13,43 @@ add_action( 'admin_init', 'decaldesk_register_settings' );
 
 /*! <fs_premium_only> */
 /**
- * Санитизира текст с размери "WxH", по един на ред, в чист масив от низове.
- * Невалидни редове (не съвпадащи с шаблона) се пропускат тихо.
+ * Извлича само ширината (в см) от един ред потребителски вход за размерни
+ * варианти. Приема чисто число ("30"), а за плавна съвместимост - и по-стария
+ * формат "WxH" ("30x40", ползва се само ширината). Височината НЕ се приема
+ * от потребителя - изчислява се автоматично пропорционално спрямо реалните
+ * пропорции на всеки конкретен качен дизайн (виж
+ * decaldesk_create_variable_product()) точно защото ръчно въведени WxH
+ * двойки лесно се разминават с реалните пропорции на файла и водят до
+ * подвеждащ вариант (напр. "50x70" етикет върху мокъп на дизайн с пропорции
+ * 60x40).
  *
- * @param string $raw Суров текст от textarea, напр. "30x40\n50x70\n70x100"
- * @return string[] Списък с валидни "WxH" низове, без дубликати.
+ * @param mixed $value Един ред/елемент вход.
+ * @return int Ширина в см, или 0 ако редът е невалиден/празен.
+ */
+function decaldesk_extract_width_from_size_input( $value ) {
+	if ( ! is_string( $value ) && ! is_numeric( $value ) ) {
+		return 0;
+	}
+
+	$value = trim( (string) $value );
+
+	if ( preg_match( '/^(\d+)\s*[xX×]\s*\d+$/u', $value, $m ) ) {
+		return (int) $m[1];
+	}
+
+	if ( preg_match( '/^\d+$/', $value ) ) {
+		return (int) $value;
+	}
+
+	return 0;
+}
+
+/**
+ * Санитизира списък с ширини за варианти (в см), по една на ред, в чист
+ * масив от низове. Невалидни/нулеви редове се пропускат тихо.
+ *
+ * @param string $raw Суров текст от textarea, напр. "30\n50\n90"
+ * @return string[] Списък с валидни ширини (като низове), без дубликати.
  */
 function decaldesk_sanitize_size_list( $raw ) {
 	// Ако вече е масив (idempotent round-trip - друго AJAX действие е
@@ -27,8 +59,9 @@ function decaldesk_sanitize_size_list( $raw ) {
 	if ( is_array( $raw ) ) {
 		$sizes = array();
 		foreach ( $raw as $item ) {
-			if ( is_string( $item ) && preg_match( '/^\d+x\d+$/', $item ) ) {
-				$sizes[] = $item;
+			$width = decaldesk_extract_width_from_size_input( $item );
+			if ( $width > 0 ) {
+				$sizes[] = (string) $width;
 			}
 		}
 		return array_values( array_unique( $sizes ) );
@@ -38,13 +71,9 @@ function decaldesk_sanitize_size_list( $raw ) {
 	$sizes = array();
 
 	foreach ( $lines as $line ) {
-		$line = trim( $line );
-		if ( preg_match( '/^(\d+)\s*[xX×]\s*(\d+)$/u', $line, $m ) ) {
-			$width  = (int) $m[1];
-			$height = (int) $m[2];
-			if ( $width > 0 && $height > 0 ) {
-				$sizes[] = $width . 'x' . $height;
-			}
+		$width = decaldesk_extract_width_from_size_input( $line );
+		if ( $width > 0 ) {
+			$sizes[] = (string) $width;
 		}
 	}
 
