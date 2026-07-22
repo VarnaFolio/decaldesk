@@ -376,14 +376,10 @@ register_deactivation_hook( __FILE__, 'decaldesk_deactivate' );
 // плъгина. Тук чистим само собствените опции/файлове на DecalDesk
 // (настройки, дневна AI квота, лог, временни файлове).
 //
-// Ползваме decaldesk_fs()->add_action('after_uninstall', ...) като основен
-// механизъм, защото Freemius сам прихваща/показва диалога за деинсталиране.
-// Плъгинът съдържа и самостоятелен uninstall.php (виж корена на плъгина) със
-// същата, идемпотентна логика - той служи като резервен механизъм за
-// стандартния WordPress uninstall flow (напр. ако Freemius hook-ът по някаква
-// причина не се задейства); изпълнението и на двата е безопасно, защото всяка
-// стъпка (delete_option, DROP TABLE IF EXISTS, изтриване на директория) е
-// idempotent - повторното ѝ изпълнение е no-op.
+// Ползваме decaldesk_fs()->add_action('after_uninstall', ...) като единствен
+// механизъм (вместо и самостоятелен uninstall.php) - Freemius изисква това,
+// защото сам прихваща/показва диалога за деинсталиране и координира кога
+// точно да се задейства почистването.
 function decaldesk_run_uninstall_cleanup() {
 	$settings = get_option( 'decaldesk_settings', array() );
 
@@ -394,6 +390,7 @@ function decaldesk_run_uninstall_cleanup() {
 	delete_option( 'decaldesk_settings' );
 	delete_option( 'decaldesk_ai_daily_usage' );
 	delete_option( 'decaldesk_db_version' );
+	delete_option( 'decaldesk_migrated_from_productops' );
 
 	global $wpdb;
 	$wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . 'decaldesk_jobs' );

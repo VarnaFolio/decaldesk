@@ -69,7 +69,6 @@ Example: `koleda_50x70_matte_kitchen.jpg` (or `.png`, `.webp`, `.gif`)
 ```
 decaldesk/
 ├── decaldesk.php
-├── uninstall.php
 ├── admin/
 │   ├── admin-menu.php
 │   ├── admin-page-upload.php

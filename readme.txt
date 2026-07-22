@@ -75,6 +75,7 @@ Yes (Pro). You can use a free Google Gemini API key (from Google AI Studio, no c
 
 = 1.5 =
 * Version bump for the Premium (Freemius) build — full feature set (AI descriptions, freeform zone editor, multi-template mockups, variable products, mockup compression).
+* Removed the standalone uninstall.php file per Freemius requirements — cleanup logic now runs solely through the Freemius after_uninstall hook.
 
 = 1.3.6 =
 * Added standalone uninstall.php for standard WordPress-compliant cleanup, alongside the existing Freemius-driven cleanup hook.
