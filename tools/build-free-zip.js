@@ -25,7 +25,10 @@ const path = require('path');
 const MARKER_RE = /[ \t]*\/\*!\s*<fs_premium_only>\s*\*\/[\s\S]*?\/\*!\s*<\/fs_premium_only>\s*\*\/\n?/g;
 // 'tools' excluded so this dev-only script doesn't ship inside the plugin
 // it builds; '.gitignore' is dev-repo bookkeeping, not plugin runtime.
-const EXCLUDE_DIRS = new Set(['.git', 'tools']);
+// 'assets/marketplace' holds WP.org/Marketplace LISTING screenshots (for the
+// plugin directory page) - not a runtime asset, and not meant to ship inside
+// the distributed plugin zip at all.
+const EXCLUDE_DIRS = new Set(['.git', 'tools', 'marketplace']);
 const EXCLUDE_FILES = new Set(['.gitignore']);
 
 // vendor/freemius ships its own dev/build tooling (composer, gulp, phpcs,
