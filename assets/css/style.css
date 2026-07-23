@@ -288,6 +288,30 @@
 	text-decoration: none;
 }
 
+.decaldesk-onboarding-list {
+	margin: 8px 0;
+}
+
+.decaldesk-onboarding-list li {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	margin-bottom: 6px;
+}
+
+.decaldesk-onboarding-step-done .dashicons-yes-alt {
+	color: #46b450;
+}
+
+.decaldesk-onboarding-step-pending .dashicons-marker {
+	color: #996800;
+}
+
+.decaldesk-onboarding-step-done span:last-child {
+	color: #646970;
+	text-decoration: line-through;
+}
+
 .decaldesk-stat-cards {
 	display: flex;
 	gap: 16px;

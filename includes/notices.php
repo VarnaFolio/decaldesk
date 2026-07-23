@@ -39,6 +39,135 @@ function decaldesk_handle_notice_dismiss() {
 }
 add_action( 'admin_init', 'decaldesk_handle_notice_dismiss' );
 
+/**
+ * ==========================================================
+ * "Getting started" чеклист - вижда се само докато инсталацията изглежда
+ * все още "прясна" (примерните категории/цена от активацията, никакъв
+ * реален качен дизайн). Целта е новият потребител да не остане несъзнателно
+ * с примерните категории "Stickers/Car Wraps/Wall Decals/Kitchen Backsplash"
+ * и generic мокъп шаблон завинаги - плъгинът работи технически още от
+ * активацията (вградени defaults), но резултатът няма да пасне на реалния
+ * му бизнес, докато не прегледа тези стъпки.
+ * ==========================================================
+ */
+
+/**
+ * Стъпките на чеклиста, всяка с 'done' статус, изведен от реалното
+ * състояние на настройките - не флаг, който трябва ръчно да се тика.
+ */
+function decaldesk_get_onboarding_steps() {
+	$settings = get_option( 'decaldesk_settings', array() );
+
+	$default_categories = array(
+		'sticker' => 'Stickers',
+		'wrap'    => 'Car Wraps',
+		'wall'    => 'Wall Decals',
+		'kitchen' => 'Kitchen Backsplash',
+	);
+
+	$categories             = isset( $settings['categories'] ) ? $settings['categories'] : array();
+	$categories_customized  = $categories !== $default_categories;
+	$settings_reviewed      = ! empty( $settings['onboarding_settings_reviewed'] );
+	$has_custom_template    = ! empty( $settings['template_zones'] );
+	$has_upload             = function_exists( 'decaldesk_count_jobs' ) && decaldesk_count_jobs() > 0;
+
+	return array(
+		'settings'   => array(
+			'label' => __( 'Review your price per m² and minimum price (currently using example defaults)', 'decaldesk' ),
+			'done'  => $settings_reviewed,
+			'url'   => admin_url( 'admin.php?page=decaldesk-settings' ),
+		),
+		'categories' => array(
+			'label' => __( 'Set up your own categories (currently the example ones: Stickers, Car Wraps, Wall Decals, Kitchen Backsplash)', 'decaldesk' ),
+			'done'  => $categories_customized,
+			'url'   => admin_url( 'admin.php?page=decaldesk-categories' ),
+		),
+		'template'   => array(
+			'label' => __( 'Upload a mockup template for your first category (optional - a generic placeholder is used until then)', 'decaldesk' ),
+			'done'  => $has_custom_template,
+			'url'   => admin_url( 'admin.php?page=decaldesk-categories' ),
+		),
+		'upload'     => array(
+			'label' => __( 'Upload your first design file', 'decaldesk' ),
+			'done'  => $has_upload,
+			'url'   => admin_url( 'admin.php?page=decaldesk' ),
+		),
+	);
+}
+
+function decaldesk_render_onboarding_checklist() {
+	$screen = get_current_screen();
+	if ( ! $screen || strpos( $screen->id, 'decaldesk' ) === false ) {
+		return;
+	}
+
+	if ( get_option( 'decaldesk_onboarding_dismissed' ) ) {
+		return;
+	}
+
+	$steps    = decaldesk_get_onboarding_steps();
+	$all_done = true;
+	foreach ( $steps as $step ) {
+		if ( ! $step['done'] ) {
+			$all_done = false;
+			break;
+		}
+	}
+
+	// Всички стъпки готови - вече няма смисъл да заема място, скриваме го за постоянно.
+	if ( $all_done ) {
+		update_option( 'decaldesk_onboarding_dismissed', 1 );
+		return;
+	}
+
+	$dismiss_url = wp_nonce_url(
+		add_query_arg( 'decaldesk_dismiss_onboarding', '1' ),
+		'decaldesk_dismiss_onboarding'
+	);
+	?>
+	<div class="notice notice-info decaldesk-notice decaldesk-onboarding-checklist">
+		<p><strong><?php esc_html_e( 'Getting started with DecalDesk', 'decaldesk' ); ?></strong></p>
+		<ul class="decaldesk-onboarding-list">
+			<?php foreach ( $steps as $step ) : ?>
+				<li class="<?php echo $step['done'] ? 'decaldesk-onboarding-step-done' : 'decaldesk-onboarding-step-pending'; ?>">
+					<?php if ( $step['done'] ) : ?>
+						<span class="dashicons dashicons-yes-alt" aria-hidden="true"></span>
+						<span><?php echo esc_html( $step['label'] ); ?></span>
+					<?php else : ?>
+						<span class="dashicons dashicons-marker" aria-hidden="true"></span>
+						<a href="<?php echo esc_url( $step['url'] ); ?>"><?php echo esc_html( $step['label'] ); ?></a>
+					<?php endif; ?>
+				</li>
+			<?php endforeach; ?>
+		</ul>
+		<p><a href="<?php echo esc_url( $dismiss_url ); ?>" class="decaldesk-notice-dismiss-link"><?php esc_html_e( 'Dismiss', 'decaldesk' ); ?></a></p>
+	</div>
+	<?php
+}
+add_action( 'admin_notices', 'decaldesk_render_onboarding_checklist', 5 );
+
+/**
+ * Обработва линка "Dismiss" на "Getting started" чеклиста - за разлика от
+ * другите известия (24ч transient), този е скрит за постоянно, защото не е
+ * повтарящо се предупреждение, а еднократно упътване.
+ */
+function decaldesk_handle_onboarding_dismiss() {
+	if ( ! isset( $_GET['decaldesk_dismiss_onboarding'] ) ) {
+		return;
+	}
+
+	if ( ! check_admin_referer( 'decaldesk_dismiss_onboarding' ) ) {
+		return;
+	}
+
+	update_option( 'decaldesk_onboarding_dismissed', 1 );
+
+	$clean_url = remove_query_arg( array( 'decaldesk_dismiss_onboarding', '_wpnonce' ) );
+	wp_safe_redirect( $clean_url );
+	exit;
+}
+add_action( 'admin_init', 'decaldesk_handle_onboarding_dismiss' );
+
 function decaldesk_render_admin_notices() {
 	// Показваме само на страниците на самия плъгин
 	$screen = get_current_screen();

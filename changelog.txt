@@ -1,3 +1,6 @@
+= 1.5.4 =
+* Added a "Getting started with DecalDesk" checklist, shown on DecalDesk admin pages until a fresh install has been reviewed: price/minimum price, categories (still the example Stickers/Car Wraps/Wall Decals/Kitchen Backsplash otherwise), a custom mockup template, and a first upload. Each item auto-checks off based on real settings/data (no manual tracking needed), the whole box disappears automatically once everything is done, and it can be dismissed manually at any time.
+
 = 1.5.3 =
 * Upload screen: live progress tracking now survives a page reload/tab close mid-batch. The set of active jobs is kept in localStorage while a batch is processing and automatically resumed on load, instead of being silently lost (previously required checking DecalDesk → History manually to see if an interrupted batch had actually finished).
 

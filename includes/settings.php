@@ -305,6 +305,11 @@ function decaldesk_sanitize_settings( $input ) {
 	// действия. Сега има само ЕДНО обявяване, най-рано възможното.
 	$existing = get_option( 'decaldesk_settings', array() );
 
+	// Отбелязваме, че потребителят реално е отворил и запазил тази форма поне
+	// веднъж - разграничава "все още стоят примерните стойности от активацията"
+	// от "прегледано и потвърдено", за чеклиста "Getting started" (виж notices.php).
+	$output['onboarding_settings_reviewed'] = true;
+
 	$output['price_per_sqm']      = isset( $input['price_per_sqm'] ) ? (float) $input['price_per_sqm'] : 60;
 	$output['min_price']          = isset( $input['min_price'] ) ? (float) $input['min_price'] : 15;
 	$output['max_dimension_cm']   = isset( $input['max_dimension_cm'] ) ? max( 1, (int) $input['max_dimension_cm'] ) : 1000;

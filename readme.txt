@@ -4,7 +4,7 @@ Tags: woocommerce, decals, stickers, product automation, ai
 Requires at least: 6.9
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.5.3
+Stable tag: 1.5.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -74,6 +74,9 @@ Yes (Pro). You can use a free Google Gemini API key (from Google AI Studio, no c
 3. A generated product with AI description and mockup
 
 == Changelog ==
+
+= 1.5.4 =
+* Added a "Getting started with DecalDesk" checklist, shown on DecalDesk admin pages until a fresh install has been reviewed: price/minimum price, categories (still the example Stickers/Car Wraps/Wall Decals/Kitchen Backsplash otherwise), a custom mockup template, and a first upload. Each item auto-checks off based on real settings/data (no manual tracking needed), the whole box disappears automatically once everything is done, and it can be dismissed manually at any time.
 
 = 1.5.3 =
 * Upload screen: live progress tracking now survives a page reload/tab close mid-batch. The set of active jobs is kept in localStorage while a batch is processing and automatically resumed on load, instead of being silently lost (previously required checking DecalDesk → History manually to see if an interrupted batch had actually finished).
