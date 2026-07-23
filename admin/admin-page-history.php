@@ -71,7 +71,7 @@ class DecalDesk_Jobs_List_Table extends WP_List_Table {
 			$url   = '' === $status_key ? $base_url : add_query_arg( 'status', $status_key, $base_url );
 			$class = ( $current_status === $status_key ) ? 'current' : '';
 
-			$views[ $status_key ?: 'all' ] = sprintf(
+			$views[ $status_key ? $status_key : 'all' ] = sprintf(
 				'<a href="%s" class="%s">%s <span class="count">(%d)</span></a>',
 				esc_url( $url ),
 				esc_attr( $class ),

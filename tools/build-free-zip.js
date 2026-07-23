@@ -29,7 +29,10 @@ const MARKER_RE = /[ \t]*\/\*!\s*<fs_premium_only>\s*\*\/[\s\S]*?\/\*!\s*<\/fs_p
 // plugin directory page) - not a runtime asset, and not meant to ship inside
 // the distributed plugin zip at all.
 const EXCLUDE_DIRS = new Set(['.git', 'tools', 'marketplace']);
-const EXCLUDE_FILES = new Set(['.gitignore']);
+// PHPCS/PHPStan dev tooling at the plugin root (its actual packages live in
+// tools/vendor/, already excluded via the 'tools' dir above) - config-only
+// files, but still dev-only, not plugin runtime.
+const EXCLUDE_FILES = new Set(['.gitignore', 'composer.json', 'composer.lock', 'phpcs.xml.dist', 'phpstan.neon.dist']);
 
 // vendor/freemius ships its own dev/build tooling (composer, gulp, phpcs,
 // its own README/CONTRIBUTING) that has no runtime role - scoped to that

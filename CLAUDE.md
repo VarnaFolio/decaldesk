@@ -99,7 +99,14 @@ if ( ! in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins',
 
 - Разработка с `WP_DEBUG` / `WP_DEBUG_LOG` включени, `WP_DEBUG_DISPLAY` = false.
 - Unit тестове за бизнес логиката.
-- Статичен анализ с PHPStan, стилово валидиране с PHP_CodeSniffer.
+- Статичен анализ с PHPStan, стилово валидиране с PHP_CodeSniffer — конфигурацията
+  е в `phpcs.xml.dist` (WordPress-Core + PHPCompatibilityWP, `testVersion 7.4-8.3`)
+  и `phpstan.neon.dist` (level 5, WordPress stubs) в корена на репото. И двата
+  файла, `composer.json`-ът и `tools/vendor/` са dev-only tooling — изрично
+  изключени от дистрибутивните ZIP-ове (виж `tools/build-free-zip.js`).
+  Инсталация: `composer install` (инсталира в `tools/vendor/`, не в
+  runtime `vendor/`, за да не се бърка с ръчно vendor-натия Freemius SDK).
+  Пускане: `composer run phpcs` / `composer run phpstan`.
 - Ако плъгинът се качва в официалния Marketplace — трябва да минава QIT
   (Activation, Security, Malware, PHPCompatibility, Woo API, E2E с
   Playwright).

@@ -3,7 +3,7 @@
  * Plugin Name:       DecalDesk
  * Plugin URI:        https://decaldesk.com
  * Description:       Автоматизирано създаване на WooCommerce продукти от дизайн файлове — парсване на име, ценообразуване по площ, AI описания, мокъп генериране, размерни варианти.
- * Version:           1.5.13
+ * Version:           1.5.14
  * Requires at least: 6.9
  * Requires PHP:      7.4
  * Tested up to:      7.0
@@ -71,7 +71,7 @@ if ( ! function_exists( 'decaldesk_fs' ) ) {
 // ==========================================================
 // Константи
 // ==========================================================
-define( 'DECALDESK_VERSION', '1.5.13' );
+define( 'DECALDESK_VERSION', '1.5.14' );
 define( 'DECALDESK_PATH', plugin_dir_path( __FILE__ ) );
 define( 'DECALDESK_URL', plugin_dir_url( __FILE__ ) );
 
@@ -141,6 +141,10 @@ function decaldesk_maybe_migrate_from_productops() {
 	$new_table_exists = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $new_table ) ) === $new_table;
 
 	if ( $old_table_exists && ! $new_table_exists ) {
+		// Table identifiers can't go through $wpdb->prepare() placeholders (SQL
+		// doesn't support parameterized identifiers) - both names are built
+		// above from $wpdb->prefix + a hardcoded literal, never from user input.
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$wpdb->query( "RENAME TABLE {$old_table} TO {$new_table}" );
 		$migrated_anything = true;
 	}

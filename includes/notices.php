@@ -65,11 +65,11 @@ function decaldesk_get_onboarding_steps() {
 		'kitchen' => 'Kitchen Backsplash',
 	);
 
-	$categories             = isset( $settings['categories'] ) ? $settings['categories'] : array();
-	$categories_customized  = $categories !== $default_categories;
-	$settings_reviewed      = ! empty( $settings['onboarding_settings_reviewed'] );
-	$has_custom_template    = ! empty( $settings['template_zones'] );
-	$has_upload             = function_exists( 'decaldesk_count_jobs' ) && decaldesk_count_jobs() > 0;
+	$categories            = isset( $settings['categories'] ) ? $settings['categories'] : array();
+	$categories_customized = $categories !== $default_categories;
+	$settings_reviewed     = ! empty( $settings['onboarding_settings_reviewed'] );
+	$has_custom_template   = ! empty( $settings['template_zones'] );
+	$has_upload            = function_exists( 'decaldesk_count_jobs' ) && decaldesk_count_jobs() > 0;
 
 	return array(
 		'settings'   => array(

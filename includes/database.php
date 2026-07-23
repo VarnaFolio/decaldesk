@@ -124,7 +124,7 @@ function decaldesk_find_duplicate_job( $file_hash ) {
 		ARRAY_A
 	);
 
-	return $row ?: null;
+	return $row ? $row : null;
 }
 
 /**
@@ -159,7 +159,7 @@ function decaldesk_get_job( $job_id ) {
 		ARRAY_A
 	);
 
-	return $row ?: null;
+	return $row ? $row : null;
 }
 
 /**
@@ -409,7 +409,10 @@ function decaldesk_get_recent_job_health( $days = 7 ) {
 	// ВАЖНО: created_at се пази чрез current_time('mysql') (локално време на
 	// сайта), затова границата тук трябва да се смята по същия начин - не
 	// през GMT - иначе сравнението е леко изместено при сайтове извън UTC.
-	$since = date( 'Y-m-d H:i:s', current_time( 'timestamp' ) - ( (int) $days * DAY_IN_SECONDS ) );
+	// gmdate(), not date(): current_time('timestamp') already has the site's
+	// gmt_offset baked in, so date() would apply the server's own PHP
+	// timezone on top of that and double-shift the result on non-UTC servers.
+	$since = gmdate( 'Y-m-d H:i:s', current_time( 'timestamp' ) - ( (int) $days * DAY_IN_SECONDS ) );
 
 	$fallback_count = (int) $wpdb->get_var(
 		$wpdb->prepare(
@@ -443,6 +446,6 @@ function decaldesk_get_recent_job_health( $days = 7 ) {
 		'fallback_count'     => $fallback_count,
 		'ai_success_count'   => $ai_success_count,
 		'error_count'        => $error_count,
-		'last_error_message' => $last_error_message ?: null,
+		'last_error_message' => $last_error_message ? $last_error_message : null,
 	);
 }

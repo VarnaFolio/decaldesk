@@ -1,0 +1,23 @@
+includes:
+    - tools/vendor/szepeviktor/phpstan-wordpress/extension.neon
+
+parameters:
+    level: 5
+    paths:
+        - decaldesk.php
+        - includes
+        - admin
+    excludePaths:
+        - vendor/*
+        - tools/*
+        - languages/*
+    bootstrapFiles:
+        - tools/vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
+    scanFiles:
+        - vendor/freemius/start.php
+    # decaldesk_fs() is defined in decaldesk.php itself (the Freemius SDK
+    # bootstrap wrapper) - not something the stubs above know about, and it's
+    # called from almost every file, so a blanket ignore is more useful here
+    # than annotating every call site.
+    ignoreErrors:
+        - '#Function decaldesk_fs not found#'

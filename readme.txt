@@ -4,7 +4,7 @@ Tags: woocommerce, decals, stickers, product automation, ai
 Requires at least: 6.9
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.5.13
+Stable tag: 1.5.14
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,9 @@ Yes (Pro). You can use a free Google Gemini API key (from Google AI Studio, no c
 3. A generated product with AI description and mockup
 
 == Changelog ==
+
+= 1.5.14 =
+* Added PHPCS (WordPress-Core + PHPCompatibilityWP, PHP 7.4-8.3) and PHPStan (level 5, WordPress stubs) dev tooling — phpcs.xml.dist, phpstan.neon.dist, and a composer.json for installing them (all dev-only, excluded from distributed builds). Fixed the real issues PHPCS surfaced along the way: a date()/gmdate() timezone double-offset bug in the admin health-check date range, a few short-ternary cleanups, and formatting; annotated the handful of remaining DB-query warnings that are false positives for this codebase's already-audited query patterns (internal table-name helper, no unprepared user input).
 
 = 1.5.13 =
 * Added automatic housekeeping for stored data: the original uploaded file and generated mockup(s) are now deleted right after a product is successfully created (their copies already live permanently in the media library, so nothing is lost), instead of sitting unused in uploads/decaldesk/incoming/ and .../mockups/ forever. A new daily cleanup also removes old finished/failed rows from DecalDesk → History (configurable retention, DecalDesk → Settings → "History retention (days)", default 90, set to 0 to disable) along with any leftover file from a job that errored out. Products you've already created are never touched by any of this.

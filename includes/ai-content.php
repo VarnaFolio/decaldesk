@@ -224,10 +224,10 @@ function decaldesk_gd_load_image( $path ) {
  * е много по-устойчив - няма нужда от escaping и не зависи от JSON коректност.
  */
 function decaldesk_build_ai_prompt( $parsed, $has_image = false ) {
-	$category_name      = decaldesk_get_category_display_name( $parsed['category'] );
-	$area_sqm           = decaldesk_calculate_area_sqm( $parsed['width'], $parsed['height'] );
-	$language           = decaldesk_get_ai_content_language();
-	$store_description  = decaldesk_get_store_description();
+	$category_name     = decaldesk_get_category_display_name( $parsed['category'] );
+	$area_sqm          = decaldesk_calculate_area_sqm( $parsed['width'], $parsed['height'] );
+	$language          = decaldesk_get_ai_content_language();
+	$store_description = decaldesk_get_store_description();
 
 	// Магазинът НЕ продава непременно декали/стикери - DecalDesk работи с
 	// всеки продукт, чиято цена зависи от площта (картини, платове, плочки
@@ -312,13 +312,13 @@ function decaldesk_parse_ai_json_response( $raw_text, $parsed ) {
 
 	$fallback = decaldesk_build_fallback_content( $parsed );
 
-	$product_title      = decaldesk_extract_ai_section( $raw_text, 'PRODUCT_TITLE', 'DESCRIPTION' );
-	$description        = decaldesk_extract_ai_section( $raw_text, 'DESCRIPTION', 'SHORT' );
-	$short_description  = decaldesk_extract_ai_section( $raw_text, 'SHORT', 'META' );
-	$meta_description   = decaldesk_extract_ai_section( $raw_text, 'META', 'SEO_TITLE' );
-	$seo_title          = decaldesk_extract_ai_section( $raw_text, 'SEO_TITLE', 'FOCUS_KEYPHRASE' );
-	$focus_keyphrase    = decaldesk_extract_ai_section( $raw_text, 'FOCUS_KEYPHRASE', 'TAGS' );
-	$tags_raw           = decaldesk_extract_ai_section( $raw_text, 'TAGS', null );
+	$product_title     = decaldesk_extract_ai_section( $raw_text, 'PRODUCT_TITLE', 'DESCRIPTION' );
+	$description       = decaldesk_extract_ai_section( $raw_text, 'DESCRIPTION', 'SHORT' );
+	$short_description = decaldesk_extract_ai_section( $raw_text, 'SHORT', 'META' );
+	$meta_description  = decaldesk_extract_ai_section( $raw_text, 'META', 'SEO_TITLE' );
+	$seo_title         = decaldesk_extract_ai_section( $raw_text, 'SEO_TITLE', 'FOCUS_KEYPHRASE' );
+	$focus_keyphrase   = decaldesk_extract_ai_section( $raw_text, 'FOCUS_KEYPHRASE', 'TAGS' );
+	$tags_raw          = decaldesk_extract_ai_section( $raw_text, 'TAGS', null );
 
 	if ( false === $description ) {
 		return false;
@@ -569,10 +569,10 @@ function decaldesk_call_gemini_api( $parsed, $api_key, $image_base64 = '' ) {
  * Fallback съдържание (шаблонно), използва се когато AI е изключен или недостъпен.
  */
 function decaldesk_build_fallback_content( $parsed ) {
-	$area               = decaldesk_calculate_area_sqm( $parsed['width'], $parsed['height'] );
-	$category_name      = decaldesk_get_category_display_name( $parsed['category'] );
-	$language           = decaldesk_get_ai_content_language();
-	$store_description  = decaldesk_get_store_description();
+	$area              = decaldesk_calculate_area_sqm( $parsed['width'], $parsed['height'] );
+	$category_name     = decaldesk_get_category_display_name( $parsed['category'] );
+	$language          = decaldesk_get_ai_content_language();
+	$store_description = decaldesk_get_store_description();
 
 	// Fallback шаблоните НЕ минават през WP gettext система (__()) нарочно -
 	// езикът им следва настройката "Език на AI съдържанието", не locale-а на

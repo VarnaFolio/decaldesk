@@ -158,10 +158,10 @@ function decaldesk_create_variable_product( $parsed, $mockup_paths, $status = 'd
 		return new WP_Error( 'decaldesk_product_error', __( 'WooCommerce is not active.', 'decaldesk' ) );
 	}
 
-	$settings       = get_option( 'decaldesk_settings', array() );
-	$target_widths  = isset( $settings['variant_sizes'] ) ? $settings['variant_sizes'] : array();
-	$materials      = isset( $settings['variant_materials'] ) ? $settings['variant_materials'] : array();
-	$colors         = isset( $settings['variant_colors'] ) ? $settings['variant_colors'] : array();
+	$settings      = get_option( 'decaldesk_settings', array() );
+	$target_widths = isset( $settings['variant_sizes'] ) ? $settings['variant_sizes'] : array();
+	$materials     = isset( $settings['variant_materials'] ) ? $settings['variant_materials'] : array();
+	$colors        = isset( $settings['variant_colors'] ) ? $settings['variant_colors'] : array();
 
 	if ( empty( $target_widths ) ) {
 		return new WP_Error( 'decaldesk_product_error', __( 'No variant sizes configured in Settings.', 'decaldesk' ) );
