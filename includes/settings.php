@@ -324,6 +324,12 @@ function decaldesk_sanitize_settings( $input ) {
 		? sanitize_text_field( wp_unslash( $input['store_description'] ) )
 		: ( isset( $existing['store_description'] ) ? $existing['store_description'] : '' );
 
+	// Изключено по подразбиране - за да не се промени видимо заглавието на
+	// продуктите за съществуващи инсталации без изрично съгласие. Когато е
+	// включено, продуктовото заглавие идва от AI (ако е активен) или от
+	// правилото име+категория (fallback), вместо директно от файловото име.
+	$output['improve_product_title'] = ! empty( $input['improve_product_title'] );
+
 	/*! <fs_premium_only> */
 	$allowed_formats          = array( 'webp', 'jpeg', 'png' );
 	$output['mockup_format']  = isset( $input['mockup_format'] ) && in_array( $input['mockup_format'], $allowed_formats, true )
@@ -428,6 +434,7 @@ function decaldesk_render_settings_page() {
 			'max_dimension_cm'         => 1000,
 			'custom_footer_text'       => '',
 			'store_description'        => '',
+			'improve_product_title'    => false,
 			'categories'               => array(),
 			'ai_content_language'      => 'English',
 			'delete_data_on_uninstall' => false,
@@ -507,6 +514,19 @@ function decaldesk_render_settings_page() {
 								value="<?php echo esc_attr( $settings['store_description'] ); ?>">
 						<p class="description">
 							<?php esc_html_e( 'DecalDesk works with any product priced by size, not only decals/stickers. Describe what you actually sell in a few words, in the language you want product content written in - it\'s used both in AI-generated descriptions and in the static fallback template (used when AI is off or unavailable). Leave blank to keep the original decal/sticker wording.', 'decaldesk' ); ?>
+						</p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><?php esc_html_e( 'Product titles', 'decaldesk' ); ?></th>
+					<td>
+						<label for="decaldesk_improve_product_title">
+							<input type="checkbox" id="decaldesk_improve_product_title" name="decaldesk_settings[improve_product_title]"
+									value="1" <?php checked( ! empty( $settings['improve_product_title'] ) ); ?>>
+							<?php esc_html_e( 'Let AI (or the fallback rule, when AI is off) improve the product title instead of using the filename\'s design name as-is', 'decaldesk' ); ?>
+						</label>
+						<p class="description">
+							<?php esc_html_e( 'Off by default: the product title is exactly the design name from the filename. When enabled, the title becomes a more natural, SEO-friendly headline (design name plus category/keyword) - written by AI when it\'s on, or by a simple name + category rule otherwise. The URL slug and SKU are unaffected either way.', 'decaldesk' ); ?>
 						</p>
 					</td>
 				</tr>

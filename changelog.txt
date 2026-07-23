@@ -1,3 +1,6 @@
+= 1.5.8 =
+* Added an optional "Let AI (or the fallback rule) improve the product title" setting (DecalDesk → Settings → Store product type) — off by default. Until now the product title was always exactly the design name from the filename, which meant coming up with a good, SEO-friendly title for every design manually. When enabled, AI generates a natural, appealing headline as part of the same content-generation call (no extra API cost), or a simple "Design Name – Category" rule is used when AI is off/unavailable. The URL slug and SKU are unaffected either way.
+
 = 1.5.7 =
 * Raised the default free Gemini daily AI limit from 10 to 50 products/day, matching the maximum batch upload size — still configurable in Settings (1-500). Existing installs that already saved a Settings value keep it unchanged; this only affects new installs and anyone who hasn't customized the field yet.
 

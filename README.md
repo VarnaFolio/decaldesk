@@ -16,6 +16,8 @@ WordPress/WooCommerce plugin for automatically creating products from design fil
 
 DecalDesk isn't limited to decals/stickers — it works with any product priced by size (paintings, fabric panels, tiles, canvas prints...). From **DecalDesk → Settings → Store product type**, describe in a few words what your store actually sells (e.g. "framed canvas art prints"). This phrase feeds both the AI prompt and the static fallback template, so the generated copy talks about your real product instead of assuming decals. Leave it blank to keep the original decal/sticker wording (default, unchanged behavior).
 
+By default the **product title** is exactly the design name from the filename — full manual control, but it means coming up with a good, SEO-friendly name for every file yourself. Check **"Let AI (or the fallback rule) improve the product title"** in the same Settings section to have it generated instead: AI writes a natural, appealing headline (design name + a relevant keyword) when it's on, or a simple `Design Name – Category` rule when AI is off/unavailable. Off by default so existing installs keep exact filename-based titles; the URL slug and SKU are unaffected either way.
+
 ## AI descriptions (free Gemini or paid Claude)
 
 From **DecalDesk → Settings**, choose one of three modes:

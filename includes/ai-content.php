@@ -251,7 +251,11 @@ function decaldesk_build_ai_prompt( $parsed, $has_image = false ) {
 		"- Material: %s\n" .
 		"- Category: %s\n\n" .
 		'Reply in EXACTLY the following format, no markdown, no explanation before or after, ' .
-		"no code fences (```), just the six blocks with exactly these markers:\n\n" .
+		"no code fences (```), just the seven blocks with exactly these markers:\n\n" .
+		"===PRODUCT_TITLE===\n" .
+		'(the actual product title as shown to customers - natural, appealing, SEO-friendly, ' .
+		'includes the design name plus 1-2 relevant keywords (category/use), max 70 characters, ' .
+		"plain text, no quote marks, do NOT include the dimensions here)\n" .
 		"===DESCRIPTION===\n" .
 		'(long product description, 3-4 sentences, sales tone, mentions size/material/use; ' .
 		"may contain short HTML <p> paragraphs; do NOT put quote marks \" at the start/end here)\n" .
@@ -277,6 +281,7 @@ function decaldesk_build_ai_prompt( $parsed, $has_image = false ) {
 		$area_sqm,
 		$parsed['material'],
 		$category_name,
+		$language,
 		$language
 	);
 }
@@ -298,18 +303,22 @@ function decaldesk_parse_ai_json_response( $raw_text, $parsed ) {
 
 	$fallback = decaldesk_build_fallback_content( $parsed );
 
-	$description       = decaldesk_extract_ai_section( $raw_text, 'DESCRIPTION', 'SHORT' );
-	$short_description = decaldesk_extract_ai_section( $raw_text, 'SHORT', 'META' );
-	$meta_description  = decaldesk_extract_ai_section( $raw_text, 'META', 'SEO_TITLE' );
-	$seo_title         = decaldesk_extract_ai_section( $raw_text, 'SEO_TITLE', 'FOCUS_KEYPHRASE' );
-	$focus_keyphrase   = decaldesk_extract_ai_section( $raw_text, 'FOCUS_KEYPHRASE', 'TAGS' );
-	$tags_raw          = decaldesk_extract_ai_section( $raw_text, 'TAGS', null );
+	$product_title      = decaldesk_extract_ai_section( $raw_text, 'PRODUCT_TITLE', 'DESCRIPTION' );
+	$description        = decaldesk_extract_ai_section( $raw_text, 'DESCRIPTION', 'SHORT' );
+	$short_description  = decaldesk_extract_ai_section( $raw_text, 'SHORT', 'META' );
+	$meta_description   = decaldesk_extract_ai_section( $raw_text, 'META', 'SEO_TITLE' );
+	$seo_title          = decaldesk_extract_ai_section( $raw_text, 'SEO_TITLE', 'FOCUS_KEYPHRASE' );
+	$focus_keyphrase    = decaldesk_extract_ai_section( $raw_text, 'FOCUS_KEYPHRASE', 'TAGS' );
+	$tags_raw           = decaldesk_extract_ai_section( $raw_text, 'TAGS', null );
 
 	if ( false === $description ) {
 		return false;
 	}
 
 	return array(
+		'product_title'     => false !== $product_title
+			? mb_substr( sanitize_text_field( trim( wp_strip_all_tags( $product_title ) ) ), 0, 100 )
+			: $fallback['product_title'],
 		'description'       => wp_kses_post( trim( $description ) ),
 		'short_description' => false !== $short_description
 			? sanitize_text_field( trim( $short_description ) )
@@ -599,6 +608,11 @@ function decaldesk_build_fallback_content( $parsed ) {
 
 		$seo_title = sprintf( '%1$s %2$d x %3$d см – %4$s', $parsed['name'], $parsed['width'], $parsed['height'], $category_name );
 
+		// Без AI не измисляме "творческо" заглавие - просто името на дизайна +
+		// категорията, четимо и с достатъчно ключова информация за SEO, без
+		// размерите (те не помагат на заглавието да звучи естествено).
+		$product_title = sprintf( '%1$s – %2$s', $parsed['name'], $category_name );
+
 		$size_unit = ' см';
 	} else {
 		$product_phrase = '' !== $store_description ? $store_description : 'self-adhesive film';
@@ -631,6 +645,11 @@ function decaldesk_build_fallback_content( $parsed ) {
 
 		$seo_title = sprintf( '%1$s %2$d x %3$d cm – %4$s', $parsed['name'], $parsed['width'], $parsed['height'], $category_name );
 
+		// Без AI не измисляме "творческо" заглавие - просто името на дизайна +
+		// категорията, четимо и с достатъчно ключова информация за SEO, без
+		// размерите (те не помагат на заглавието да звучи естествено).
+		$product_title = sprintf( '%1$s – %2$s', $parsed['name'], $category_name );
+
 		$size_unit = ' cm';
 	}
 
@@ -652,6 +671,7 @@ function decaldesk_build_fallback_content( $parsed ) {
 	);
 
 	return array(
+		'product_title'     => mb_substr( $product_title, 0, 100 ),
 		'description'       => wpautop( esc_html( $description ) ),
 		'short_description' => $short_description,
 		'meta_description'  => mb_substr( $meta_description, 0, 160 ),

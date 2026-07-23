@@ -4,6 +4,28 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Връща заглавието, с което да се създаде продуктът - по подразбиране
+ * (настройката "improve_product_title" изключена) винаги е точно името на
+ * дизайна от файловото име, без промяна на съществуващото поведение.
+ * Когато е включена, ползва AI-генерираното (или, ако AI е изключен,
+ * правилото име+категория от fallback) по-SEO-приятелско заглавие вместо
+ * суровото име - slug-ът и SKU остават непроменени и в двата случая.
+ *
+ * @param array $parsed     Резултат от decaldesk_parse_filename().
+ * @param array $ai_content Резултат от decaldesk_generate_ai_content()/decaldesk_build_fallback_content().
+ * @return string
+ */
+function decaldesk_get_product_title( $parsed, $ai_content ) {
+	$settings = get_option( 'decaldesk_settings', array() );
+
+	if ( empty( $settings['improve_product_title'] ) || empty( $ai_content['product_title'] ) ) {
+		return $parsed['name'];
+	}
+
+	return $ai_content['product_title'];
+}
+
+/**
  * Прикачва списък от мокъп изображения + оригиналния дизайн към продукт.
  * Първият мокъп става главна снимка (featured image), останалите мокъпи и
  * оригиналният дизайн отиват в галерията. Преизползва се от Simple и
@@ -164,7 +186,7 @@ function decaldesk_create_variable_product( $parsed, $mockup_paths, $status = 'd
 	$description = decaldesk_append_custom_footer_text( $ai_content['description'] );
 
 	$product = new WC_Product_Variable();
-	$product->set_name( $parsed['name'] );
+	$product->set_name( decaldesk_get_product_title( $parsed, $ai_content ) );
 	$product->set_slug( decaldesk_generate_slug( $parsed['name'], $parsed ) );
 	$product->set_status( $status );
 	$product->set_catalog_visibility( 'visible' );
@@ -332,8 +354,10 @@ function decaldesk_create_product( $parsed, $price, $mockup_paths, $status = 'dr
 
 	$product = new WC_Product_Simple();
 
-	// Заглавието остава точно както е зададено в името на файла (кирилица или каквото е подадено)
-	$product->set_name( $parsed['name'] );
+	// Заглавието по подразбиране е точно както е зададено в името на файла
+	// (кирилица или каквото е подадено) - decaldesk_get_product_title() връща
+	// AI/fallback-подобрено заглавие само ако настройката е изрично включена.
+	$product->set_name( decaldesk_get_product_title( $parsed, $ai_content ) );
 
 	// Кратък адрес (slug) винаги на латиница, независимо от езика на заглавието
 	$product->set_slug( decaldesk_generate_slug( $parsed['name'], $parsed ) );
