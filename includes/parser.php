@@ -80,7 +80,12 @@ function decaldesk_parse_filename( $filename ) {
 
 	// Разкрасяваме името: заменяме тирета/долни черти с интервал и главна буква
 	$pretty_name = str_replace( array( '_', '-' ), ' ', $matches['name'] );
-	$pretty_name = ucfirst( trim( $pretty_name ) );
+	// ucfirst() е байт-ориентирана и не капитализира кирилица (многобайтов
+	// UTF-8) - "коледа" си остава "коледа" вместо "Коледа". mb_strtoupper()
+	// върху само първия символ дава същия резултат като ucfirst(), но работи
+	// коректно и за кирилица (плъгинът поддържа Bulgarian filenames официално).
+	$pretty_name = trim( $pretty_name );
+	$pretty_name = mb_strtoupper( mb_substr( $pretty_name, 0, 1, 'UTF-8' ), 'UTF-8' ) . mb_substr( $pretty_name, 1, null, 'UTF-8' );
 
 	return array(
 		'name'     => $pretty_name,

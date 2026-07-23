@@ -98,15 +98,22 @@ if ( ! in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins',
 ## 6. Тестване и качество
 
 - Разработка с `WP_DEBUG` / `WP_DEBUG_LOG` включени, `WP_DEBUG_DISPLAY` = false.
-- Unit тестове за бизнес логиката.
+- Unit тестове за бизнес логиката — `tests/` (PHPUnit + Brain Monkey за
+  мокване на WP функции, без нужда от пълна WP/MySQL инсталация - подходящо
+  за чисти computation функции като `includes/parser.php`/`includes/pricing.php`).
+  Конфигурация: `phpunit.xml.dist`, bootstrap `tests/bootstrap.php`. Пускане:
+  `composer run test`. За код, който реално зависи от WP/DB state (AJAX
+  handlers, product creation), продължавай да ползваш ръчния wp-cli sandbox
+  workflow, не тези unit тестове.
 - Статичен анализ с PHPStan, стилово валидиране с PHP_CodeSniffer — конфигурацията
   е в `phpcs.xml.dist` (WordPress-Core + PHPCompatibilityWP, `testVersion 7.4-8.3`)
-  и `phpstan.neon.dist` (level 5, WordPress stubs) в корена на репото. И двата
-  файла, `composer.json`-ът и `tools/vendor/` са dev-only tooling — изрично
-  изключени от дистрибутивните ZIP-ове (виж `tools/build-free-zip.js`).
-  Инсталация: `composer install` (инсталира в `tools/vendor/`, не в
-  runtime `vendor/`, за да не се бърка с ръчно vendor-натия Freemius SDK).
-  Пускане: `composer run phpcs` / `composer run phpstan`.
+  и `phpstan.neon.dist` (level 5, WordPress stubs) в корена на репото. Всички
+  тези файлове, `composer.json`-ът, `phpunit.xml.dist` и `tools/vendor/` са
+  dev-only tooling — изрично изключени от дистрибутивните ZIP-ове (виж
+  `tools/build-free-zip.js`). Инсталация: `composer install` (инсталира в
+  `tools/vendor/`, не в runtime `vendor/`, за да не се бърка с ръчно
+  vendor-натия Freemius SDK). Пускане: `composer run phpcs` / `composer run
+  phpstan` / `composer run test`.
 - Ако плъгинът се качва в официалния Marketplace — трябва да минава QIT
   (Activation, Security, Malware, PHPCompatibility, Woo API, E2E с
   Playwright).

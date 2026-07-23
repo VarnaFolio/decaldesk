@@ -11,11 +11,12 @@ Thumbs.db
 # СЕ COMMIT-ВАТ нарочно, защото трябва да пътуват с плъгина при инсталация)
 /node_modules/
 
-# PHPCS/PHPStan dev tooling (composer.json require-dev) - инсталира се локално
-# с `composer install`, не се commit-ва; отделен vendor-dir от runtime-а
-# vendor/freemius/ нарочно, за да не се бъркат двете (виж composer.json).
+# PHPCS/PHPStan/PHPUnit dev tooling (composer.json require-dev) - инсталира се
+# локално с `composer install`, не се commit-ва; отделен vendor-dir от
+# runtime-а vendor/freemius/ нарочно, за да не се бъркат двете (виж composer.json).
 # composer.lock СЕ commit-ва нарочно, за възпроизводими версии в CI.
 /tools/vendor/
+/.phpunit.cache/
 
 # Local build/output
 *.zip

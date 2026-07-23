@@ -1,3 +1,7 @@
+= 1.5.15 =
+* Added a PHPUnit unit test suite (tests/, dev-only, excluded from distributed builds) covering the two most critical pieces of business logic: filename parsing (includes/parser.php) and area-based price calculation (includes/pricing.php) — 25 tests across both the with-material and without-material filename formats, error paths, and pricing edge cases (minimum-price clamping, custom settings, rounding). Uses Brain Monkey to mock the handful of WordPress functions these files touch, so it runs in milliseconds with no database or full WP install needed.
+* Fixed a real bug the new tests caught immediately: the design name capitalization in decaldesk_parse_filename() used ucfirst(), which is byte-oriented and silently fails to capitalize Cyrillic (or any multi-byte UTF-8) first letters — "коледа_50x70_..." produced the product name "коледа" instead of "Коледа". Switched to an mb_-safe equivalent; Latin names are unaffected.
+
 = 1.5.14 =
 * Added PHPCS (WordPress-Core + PHPCompatibilityWP, PHP 7.4-8.3) and PHPStan (level 5, WordPress stubs) dev tooling — phpcs.xml.dist, phpstan.neon.dist, and a composer.json for installing them (all dev-only, excluded from distributed builds). Fixed the real issues PHPCS surfaced along the way: a date()/gmdate() timezone double-offset bug in the admin health-check date range, a few short-ternary cleanups, and formatting; annotated the handful of remaining DB-query warnings that are false positives for this codebase's already-audited query patterns (internal table-name helper, no unprepared user input).
 

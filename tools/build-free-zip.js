@@ -28,11 +28,12 @@ const MARKER_RE = /[ \t]*\/\*!\s*<fs_premium_only>\s*\*\/[\s\S]*?\/\*!\s*<\/fs_p
 // 'assets/marketplace' holds WP.org/Marketplace LISTING screenshots (for the
 // plugin directory page) - not a runtime asset, and not meant to ship inside
 // the distributed plugin zip at all.
-const EXCLUDE_DIRS = new Set(['.git', 'tools', 'marketplace']);
-// PHPCS/PHPStan dev tooling at the plugin root (its actual packages live in
+// 'tests' excluded alongside 'tools' - PHPUnit test suite, dev-only.
+const EXCLUDE_DIRS = new Set(['.git', 'tools', 'marketplace', 'tests']);
+// PHPCS/PHPStan/PHPUnit dev tooling at the plugin root (packages live in
 // tools/vendor/, already excluded via the 'tools' dir above) - config-only
 // files, but still dev-only, not plugin runtime.
-const EXCLUDE_FILES = new Set(['.gitignore', 'composer.json', 'composer.lock', 'phpcs.xml.dist', 'phpstan.neon.dist']);
+const EXCLUDE_FILES = new Set(['.gitignore', 'composer.json', 'composer.lock', 'phpcs.xml.dist', 'phpstan.neon.dist', 'phpunit.xml.dist']);
 
 // vendor/freemius ships its own dev/build tooling (composer, gulp, phpcs,
 // its own README/CONTRIBUTING) that has no runtime role - scoped to that

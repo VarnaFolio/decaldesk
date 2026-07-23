@@ -9,6 +9,9 @@
     <exclude-pattern>*/languages/*</exclude-pattern>
     <exclude-pattern>*/assets/marketplace/*</exclude-pattern>
     <exclude-pattern>*/node_modules/*</exclude-pattern>
+    <!-- PHPUnit test suite follows PSR/PHPUnit conventions (PascalCase class
+         names matching filenames, e.g. ParserTest.php), not WordPress's. -->
+    <exclude-pattern>*/tests/*</exclude-pattern>
 
     <arg name="extensions" value="php"/>
     <arg value="sp"/>
