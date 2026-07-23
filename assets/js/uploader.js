@@ -1,6 +1,9 @@
 (function ($) {
 	'use strict';
 
+	var __ = wp.i18n.__;
+	var sprintf = wp.i18n.sprintf;
+
 	$(function () {
 		var $dropzone = $('#decaldesk-dropzone');
 		var $fileInput = $('#decaldesk-file-input');
@@ -47,7 +50,7 @@
 				if (!match) {
 					return {
 						ok: false,
-						message: 'Doesn\'t match the format name_widthxheight_material_category.extension (material is optional: name_widthxheight_category.extension also works)'
+						message: __('Doesn\'t match the format name_widthxheight_material_category.extension (material is optional: name_widthxheight_category.extension also works)', 'decaldesk')
 					};
 				}
 				material = '';
@@ -58,13 +61,17 @@
 			var height = parseInt(match[3], 10);
 
 			if (width <= 0 || height <= 0) {
-				return { ok: false, message: 'Dimensions must be positive numbers.' };
+				return { ok: false, message: __('Dimensions must be positive numbers.', 'decaldesk') };
 			}
 
 			if (width > MAX_DIMENSION_CM || height > MAX_DIMENSION_CM) {
 				return {
 					ok: false,
-					message: width + ' x ' + height + ' cm looks unrealistically large (maximum ' + MAX_DIMENSION_CM + ' cm per side). Check for a typo.'
+					message: sprintf(
+						/* translators: 1: width in cm, 2: height in cm, 3: maximum allowed value in cm */
+						__('%1$d x %2$d cm looks unrealistically large (maximum %3$d cm per side). Check for a typo.', 'decaldesk'),
+						width, height, MAX_DIMENSION_CM
+					)
 				};
 			}
 
@@ -81,7 +88,11 @@
 				material: material,
 				category: category,
 				categoryKnown: categoryKnown,
-				warning: categoryKnown ? '' : 'Category "' + category + '" isn\'t configured yet — a generic mockup will be used.'
+				warning: categoryKnown ? '' : sprintf(
+					/* translators: %s: the category slug parsed from the filename */
+					__('Category "%s" isn\'t configured yet — a generic mockup will be used.', 'decaldesk'),
+					category
+				)
 			};
 		}
 
@@ -173,7 +184,7 @@
 
 			$progress.show();
 			$progressBar.css('width', '50%'); // качването вече е приключило преди презареждането
-			$progressLabel.text('Resuming progress tracking after reload...');
+			$progressLabel.text(__('Resuming progress tracking after reload...', 'decaldesk'));
 			$uploadBtn.prop('disabled', true);
 
 			pollJobStatuses(jobRows, stored.uploadStats);
@@ -287,10 +298,14 @@
 				$useVariantsCheckbox.prop('disabled', savedSizes.length === 0);
 
 				if (savedSizes.length > 0) {
-					$('#decaldesk-variants-summary').text('Every uploaded design will become one product with a choice of width: ' + savedSizes.join(', ') + ' cm (height is calculated automatically to match each design\'s proportions).');
+					$('#decaldesk-variants-summary').text(sprintf(
+						/* translators: %s: list of configured widths */
+						__('Every uploaded design will become one product with a choice of width: %s (height is calculated automatically to match each design\'s proportions).', 'decaldesk'),
+						savedSizes.join(', ') + ' cm'
+					));
 				} else {
 					$useVariantsCheckbox.prop('checked', false);
-					$('#decaldesk-variants-summary').text('No variant widths configured yet — add at least one below to enable this option.');
+					$('#decaldesk-variants-summary').text(__('No variant widths configured yet — add at least one below to enable this option.', 'decaldesk'));
 				}
 			});
 		}
@@ -300,23 +315,23 @@
 			var $status = $('#decaldesk-variant-config-status');
 
 			$btn.prop('disabled', true);
-			$status.removeClass('is-success is-error').text('Saving...');
+			$status.removeClass('is-success is-error').text(__('Saving...', 'decaldesk'));
 
 			saveVariantConfig().done(function (response) {
 				$btn.prop('disabled', false);
 
 				if (!response.success) {
-					$status.addClass('is-error').text((response.data && response.data.message) || 'Error saving.');
+					$status.addClass('is-error').text((response.data && response.data.message) || __('Error saving.', 'decaldesk'));
 					return;
 				}
 
-				$status.addClass('is-success').text('Saved.');
+				$status.addClass('is-success').text(__('Saved.', 'decaldesk'));
 				setTimeout(function () {
 					$status.fadeOut(300, function () { $status.show().removeClass('is-success').text(''); });
 				}, 2000);
 			}).fail(function () {
 				$btn.prop('disabled', false);
-				$status.addClass('is-error').text('Server connection error.');
+				$status.addClass('is-error').text(__('Server connection error.', 'decaldesk'));
 			});
 		});
 		/*! </fs_premium_only> */
@@ -354,13 +369,25 @@
 
 			var messages = [];
 			if (skippedLimit) {
-				messages.push('The limit of ' + MAX_FILES + ' files — ' + skippedLimit + ' files were not added.');
+				messages.push(sprintf(
+					/* translators: 1: maximum allowed files, 2: number of files that were skipped because of the limit */
+					__('The limit of %1$d files — %2$d files were not added.', 'decaldesk'),
+					MAX_FILES, skippedLimit
+				));
 			}
 			if (skippedBadType) {
-				messages.push(skippedBadType + ' files are in an unsupported format (allowed: PNG, JPG, WEBP, GIF) and were skipped.');
+				messages.push(sprintf(
+					/* translators: %d: number of files skipped for an unsupported format */
+					__('%d files are in an unsupported format (allowed: PNG, JPG, WEBP, GIF) and were skipped.', 'decaldesk'),
+					skippedBadType
+				));
 			}
 			if (skippedDuplicate) {
-				messages.push(skippedDuplicate + ' files were already added and were skipped.');
+				messages.push(sprintf(
+					/* translators: %d: number of duplicate files skipped */
+					__('%d files were already added and were skipped.', 'decaldesk'),
+					skippedDuplicate
+				));
 			}
 			if (messages.length) {
 				alert(messages.join('\n'));
@@ -389,7 +416,7 @@
 
 				var $nameRow = $('<div class="decaldesk-file-name-row"></div>');
 				$nameRow.append('<span class="decaldesk-file-name">' + escapeHtml(file.name) + '</span>');
-				var $remove = $('<button type="button" class="decaldesk-remove-file" aria-label="Remove">&times;</button>');
+				var $remove = $('<button type="button" class="decaldesk-remove-file" aria-label="' + escapeHtml(__('Remove', 'decaldesk')) + '">&times;</button>');
 				$remove.on('click', function () {
 					removeFile(index);
 				});
@@ -414,9 +441,17 @@
 			$fileList.append($ul);
 
 			$fileSummary.show();
-			var countText = selectedFiles.length + ' / ' + MAX_FILES + ' files selected';
+			var countText = sprintf(
+				/* translators: 1: number of selected files, 2: maximum allowed files */
+				__('%1$d / %2$d files selected', 'decaldesk'),
+				selectedFiles.length, MAX_FILES
+			);
 			if (invalidCount > 0) {
-				countText += ' (' + invalidCount + ' with naming problems — see below)';
+				countText += ' ' + sprintf(
+					/* translators: %d: number of selected files with a filename problem */
+					__('(%d with naming problems — see below)', 'decaldesk'),
+					invalidCount
+				);
 			}
 			$fileCount.text(countText);
 		}
@@ -430,7 +465,7 @@
 			e.preventDefault();
 
 			if (!selectedFiles.length) {
-				alert('Please select at least one file.');
+				alert(__('Please select at least one file.', 'decaldesk'));
 				return;
 			}
 
@@ -439,9 +474,14 @@
 			});
 			if (invalidFiles.length > 0) {
 				var proceed = confirm(
-					invalidFiles.length + ' file(s) have a naming problem and will fail to upload:\n\n' +
+					sprintf(
+						/* translators: %d: number of selected files with a filename problem */
+						__('%d file(s) have a naming problem and will fail to upload:', 'decaldesk'),
+						invalidFiles.length
+					) + '\n\n' +
 					invalidFiles.map(function (f) { return '- ' + f.name; }).join('\n') +
-					'\n\nUpload the other files anyway? (Cancel to go back and fix the names first.)'
+					'\n\n' +
+					__('Upload the other files anyway? (Cancel to go back and fix the names first.)', 'decaldesk')
 				);
 				if (!proceed) {
 					return;
@@ -481,14 +521,14 @@
 					$uploadBtn.prop('disabled', false);
 
 					if (!response.success || !(response.data.sizes && response.data.sizes.length)) {
-						alert('Add at least one width before uploading with variants (or uncheck "Create with selectable variants").');
+						alert(__('Add at least one width before uploading with variants (or uncheck "Create with selectable variants").', 'decaldesk'));
 						return;
 					}
 
 					startUpload();
 				}).fail(function () {
 					$uploadBtn.prop('disabled', false);
-					alert('Could not save the variant configuration (server connection error). Please try again.');
+					alert(__('Could not save the variant configuration (server connection error). Please try again.', 'decaldesk'));
 				});
 				return;
 			}
@@ -503,7 +543,7 @@
 		 */
 		function uploadFilesSequentially(files, status, useVariants, generateAllMockups, index, uploadStats, jobRows) {
 			if (index >= files.length) {
-				$progressLabel.text('All files uploaded - processing in the background...');
+				$progressLabel.text(__('All files uploaded - processing in the background...', 'decaldesk'));
 
 				if (Object.keys(jobRows).length > 0) {
 					saveActiveJobsToStorage(jobRows, uploadStats);
@@ -520,7 +560,11 @@
 				return;
 			}
 
-			$progressLabel.text('Uploading file ' + (index + 1) + ' of ' + files.length + '...');
+			$progressLabel.text(sprintf(
+				/* translators: 1: current file number, 2: total number of files in this batch */
+				__('Uploading file %1$d of %2$d...', 'decaldesk'),
+				index + 1, files.length
+			));
 
 			var file = files[index];
 			var formData = new FormData();
@@ -548,14 +592,14 @@
 						jobRows[response.data.job_id] = { $row: $row, filename: file.name };
 					} else {
 						uploadStats.failed++;
-						var message = (response.data && response.data.message) ? response.data.message : 'Unknown error during upload.';
+						var message = (response.data && response.data.message) ? response.data.message : __('Unknown error during upload.', 'decaldesk');
 						var editLink = (response.data && response.data.edit_link) ? response.data.edit_link : null;
 						appendErrorRow(file.name, message, editLink);
 					}
 				},
 				error: function () {
 					uploadStats.failed++;
-					appendErrorRow(file.name, 'A server connection error occurred.');
+					appendErrorRow(file.name, __('A server connection error occurred.', 'decaldesk'));
 				},
 				complete: function () {
 					var percent = Math.round(((index + 1) / files.length) * 50); // качването е първата половина на прогреса
@@ -614,7 +658,7 @@
 						} else {
 							pendingCount++;
 							entry.$row.find('.decaldesk-job-status-text').text(
-								'processing' === job.status ? 'Processing...' : 'Queued for processing...'
+								'processing' === job.status ? __('Processing...', 'decaldesk') : __('Queued for processing...', 'decaldesk')
 							);
 						}
 					});
@@ -622,7 +666,11 @@
 					// Прогрес бар: втората половина (50-100%) следва напредъка на обработката
 					var processedPercent = totalJobs > 0 ? Math.round(((doneCount + errorCount) / totalJobs) * 50) : 50;
 					$progressBar.css('width', (50 + processedPercent) + '%');
-					$progressLabel.text('Processed ' + (doneCount + errorCount) + ' of ' + totalJobs + ' (pending: ' + pendingCount + ')...');
+					$progressLabel.text(sprintf(
+						/* translators: 1: number of jobs processed so far, 2: total number of jobs, 3: number still pending */
+						__('Processed %1$d of %2$d (pending: %3$d)...', 'decaldesk'),
+						doneCount + errorCount, totalJobs, pendingCount
+					));
 
 					if (doneCount + errorCount >= totalJobs || pollCount >= maxPolls) {
 						clearInterval(intervalId);
@@ -633,7 +681,7 @@
 						if (pollCount >= maxPolls && doneCount + errorCount < totalJobs) {
 							$progressLabel.text('');
 							var $notice = $('<div class="decaldesk-result-row decaldesk-result-error"></div>')
-								.text('Processing is taking unusually long. Products are still being created in the background - reload the page in a bit to see the final result.');
+								.text(__('Processing is taking unusually long. Products are still being created in the background - reload the page in a bit to see the final result.', 'decaldesk'));
 							$results.prepend($notice);
 						}
 
@@ -646,7 +694,7 @@
 		function createQueuedResultRow(filename) {
 			var $row = $('<div class="decaldesk-result-row decaldesk-result-pending"></div>');
 			$row.append('<strong>' + escapeHtml(filename) + ':</strong> ');
-			$row.append('<span class="decaldesk-job-status-text">Queued for processing...</span>');
+			$row.append('<span class="decaldesk-job-status-text">' + escapeHtml(__('Queued for processing...', 'decaldesk')) + '</span>');
 			$results.append($row);
 			return $row;
 		}
@@ -655,7 +703,7 @@
 			var $row = $('<div class="decaldesk-result-row decaldesk-result-error"></div>');
 			$row.append('<strong>' + escapeHtml(filename) + ':</strong> ' + escapeHtml(message));
 			if (editLink) {
-				$row.append(' <a href="' + editLink + '" target="_blank">View product →</a>');
+				$row.append(' <a href="' + editLink + '" target="_blank">' + escapeHtml(__('View product →', 'decaldesk')) + '</a>');
 			}
 			$results.append($row);
 		}
@@ -665,36 +713,48 @@
 			$row.addClass(isSuccess ? 'decaldesk-result-success' : 'decaldesk-result-error');
 			$row.empty();
 
-			$row.append('<strong>' + escapeHtml(filename) + ':</strong> ' + escapeHtml(job.message || (isSuccess ? 'Done.' : 'Unknown error.')));
+			$row.append('<strong>' + escapeHtml(filename) + ':</strong> ' + escapeHtml(job.message || (isSuccess ? __('Done.', 'decaldesk') : __('Unknown error.', 'decaldesk'))));
 
 			if (isSuccess && job.ai_source) {
 				var badges = {
-					ai_free: { label: 'AI (free)', cls: 'decaldesk-badge-free' },
-					ai_claude: { label: 'AI (Claude)', cls: 'decaldesk-badge-claude' },
-					fallback: { label: 'Template', cls: 'decaldesk-badge-fallback' }
+					ai_free: { label: __('AI (free)', 'decaldesk'), cls: 'decaldesk-badge-free' },
+					ai_claude: { label: __('AI (Claude)', 'decaldesk'), cls: 'decaldesk-badge-claude' },
+					fallback: { label: __('Template', 'decaldesk'), cls: 'decaldesk-badge-fallback' }
 				};
 				var badge = badges[job.ai_source];
 				if (badge) {
-					$row.append(' <span class="decaldesk-badge ' + badge.cls + '">' + badge.label + '</span>');
+					$row.append(' <span class="decaldesk-badge ' + badge.cls + '">' + escapeHtml(badge.label) + '</span>');
 				}
 			}
 
 			if (isSuccess && job.edit_link) {
-				$row.append(' <a href="' + job.edit_link + '" target="_blank">Edit product →</a>');
+				$row.append(' <a href="' + job.edit_link + '" target="_blank">' + escapeHtml(__('Edit product →', 'decaldesk')) + '</a>');
 			}
 		}
 
 		function showFinalSummary(uploadStats, processStats) {
 			var hasErrors = uploadStats.failed > 0 || processStats.error > 0;
 			var cssClass = hasErrors ? 'decaldesk-summary-partial' : 'decaldesk-summary-success';
-			var text = 'Done: ' + processStats.done + ' successful products out of ' + uploadStats.total;
+			var text = sprintf(
+				/* translators: 1: number of successfully processed products, 2: total number of files in the batch */
+				__('Done: %1$d successful products out of %2$d', 'decaldesk'),
+				processStats.done, uploadStats.total
+			);
 
 			var problems = [];
 			if (uploadStats.failed) {
-				problems.push(uploadStats.failed + ' files were not uploaded');
+				problems.push(sprintf(
+					/* translators: %d: number of files that failed to upload */
+					__('%d files were not uploaded', 'decaldesk'),
+					uploadStats.failed
+				));
 			}
 			if (processStats.error) {
-				problems.push(processStats.error + ' failed to process');
+				problems.push(sprintf(
+					/* translators: %d: number of files that failed to process into a product */
+					__('%d failed to process', 'decaldesk'),
+					processStats.error
+				));
 			}
 			if (problems.length) {
 				text += ' (' + problems.join(', ') + ')';
@@ -713,8 +773,12 @@
 
 			if (aiUsedCount > 0 && fallbackCount > 0) {
 				var $note = $('<div class="decaldesk-summary-ai-note"></div>');
-				$note.text(fallbackCount + ' of ' + (aiUsedCount + fallbackCount) + ' used the static template instead of AI (daily free quota reached?). ');
-				$note.append($('<a href="admin.php?page=decaldesk-settings">Check your AI settings →</a>'));
+				$note.text(sprintf(
+					/* translators: 1: number of products that used the static fallback template, 2: total number of products in the batch */
+					__('%1$d of %2$d used the static template instead of AI (daily free quota reached?). ', 'decaldesk'),
+					fallbackCount, aiUsedCount + fallbackCount
+				));
+				$note.append($('<a href="admin.php?page=decaldesk-settings">' + escapeHtml(__('Check your AI settings →', 'decaldesk')) + '</a>'));
 				$summary.append($note);
 			}
 

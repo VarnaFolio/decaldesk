@@ -2,14 +2,14 @@
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: DecalDesk 1.5.10\n"
+"Project-Id-Version: DecalDesk 1.5.11\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/decaldesk\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-07-23T12:48:41+00:00\n"
+"POT-Creation-Date: 2026-07-23T12:57:51+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: decaldesk\n"
@@ -362,14 +362,17 @@ msgid "Error"
 msgstr ""
 
 #: admin/admin-page-history.php:208
+#: assets/js/uploader.js:720
 msgid "AI (free)"
 msgstr ""
 
 #: admin/admin-page-history.php:213
+#: assets/js/uploader.js:721
 msgid "AI (Claude)"
 msgstr ""
 
 #: admin/admin-page-history.php:218
+#: assets/js/uploader.js:722
 msgid "Template"
 msgstr ""
 
@@ -463,12 +466,14 @@ msgid "Selectable size/material/color variants require a Pro license."
 msgstr ""
 
 #: admin/admin-page-upload.php:77
+#: assets/js/uploader.js:308
 msgid "No variant widths configured yet — add at least one below to enable this option."
 msgstr ""
 
 #. translators: %s: list of configured widths
 #: admin/admin-page-upload.php:82
-#, php-format
+#: assets/js/uploader.js:303
+#, php-format,js-format
 msgid "Every uploaded design will become one product with a choice of width: %s (height is calculated automatically to match each design's proportions)."
 msgstr ""
 
@@ -567,7 +572,7 @@ msgid "DecalDesk requires WooCommerce to be active in order to work."
 msgstr ""
 
 #. translators: %s: support email address
-#: decaldesk.php:557
+#: decaldesk.php:562
 #, php-format
 msgid "DecalDesk — need a hand? Email %s"
 msgstr ""
@@ -634,6 +639,7 @@ msgid "%1$d of %2$d products over the past week used the static template instead
 msgstr ""
 
 #: includes/notices.php:204
+#: assets/js/uploader.js:781
 msgid "Check your AI settings →"
 msgstr ""
 
@@ -659,6 +665,7 @@ msgid "The name \"%s\" doesn't match the format name_widthxheight_material_categ
 msgstr ""
 
 #: includes/parser.php:59
+#: assets/js/uploader.js:64
 msgid "Dimensions must be positive numbers."
 msgstr ""
 
@@ -1082,4 +1089,173 @@ msgstr ""
 
 #: includes/settings.php:909
 msgid "Save settings"
+msgstr ""
+
+#: assets/js/uploader.js:53
+msgid "Doesn't match the format name_widthxheight_material_category.extension (material is optional: name_widthxheight_category.extension also works)"
+msgstr ""
+
+#. translators: 1: width in cm, 2: height in cm, 3: maximum allowed value in cm
+#: assets/js/uploader.js:72
+#, js-format
+msgid "%1$d x %2$d cm looks unrealistically large (maximum %3$d cm per side). Check for a typo."
+msgstr ""
+
+#. translators: %s: the category slug parsed from the filename
+#: assets/js/uploader.js:93
+#, js-format
+msgid "Category \"%s\" isn't configured yet — a generic mockup will be used."
+msgstr ""
+
+#: assets/js/uploader.js:187
+msgid "Resuming progress tracking after reload..."
+msgstr ""
+
+#: assets/js/uploader.js:318
+msgid "Saving..."
+msgstr ""
+
+#: assets/js/uploader.js:324
+msgid "Error saving."
+msgstr ""
+
+#: assets/js/uploader.js:328
+msgid "Saved."
+msgstr ""
+
+#: assets/js/uploader.js:334
+msgid "Server connection error."
+msgstr ""
+
+#. translators: 1: maximum allowed files, 2: number of files that were skipped because of the limit
+#: assets/js/uploader.js:374
+#, js-format
+msgid "The limit of %1$d files — %2$d files were not added."
+msgstr ""
+
+#. translators: %d: number of files skipped for an unsupported format
+#: assets/js/uploader.js:381
+#, js-format
+msgid "%d files are in an unsupported format (allowed: PNG, JPG, WEBP, GIF) and were skipped."
+msgstr ""
+
+#. translators: %d: number of duplicate files skipped
+#: assets/js/uploader.js:388
+#, js-format
+msgid "%d files were already added and were skipped."
+msgstr ""
+
+#: assets/js/uploader.js:419
+msgid "Remove"
+msgstr ""
+
+#. translators: 1: number of selected files, 2: maximum allowed files
+#: assets/js/uploader.js:446
+#, js-format
+msgid "%1$d / %2$d files selected"
+msgstr ""
+
+#. translators: %d: number of selected files with a filename problem
+#: assets/js/uploader.js:452
+#, js-format
+msgid "(%d with naming problems — see below)"
+msgstr ""
+
+#: assets/js/uploader.js:468
+msgid "Please select at least one file."
+msgstr ""
+
+#. translators: %d: number of selected files with a filename problem
+#: assets/js/uploader.js:479
+#, js-format
+msgid "%d file(s) have a naming problem and will fail to upload:"
+msgstr ""
+
+#: assets/js/uploader.js:484
+msgid "Upload the other files anyway? (Cancel to go back and fix the names first.)"
+msgstr ""
+
+#: assets/js/uploader.js:524
+msgid "Add at least one width before uploading with variants (or uncheck \"Create with selectable variants\")."
+msgstr ""
+
+#: assets/js/uploader.js:531
+msgid "Could not save the variant configuration (server connection error). Please try again."
+msgstr ""
+
+#: assets/js/uploader.js:546
+msgid "All files uploaded - processing in the background..."
+msgstr ""
+
+#. translators: 1: current file number, 2: total number of files in this batch
+#: assets/js/uploader.js:565
+#, js-format
+msgid "Uploading file %1$d of %2$d..."
+msgstr ""
+
+#: assets/js/uploader.js:595
+msgid "Unknown error during upload."
+msgstr ""
+
+#: assets/js/uploader.js:602
+msgid "A server connection error occurred."
+msgstr ""
+
+#: assets/js/uploader.js:661
+msgid "Processing..."
+msgstr ""
+
+#: assets/js/uploader.js:661
+#: assets/js/uploader.js:697
+msgid "Queued for processing..."
+msgstr ""
+
+#. translators: 1: number of jobs processed so far, 2: total number of jobs, 3: number still pending
+#: assets/js/uploader.js:671
+#, js-format
+msgid "Processed %1$d of %2$d (pending: %3$d)..."
+msgstr ""
+
+#: assets/js/uploader.js:684
+msgid "Processing is taking unusually long. Products are still being created in the background - reload the page in a bit to see the final result."
+msgstr ""
+
+#: assets/js/uploader.js:706
+msgid "View product →"
+msgstr ""
+
+#: assets/js/uploader.js:716
+msgid "Done."
+msgstr ""
+
+#: assets/js/uploader.js:716
+msgid "Unknown error."
+msgstr ""
+
+#: assets/js/uploader.js:731
+msgid "Edit product →"
+msgstr ""
+
+#. translators: 1: number of successfully processed products, 2: total number of files in the batch
+#: assets/js/uploader.js:740
+#, js-format
+msgid "Done: %1$d successful products out of %2$d"
+msgstr ""
+
+#. translators: %d: number of files that failed to upload
+#: assets/js/uploader.js:748
+#, js-format
+msgid "%d files were not uploaded"
+msgstr ""
+
+#. translators: %d: number of files that failed to process into a product
+#: assets/js/uploader.js:755
+#, js-format
+msgid "%d failed to process"
+msgstr ""
+
+#. translators: 1: number of products that used the static fallback template, 2: total number of products in the batch
+#: assets/js/uploader.js:778
+#, js-format
+msgid "%1$d of %2$d used the static template instead of AI (daily free quota reached?). "
 msgstr ""

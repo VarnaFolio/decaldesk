@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DecalDesk 1.3.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/decaldesk\n"
-"POT-Creation-Date: 2026-07-23T12:48:41+00:00\n"
+"POT-Creation-Date: 2026-07-23T12:57:51+00:00\n"
 "Language: bg_BG\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -391,15 +391,15 @@ msgstr "Изтрий"
 msgid "Error"
 msgstr "Грешка"
 
-#: admin/admin-page-history.php:208
+#: admin/admin-page-history.php:208 assets/js/uploader.js:720
 msgid "AI (free)"
 msgstr "AI (безплатен)"
 
-#: admin/admin-page-history.php:213
+#: admin/admin-page-history.php:213 assets/js/uploader.js:721
 msgid "AI (Claude)"
 msgstr "AI (Claude)"
 
-#: admin/admin-page-history.php:218
+#: admin/admin-page-history.php:218 assets/js/uploader.js:722
 msgid "Template"
 msgstr "Шаблон"
 
@@ -500,7 +500,7 @@ msgstr "Pro"
 msgid "Selectable size/material/color variants require a Pro license."
 msgstr "Избираемите варианти размер/материал/цвят изискват Pro лиценз."
 
-#: admin/admin-page-upload.php:77
+#: admin/admin-page-upload.php:77 assets/js/uploader.js:308
 msgid ""
 "No variant widths configured yet — add at least one below to enable this "
 "option."
@@ -509,7 +509,7 @@ msgstr ""
 "за да включиш опцията."
 
 #. translators: %s: list of configured widths
-#: admin/admin-page-upload.php:82
+#: admin/admin-page-upload.php:82 assets/js/uploader.js:303
 #, php-format
 msgid ""
 "Every uploaded design will become one product with a choice of width: %s "
@@ -632,7 +632,7 @@ msgid "DecalDesk requires WooCommerce to be active in order to work."
 msgstr "DecalDesk изисква активиран WooCommerce, за да работи."
 
 #. translators: %s: support email address
-#: decaldesk.php:557
+#: decaldesk.php:562
 #, php-format
 msgid "DecalDesk — need a hand? Email %s"
 msgstr "DecalDesk — нужна ти е помощ? Пиши на %s"
@@ -713,7 +713,7 @@ msgstr ""
 "%1$d от %2$d продукта през последната седмица излязоха със статичен шаблон "
 "вместо AI описание."
 
-#: includes/notices.php:204
+#: includes/notices.php:204 assets/js/uploader.js:781
 msgid "Check your AI settings →"
 msgstr "Провери AI настройките →"
 
@@ -743,7 +743,7 @@ msgstr ""
 "разширение (материалът е незадължителен: name_widthxheight_category."
 "разширение също работи)"
 
-#: includes/parser.php:59
+#: includes/parser.php:59 assets/js/uploader.js:64
 msgid "Dimensions must be positive numbers."
 msgstr "Размерите трябва да са положителни числа."
 
@@ -1314,3 +1314,196 @@ msgstr ""
 #: includes/settings.php:909
 msgid "Save settings"
 msgstr "Запази настройките"
+
+#: assets/js/uploader.js:53
+msgid ""
+"Doesn't match the format name_widthxheight_material_category.extension "
+"(material is optional: name_widthxheight_category.extension also works)"
+msgstr ""
+"Не отговаря на формата name_widthxheight_material_category.разширение "
+"(материалът е незадължителен: name_widthxheight_category.разширение също "
+"работи)"
+
+#. translators: 1: width in cm, 2: height in cm, 3: maximum allowed value in
+#. cm
+#: assets/js/uploader.js:72
+msgid ""
+"%1$d x %2$d cm looks unrealistically large (maximum %3$d cm per side). Check "
+"for a typo."
+msgstr ""
+"%1$d x %2$d см изглежда нереалистично голямо (максимум %3$d см на страна). "
+"Провери за печатна грешка."
+
+#. translators: %s: the category slug parsed from the filename
+#: assets/js/uploader.js:93
+msgid "Category \"%s\" isn't configured yet — a generic mockup will be used."
+msgstr ""
+"Категория \"%s\" все още не е конфигурирана — ще се ползва генеричен мокъп."
+
+#: assets/js/uploader.js:187
+msgid "Resuming progress tracking after reload..."
+msgstr "Възобновяване на проследяването след презареждане..."
+
+#: assets/js/uploader.js:318
+msgid "Saving..."
+msgstr "Запазване..."
+
+#: assets/js/uploader.js:324
+msgid "Error saving."
+msgstr "Грешка при запазване."
+
+#: assets/js/uploader.js:328
+msgid "Saved."
+msgstr "Запазено."
+
+#: assets/js/uploader.js:334
+msgid "Server connection error."
+msgstr "Грешка при връзка със сървъра."
+
+#. translators: 1: maximum allowed files, 2: number of files that were skipped
+#. because of the limit
+#: assets/js/uploader.js:374
+msgid "The limit of %1$d files — %2$d files were not added."
+msgstr "Лимитът от %1$d файла — %2$d файла не бяха добавени."
+
+#. translators: %d: number of files skipped for an unsupported format
+#: assets/js/uploader.js:381
+msgid ""
+"%d files are in an unsupported format (allowed: PNG, JPG, WEBP, GIF) and "
+"were skipped."
+msgstr ""
+"%d файла са в неподдържан формат (позволени: PNG, JPG, WEBP, GIF) и бяха "
+"пропуснати."
+
+#. translators: %d: number of duplicate files skipped
+#: assets/js/uploader.js:388
+msgid "%d files were already added and were skipped."
+msgstr "%d файла вече бяха добавени и бяха пропуснати."
+
+#: assets/js/uploader.js:419
+msgid "Remove"
+msgstr "Премахни"
+
+#. translators: 1: number of selected files, 2: maximum allowed files
+#: assets/js/uploader.js:446
+msgid "%1$d / %2$d files selected"
+msgstr "%1$d / %2$d избрани файла"
+
+#. translators: %d: number of selected files with a filename problem
+#: assets/js/uploader.js:452
+msgid "(%d with naming problems — see below)"
+msgstr "(%d с проблеми в името — виж по-долу)"
+
+#: assets/js/uploader.js:468
+msgid "Please select at least one file."
+msgstr "Моля, избери поне един файл."
+
+#. translators: %d: number of selected files with a filename problem
+#: assets/js/uploader.js:479
+msgid "%d file(s) have a naming problem and will fail to upload:"
+msgstr "%d файл(а) имат проблем с името и качването им ще се провали:"
+
+#: assets/js/uploader.js:484
+msgid ""
+"Upload the other files anyway? (Cancel to go back and fix the names first.)"
+msgstr ""
+"Все пак да качим останалите файлове? (Отказ, за да се върнеш и коригираш "
+"имената първо.)"
+
+#: assets/js/uploader.js:524
+msgid ""
+"Add at least one width before uploading with variants (or uncheck \"Create "
+"with selectable variants\")."
+msgstr ""
+"Добави поне една ширина преди качване с варианти (или изключи \"Създай с "
+"избираеми варианти\")."
+
+#: assets/js/uploader.js:531
+msgid ""
+"Could not save the variant configuration (server connection error). Please "
+"try again."
+msgstr ""
+"Конфигурацията на вариантите не можа да се запази (грешка при връзка със "
+"сървъра). Опитай отново."
+
+#: assets/js/uploader.js:546
+msgid "All files uploaded - processing in the background..."
+msgstr "Всички файлове са качени - обработка във фонов режим..."
+
+#. translators: 1: current file number, 2: total number of files in this batch
+#: assets/js/uploader.js:565
+msgid "Uploading file %1$d of %2$d..."
+msgstr "Качване на файл %1$d от %2$d..."
+
+#: assets/js/uploader.js:595
+msgid "Unknown error during upload."
+msgstr "Неизвестна грешка при качване."
+
+#: assets/js/uploader.js:602
+msgid "A server connection error occurred."
+msgstr "Възникна грешка при връзка със сървъра."
+
+#: assets/js/uploader.js:661
+msgid "Processing..."
+msgstr "Обработва се..."
+
+#: assets/js/uploader.js:661 assets/js/uploader.js:697
+msgid "Queued for processing..."
+msgstr "На опашка за обработка..."
+
+#. translators: 1: number of jobs processed so far, 2: total number of jobs,
+#. 3: number still pending
+#: assets/js/uploader.js:671
+msgid "Processed %1$d of %2$d (pending: %3$d)..."
+msgstr "Обработени %1$d от %2$d (в очакване: %3$d)..."
+
+#: assets/js/uploader.js:684
+msgid ""
+"Processing is taking unusually long. Products are still being created in the "
+"background - reload the page in a bit to see the final result."
+msgstr ""
+"Обработката отнема необичайно дълго време. Продуктите продължават да се "
+"създават във фонов режим - презареди страницата след малко, за да видиш "
+"крайния резултат."
+
+#: assets/js/uploader.js:706
+msgid "View product →"
+msgstr "Виж продукта →"
+
+#: assets/js/uploader.js:716
+msgid "Done."
+msgstr "Готово."
+
+#: assets/js/uploader.js:716
+msgid "Unknown error."
+msgstr "Неизвестна грешка."
+
+#: assets/js/uploader.js:731
+msgid "Edit product →"
+msgstr "Редактирай продукта →"
+
+#. translators: 1: number of successfully processed products, 2: total number
+#. of files in the batch
+#: assets/js/uploader.js:740
+msgid "Done: %1$d successful products out of %2$d"
+msgstr "Готово: %1$d успешни продукта от %2$d"
+
+#. translators: %d: number of files that failed to upload
+#: assets/js/uploader.js:748
+msgid "%d files were not uploaded"
+msgstr "%d файла не бяха качени"
+
+#. translators: %d: number of files that failed to process into a product
+#: assets/js/uploader.js:755
+msgid "%d failed to process"
+msgstr "%d не успяха да се обработят"
+
+#. translators: 1: number of products that used the static fallback template,
+#. 2: total number of products in the batch
+#: assets/js/uploader.js:778
+msgid ""
+"%1$d of %2$d used the static template instead of AI (daily free quota "
+"reached?). "
+msgstr ""
+"%1$d от %2$d използваха статичния шаблон вместо AI (изчерпана дневна "
+"безплатна квота?). "

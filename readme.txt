@@ -4,7 +4,7 @@ Tags: woocommerce, decals, stickers, product automation, ai
 Requires at least: 6.9
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.5.11
+Stable tag: 1.5.12
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,9 @@ Yes (Pro). You can use a free Google Gemini API key (from Google AI Studio, no c
 3. A generated product with AI description and mockup
 
 == Changelog ==
+
+= 1.5.12 =
+* The upload screen's JavaScript (assets/js/uploader.js) is now fully translatable — every message (live filename preview, confirm dialogs, progress/status text, the final batch summary) previously showed hardcoded English regardless of the admin's language. Wired up via wp_set_script_translations() with a matching Bulgarian JSON translation file; verified via WordPress's own script-translation loader that all strings resolve correctly.
 
 = 1.5.11 =
 * Refreshed the Bulgarian translation (languages/decaldesk-bg_BG.po/.mo) — it had fallen behind after several feature additions (onboarding checklist, product title setting, optional material, etc.), showing English text in a Bulgarian-locale admin. Regenerated the .pot from current source and translated everything that was missing or outdated (69 strings), with zero untranslated/fuzzy entries remaining.
