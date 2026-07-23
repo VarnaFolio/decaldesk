@@ -4,7 +4,7 @@ Tags: woocommerce, decals, stickers, product automation, ai
 Requires at least: 6.9
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.5.5
+Stable tag: 1.5.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -74,6 +74,9 @@ Yes (Pro). You can use a free Google Gemini API key (from Google AI Studio, no c
 3. A generated product with AI description and mockup
 
 == Changelog ==
+
+= 1.5.6 =
+* Upload screen: the final batch summary now flags when part of the batch fell back to the static template while the rest got real AI content (e.g. the free daily quota ran out mid-batch) — "X of Y used the static template instead of AI" with a link to Settings. Only shown when a batch actually mixes both, so it stays silent for the normal all-AI or AI-off cases.
 
 = 1.5.5 =
 * Upload screen: live filename preview/validation as soon as files are selected or dropped, before uploading — each file shows its parsed name/size/material/category, a warning if the category isn't configured yet (a generic mockup will be used), or an error if the filename doesn't match the expected format. Clicking "Upload files" with naming problems in the list now asks for confirmation first, instead of only finding out after a failed per-file upload attempt.

@@ -238,6 +238,12 @@
 	color: #00450c;
 }
 
+.decaldesk-summary-ai-note {
+	margin-top: 6px;
+	font-size: 12px;
+	font-weight: normal;
+}
+
 .decaldesk-summary-partial {
 	background: #fcf9e8;
 	border-left: 4px solid #dba617;

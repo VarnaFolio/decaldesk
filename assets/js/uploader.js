@@ -583,6 +583,7 @@
 					var doneCount = 0;
 					var errorCount = 0;
 					var pendingCount = 0;
+					var aiSourceCounts = { ai_free: 0, ai_claude: 0, fallback: 0 };
 
 					jobs.forEach(function (job) {
 						var entry = jobRows[job.id];
@@ -592,6 +593,9 @@
 
 						if ('done' === job.status) {
 							doneCount++;
+							if (job.ai_source && aiSourceCounts.hasOwnProperty(job.ai_source)) {
+								aiSourceCounts[job.ai_source]++;
+							}
 							updateResultRow(entry.$row, entry.filename, job, true);
 						} else if ('error' === job.status) {
 							errorCount++;
@@ -622,7 +626,7 @@
 							$results.prepend($notice);
 						}
 
-						showFinalSummary(uploadStats, { done: doneCount, error: errorCount });
+						showFinalSummary(uploadStats, { done: doneCount, error: errorCount, aiSourceCounts: aiSourceCounts });
 					}
 				});
 			}, 2000);
@@ -685,7 +689,25 @@
 				text += ' (' + problems.join(', ') + ')';
 			}
 
-			$summary.attr('class', 'decaldesk-summary ' + cssClass).text(text).show();
+			$summary.attr('class', 'decaldesk-summary ' + cssClass).empty().append(document.createTextNode(text));
+
+			// Само ако в ЕДИН И СЪЩ batch част от продуктите са получили реално
+			// AI съдържание, а част - статичния шаблон, това е сигнал, че нещо
+			// е прекъснало AI по средата (напр. изчерпана дневна безплатна квота) -
+			// а не просто "AI е изключен", в който случай ВСИЧКО щеше да е fallback
+			// и известието не носи нова информация.
+			var aiCounts = processStats.aiSourceCounts || {};
+			var aiUsedCount = (aiCounts.ai_free || 0) + (aiCounts.ai_claude || 0);
+			var fallbackCount = aiCounts.fallback || 0;
+
+			if (aiUsedCount > 0 && fallbackCount > 0) {
+				var $note = $('<div class="decaldesk-summary-ai-note"></div>');
+				$note.text(fallbackCount + ' of ' + (aiUsedCount + fallbackCount) + ' used the static template instead of AI (daily free quota reached?). ');
+				$note.append($('<a href="admin.php?page=decaldesk-settings">Check your AI settings →</a>'));
+				$summary.append($note);
+			}
+
+			$summary.show();
 		}
 	});
 })(jQuery);
