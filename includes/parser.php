@@ -5,17 +5,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * Парсва име на файл във формат:
- * name_widthxheight_material_category.разширение
+ * name_widthxheight_material_category.разширение, ИЛИ
+ * name_widthxheight_category.разширение (без материал)
  * (разширението е без значение за парсването - поддържат се PNG, JPG/JPEG, WEBP, GIF)
  *
- * Пример: koleda_50x70_matte_kitchen.jpg
+ * Материалът е незадължителен сегмент - не всеки магазин има смислен избор
+ * (напр. платове или картини с фиксирано покритие), докато при други
+ * (стикери) е полезен. Пробваме първо пълния шаблон с материал (обратна
+ * съвместимост), после този без него.
+ *
+ * Пример: koleda_50x70_matte_kitchen.jpg (с материал)
+ * Пример: koleda_50x70_kitchen.jpg (без материал)
  *
  * @param string $filename Оригиналното име на файла.
  * @return array|WP_Error {
  *     @type string $name     Име на дизайна (с интервали вместо тирета/долни черти).
  *     @type int    $width    Ширина в см.
  *     @type int    $height   Височина в см.
- *     @type string $material Материал (напр. matte, gloss, transparent).
+ *     @type string $material Материал (напр. matte, gloss, transparent), или '' ако не е зададен.
  *     @type string $category Категория (напр. kitchen, wrap, wall, sticker).
  * }
  */
@@ -23,15 +30,21 @@ function decaldesk_parse_filename( $filename ) {
 	// Премахваме разширението (без значение кое е - png/jpg/webp/gif)
 	$base = pathinfo( $filename, PATHINFO_FILENAME );
 
-	// Очакван шаблон: name_WIDTHxHEIGHT_material_category
-	$pattern = '/^(?P<name>.+)_(?P<width>\d+)x(?P<height>\d+)_(?P<material>[a-zA-Z0-9]+)_(?P<category>[a-zA-Z0-9\-]+)$/u';
+	// Очакван шаблон: name_WIDTHxHEIGHT_material_category (с материал)
+	$pattern_with_material = '/^(?P<name>.+)_(?P<width>\d+)x(?P<height>\d+)_(?P<material>[a-zA-Z0-9]+)_(?P<category>[a-zA-Z0-9\-]+)$/u';
+	// Алтернативен шаблон: name_WIDTHxHEIGHT_category (без материал)
+	$pattern_without_material = '/^(?P<name>.+)_(?P<width>\d+)x(?P<height>\d+)_(?P<category>[a-zA-Z0-9\-]+)$/u';
 
-	if ( ! preg_match( $pattern, $base, $matches ) ) {
+	if ( preg_match( $pattern_with_material, $base, $matches ) ) {
+		$material = strtolower( $matches['material'] );
+	} elseif ( preg_match( $pattern_without_material, $base, $matches ) ) {
+		$material = '';
+	} else {
 		return new WP_Error(
 			'decaldesk_parse_error',
 			sprintf(
 				/* translators: %s: the filename */
-				__( 'The name "%s" doesn\'t match the format name_widthxheight_material_category.extension', 'decaldesk' ),
+				__( 'The name "%s" doesn\'t match the format name_widthxheight_material_category.extension (material is optional: name_widthxheight_category.extension also works)', 'decaldesk' ),
 				$filename
 			)
 		);
@@ -73,7 +86,7 @@ function decaldesk_parse_filename( $filename ) {
 		'name'     => $pretty_name,
 		'width'    => $width,
 		'height'   => $height,
-		'material' => strtolower( $matches['material'] ),
+		'material' => $material,
 		'category' => strtolower( $matches['category'] ),
 		'raw_name' => $matches['name'],
 	);

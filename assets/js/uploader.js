@@ -28,23 +28,34 @@
 		// Категорията, ако не съвпада с конфигурираните, е само предупреждение
 		// (не грешка) - сървърът все пак ще създаде продукта с generic мокъп.
 		// ==========================================================
-		var FILENAME_PATTERN = /^(.+)_(\d+)x(\d+)_([a-zA-Z0-9]+)_([a-zA-Z0-9\-]+)$/;
+		// Материалът е незадължителен сегмент (виж decaldesk_parse_filename() в
+		// includes/parser.php) - пробваме първо шаблона С материал (обратна
+		// съвместимост), после този БЕЗ него.
+		var FILENAME_PATTERN_WITH_MATERIAL = /^(.+)_(\d+)x(\d+)_([a-zA-Z0-9]+)_([a-zA-Z0-9\-]+)$/;
+		var FILENAME_PATTERN_WITHOUT_MATERIAL = /^(.+)_(\d+)x(\d+)_([a-zA-Z0-9\-]+)$/;
 
 		function parseFilenameClientSide(filename) {
 			var base = filename.replace(/\.[^.\/\\]+$/, '');
-			var match = base.match(FILENAME_PATTERN);
+			var match = base.match(FILENAME_PATTERN_WITH_MATERIAL);
+			var material, category;
 
-			if (!match) {
-				return {
-					ok: false,
-					message: 'Doesn\'t match the format name_widthxheight_material_category.extension'
-				};
+			if (match) {
+				material = match[4].toLowerCase();
+				category = match[5].toLowerCase();
+			} else {
+				match = base.match(FILENAME_PATTERN_WITHOUT_MATERIAL);
+				if (!match) {
+					return {
+						ok: false,
+						message: 'Doesn\'t match the format name_widthxheight_material_category.extension (material is optional: name_widthxheight_category.extension also works)'
+					};
+				}
+				material = '';
+				category = match[4].toLowerCase();
 			}
 
 			var width = parseInt(match[2], 10);
 			var height = parseInt(match[3], 10);
-			var material = match[4].toLowerCase();
-			var category = match[5].toLowerCase();
 
 			if (width <= 0 || height <= 0) {
 				return { ok: false, message: 'Dimensions must be positive numbers.' };
@@ -390,7 +401,7 @@
 					$li.addClass('decaldesk-file-invalid');
 					$li.append('<div class="decaldesk-file-parse-note decaldesk-file-parse-error">⚠ ' + escapeHtml(parsed.message) + '</div>');
 				} else {
-					var preview = parsed.name + ' · ' + parsed.width + '×' + parsed.height + ' cm · ' + parsed.material + ' · ' + parsed.category;
+					var preview = parsed.name + ' · ' + parsed.width + '×' + parsed.height + ' cm' + (parsed.material ? ' · ' + parsed.material : '') + ' · ' + parsed.category;
 					$li.append('<div class="decaldesk-file-parse-note decaldesk-file-parse-ok">✓ ' + escapeHtml(preview) + '</div>');
 					if (parsed.warning) {
 						$li.addClass('decaldesk-file-warning');

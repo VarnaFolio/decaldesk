@@ -1,3 +1,6 @@
+= 1.5.9 =
+* Material is now an optional segment in the filename: `name_widthxheight_category.extension` works alongside the existing `name_widthxheight_material_category.extension` — not every store has a meaningful material choice (e.g. fabric or fixed-finish canvas prints). Descriptions, SEO fields, tags, SKU, and the upload screen's live filename preview all gracefully omit material when it isn't present, instead of showing an empty/awkward mention. Fully backward compatible: filenames that already include a material continue to work exactly as before.
+
 = 1.5.8 =
 * Added an optional "Let AI (or the fallback rule) improve the product title" setting (DecalDesk → Settings → Store product type) — off by default. Until now the product title was always exactly the design name from the filename, which meant coming up with a good, SEO-friendly title for every design manually. When enabled, AI generates a natural, appealing headline as part of the same content-generation call (no extra API cost), or a simple "Design Name – Category" rule is used when AI is off/unavailable. The URL slug and SKU are unaffected either way.
 

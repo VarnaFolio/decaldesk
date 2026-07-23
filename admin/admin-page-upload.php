@@ -17,8 +17,8 @@ function decaldesk_render_upload_page() {
 				aria-label="<?php esc_attr_e( 'Drop files here or press Enter to browse for files', 'decaldesk' ); ?>">
 				<p><?php esc_html_e( 'Drop files here or click to browse', 'decaldesk' ); ?></p>
 				<p class="decaldesk-hint">
-					<?php esc_html_e( 'Filename format: name_widthxheight_material_category.extension', 'decaldesk' ); ?><br>
-					<?php esc_html_e( 'Example: holiday_50x70_matte_kitchen.jpg', 'decaldesk' ); ?><br>
+					<?php esc_html_e( 'Filename format: name_widthxheight_material_category.extension (material is optional: name_widthxheight_category.extension also works)', 'decaldesk' ); ?><br>
+					<?php esc_html_e( 'Examples: holiday_50x70_matte_kitchen.jpg, or holiday_50x70_kitchen.jpg (no material)', 'decaldesk' ); ?><br>
 					<?php esc_html_e( 'Allowed formats: PNG, JPG/JPEG, WEBP, GIF', 'decaldesk' ); ?><br>
 					<?php
 					printf(

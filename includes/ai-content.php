@@ -242,13 +242,22 @@ function decaldesk_build_ai_prompt( $parsed, $has_image = false ) {
 		? "Look carefully at the ATTACHED IMAGE of the design - describe what you actually see (motif, objects, colors, style, mood) and base the product content on that, not just the filename.\n\n"
 		: '';
 
+	// Материалът е незадължителен - не всеки магазин има смислен избор
+	// (напр. платове, картини с фиксирано покритие). Пропускаме реда изцяло
+	// и инструктираме AI-то да НЕ споменава материал, вместо да измисля такъв.
+	$has_material      = '' !== $parsed['material'];
+	$material_line     = $has_material ? "- Material: {$parsed['material']}\n" : '';
+	$description_hints = $has_material
+		? 'mentions size/material/use'
+		: 'mentions size/use (no material is specified for this product - do NOT invent or mention one)';
+
 	return sprintf(
 		"You are a copywriter for an online store selling %s, priced by size (width x height).\n" .
 		'%s' .
 		"Write ALL product content in %s for the following product:\n\n" .
 		"- Design name (do NOT translate or transliterate it - use it exactly as given): %s\n" .
 		"- Dimensions: %d x %d cm (%s m²)\n" .
-		"- Material: %s\n" .
+		'%s' .
 		"- Category: %s\n\n" .
 		'Reply in EXACTLY the following format, no markdown, no explanation before or after, ' .
 		"no code fences (```), just the seven blocks with exactly these markers:\n\n" .
@@ -257,7 +266,7 @@ function decaldesk_build_ai_prompt( $parsed, $has_image = false ) {
 		'includes the design name plus 1-2 relevant keywords (category/use), max 70 characters, ' .
 		"plain text, no quote marks, do NOT include the dimensions here)\n" .
 		"===DESCRIPTION===\n" .
-		'(long product description, 3-4 sentences, sales tone, mentions size/material/use; ' .
+		'(long product description, 3-4 sentences, sales tone, %s; ' .
 		"may contain short HTML <p> paragraphs; do NOT put quote marks \" at the start/end here)\n" .
 		"===SHORT===\n" .
 		"(short description, 1 sentence, up to 25 words, plain text only, no HTML)\n" .
@@ -279,9 +288,9 @@ function decaldesk_build_ai_prompt( $parsed, $has_image = false ) {
 		$parsed['width'],
 		$parsed['height'],
 		$area_sqm,
-		$parsed['material'],
+		$material_line,
 		$category_name,
-		$language,
+		$description_hints,
 		$language
 	);
 }
@@ -577,26 +586,40 @@ function decaldesk_build_fallback_content( $parsed ) {
 	// описал какво продава в Настройки, ползваме точно тази фраза вместо
 	// хардкоднатото "самозалепващо се фолио"/"self-adhesive film" - иначе
 	// поведението остава каквото беше преди (обратна съвместимост).
+	$has_material = '' !== $parsed['material'];
+
 	if ( 'bulgarian' === strtolower( $language ) ) {
 		$product_phrase = '' !== $store_description ? $store_description : 'самозалепващо се фолио';
 
-		$description = sprintf(
-			'%1$s – %2$s с размери %3$d x %4$d см (%5$s м²). Изработено от %6$s материал с високо качество на печат, подходящо за %7$s.',
-			$parsed['name'],
-			$product_phrase,
-			$parsed['width'],
-			$parsed['height'],
-			$area,
-			strtolower( $parsed['material'] ),
-			mb_strtolower( $category_name )
-		);
+		$description = $has_material
+			? sprintf(
+				'%1$s – %2$s с размери %3$d x %4$d см (%5$s м²). Изработено от %6$s материал с високо качество на печат, подходящо за %7$s.',
+				$parsed['name'],
+				$product_phrase,
+				$parsed['width'],
+				$parsed['height'],
+				$area,
+				strtolower( $parsed['material'] ),
+				mb_strtolower( $category_name )
+			)
+			: sprintf(
+				'%1$s – %2$s с размери %3$d x %4$d см (%5$s м²). Високо качество на печат, подходящо за %6$s.',
+				$parsed['name'],
+				$product_phrase,
+				$parsed['width'],
+				$parsed['height'],
+				$area,
+				mb_strtolower( $category_name )
+			);
 
-		$short_description = sprintf(
-			'Размер: %1$d x %2$d см | Материал: %3$s',
-			$parsed['width'],
-			$parsed['height'],
-			ucfirst( $parsed['material'] )
-		);
+		$short_description = $has_material
+			? sprintf(
+				'Размер: %1$d x %2$d см | Материал: %3$s',
+				$parsed['width'],
+				$parsed['height'],
+				ucfirst( $parsed['material'] )
+			)
+			: sprintf( 'Размер: %1$d x %2$d см', $parsed['width'], $parsed['height'] );
 
 		$meta_description = sprintf(
 			'%1$s – %2$s %3$d x %4$d см. Поръчай онлайн с бърза доставка.',
@@ -617,23 +640,35 @@ function decaldesk_build_fallback_content( $parsed ) {
 	} else {
 		$product_phrase = '' !== $store_description ? $store_description : 'self-adhesive film';
 
-		$description = sprintf(
-			'%1$s – %2$s, %3$d x %4$d cm (%5$s m²). Made from %6$s material with high-quality printing, suited for %7$s.',
-			$parsed['name'],
-			$product_phrase,
-			$parsed['width'],
-			$parsed['height'],
-			$area,
-			strtolower( $parsed['material'] ),
-			mb_strtolower( $category_name )
-		);
+		$description = $has_material
+			? sprintf(
+				'%1$s – %2$s, %3$d x %4$d cm (%5$s m²). Made from %6$s material with high-quality printing, suited for %7$s.',
+				$parsed['name'],
+				$product_phrase,
+				$parsed['width'],
+				$parsed['height'],
+				$area,
+				strtolower( $parsed['material'] ),
+				mb_strtolower( $category_name )
+			)
+			: sprintf(
+				'%1$s – %2$s, %3$d x %4$d cm (%5$s m²). High-quality printing, suited for %6$s.',
+				$parsed['name'],
+				$product_phrase,
+				$parsed['width'],
+				$parsed['height'],
+				$area,
+				mb_strtolower( $category_name )
+			);
 
-		$short_description = sprintf(
-			'Size: %1$d x %2$d cm | Material: %3$s',
-			$parsed['width'],
-			$parsed['height'],
-			ucfirst( $parsed['material'] )
-		);
+		$short_description = $has_material
+			? sprintf(
+				'Size: %1$d x %2$d cm | Material: %3$s',
+				$parsed['width'],
+				$parsed['height'],
+				ucfirst( $parsed['material'] )
+			)
+			: sprintf( 'Size: %1$d x %2$d cm', $parsed['width'], $parsed['height'] );
 
 		$meta_description = sprintf(
 			'%1$s – %2$s, %3$d x %4$d cm. Order online with fast delivery.',

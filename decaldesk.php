@@ -3,7 +3,7 @@
  * Plugin Name:       DecalDesk
  * Plugin URI:        https://decaldesk.com
  * Description:       Автоматизирано създаване на WooCommerce продукти от дизайн файлове — парсване на име, ценообразуване по площ, AI описания, мокъп генериране, размерни варианти.
- * Version:           1.5.8
+ * Version:           1.5.9
  * Requires at least: 6.9
  * Requires PHP:      7.4
  * Tested up to:      7.0
@@ -71,7 +71,7 @@ if ( ! function_exists( 'decaldesk_fs' ) ) {
 // ==========================================================
 // Константи
 // ==========================================================
-define( 'DECALDESK_VERSION', '1.5.8' );
+define( 'DECALDESK_VERSION', '1.5.9' );
 define( 'DECALDESK_PATH', plugin_dir_path( __FILE__ ) );
 define( 'DECALDESK_URL', plugin_dir_url( __FILE__ ) );
 

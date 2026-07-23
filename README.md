@@ -53,13 +53,14 @@ The product title stays exactly as given in the filename (often in Cyrillic), bu
 
 ```
 name_widthxheight_material_category.extension
+name_widthxheight_category.extension   (material is optional)
 ```
 
-Example: `koleda_50x70_matte_kitchen.jpg` (or `.png`, `.webp`, `.gif`)
+Examples: `koleda_50x70_matte_kitchen.jpg`, or `koleda_50x70_kitchen.jpg` (no material) — (or `.png`, `.webp`, `.gif`)
 
 - `name` — the design's name (used as the product title)
 - `width x height` — dimensions in centimeters
-- `material` — material (matte, gloss, transparent...)
+- `material` — material (matte, gloss, transparent...), **optional** — not every store has a meaningful material choice (e.g. fabric or canvas prints with a fixed finish). Omit this segment entirely rather than leaving it blank/empty.
 - `category` — category, must match a slug configured in settings
 - **The extension doesn't matter for parsing** — PNG, JPG/JPEG, WEBP, and GIF are all supported
 
