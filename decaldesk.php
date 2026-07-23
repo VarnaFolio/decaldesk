@@ -3,7 +3,7 @@
  * Plugin Name:       DecalDesk
  * Plugin URI:        https://decaldesk.com
  * Description:       Автоматизирано създаване на WooCommerce продукти от дизайн файлове — парсване на име, ценообразуване по площ, AI описания, мокъп генериране, размерни варианти.
- * Version:           1.5.4
+ * Version:           1.5.5
  * Requires at least: 6.9
  * Requires PHP:      7.4
  * Tested up to:      7.0
@@ -71,7 +71,7 @@ if ( ! function_exists( 'decaldesk_fs' ) ) {
 // ==========================================================
 // Константи
 // ==========================================================
-define( 'DECALDESK_VERSION', '1.5.4' );
+define( 'DECALDESK_VERSION', '1.5.5' );
 define( 'DECALDESK_PATH', plugin_dir_path( __FILE__ ) );
 define( 'DECALDESK_URL', plugin_dir_url( __FILE__ ) );
 
@@ -490,6 +490,8 @@ function decaldesk_enqueue_admin_assets( $hook ) {
 		true
 	);
 
+	$decaldesk_settings = get_option( 'decaldesk_settings', array() );
+
 	wp_localize_script(
 		'decaldesk-uploader',
 		'DecalDeskData',
@@ -498,6 +500,10 @@ function decaldesk_enqueue_admin_assets( $hook ) {
 			'nonce'             => wp_create_nonce( 'decaldesk_upload_nonce' ),
 			'maxFiles'          => DECALDESK_MAX_BATCH_FILES,
 			'allowedExtensions' => DECALDESK_ALLOWED_EXTENSIONS,
+			// За live преглед/валидация на файловото име в браузъра, ПРЕДИ
+			// реалното качване - огледва decaldesk_parse_filename() (includes/parser.php).
+			'categories'        => isset( $decaldesk_settings['categories'] ) ? $decaldesk_settings['categories'] : array(),
+			'maxDimensionCm'    => ! empty( $decaldesk_settings['max_dimension_cm'] ) ? (int) $decaldesk_settings['max_dimension_cm'] : 1000,
 		)
 	);
 

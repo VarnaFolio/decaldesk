@@ -17,6 +17,62 @@
 
 		var MAX_FILES = (window.DecalDeskData && parseInt(DecalDeskData.maxFiles, 10)) || 50;
 		var ALLOWED_MIME_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
+		var CONFIGURED_CATEGORIES = (window.DecalDeskData && DecalDeskData.categories) || {};
+		var MAX_DIMENSION_CM = (window.DecalDeskData && parseInt(DecalDeskData.maxDimensionCm, 10)) || 1000;
+
+		// ==========================================================
+		// Live преглед/валидация на файловото име, ПРЕДИ реалното качване -
+		// огледва decaldesk_parse_filename() (includes/parser.php), за да
+		// хване грешки във формата на името (или нереалистичен размер)
+		// веднага при избор/drop на файла, вместо след неуспешен upload опит.
+		// Категорията, ако не съвпада с конфигурираните, е само предупреждение
+		// (не грешка) - сървърът все пак ще създаде продукта с generic мокъп.
+		// ==========================================================
+		var FILENAME_PATTERN = /^(.+)_(\d+)x(\d+)_([a-zA-Z0-9]+)_([a-zA-Z0-9\-]+)$/;
+
+		function parseFilenameClientSide(filename) {
+			var base = filename.replace(/\.[^.\/\\]+$/, '');
+			var match = base.match(FILENAME_PATTERN);
+
+			if (!match) {
+				return {
+					ok: false,
+					message: 'Doesn\'t match the format name_widthxheight_material_category.extension'
+				};
+			}
+
+			var width = parseInt(match[2], 10);
+			var height = parseInt(match[3], 10);
+			var material = match[4].toLowerCase();
+			var category = match[5].toLowerCase();
+
+			if (width <= 0 || height <= 0) {
+				return { ok: false, message: 'Dimensions must be positive numbers.' };
+			}
+
+			if (width > MAX_DIMENSION_CM || height > MAX_DIMENSION_CM) {
+				return {
+					ok: false,
+					message: width + ' x ' + height + ' cm looks unrealistically large (maximum ' + MAX_DIMENSION_CM + ' cm per side). Check for a typo.'
+				};
+			}
+
+			var prettyName = match[1].replace(/[_-]/g, ' ').trim();
+			prettyName = prettyName.charAt(0).toUpperCase() + prettyName.slice(1);
+
+			var categoryKnown = Object.prototype.hasOwnProperty.call(CONFIGURED_CATEGORIES, category);
+
+			return {
+				ok: true,
+				name: prettyName,
+				width: width,
+				height: height,
+				material: material,
+				category: category,
+				categoryKnown: categoryKnown,
+				warning: categoryKnown ? '' : 'Category "' + category + '" isn\'t configured yet — a generic mockup will be used.'
+			};
+		}
 
 		var selectedFiles = [];
 
@@ -313,21 +369,45 @@
 				return;
 			}
 
-			$fileSummary.show();
-			$fileCount.text(selectedFiles.length + ' / ' + MAX_FILES + ' files selected');
+			var invalidCount = 0;
 
 			var $ul = $('<ul class="decaldesk-selected-files"></ul>');
 			selectedFiles.forEach(function (file, index) {
-				var $li = $('<li></li>');
-				$li.append('<span class="decaldesk-file-name">' + escapeHtml(file.name) + '</span>');
+				var parsed = parseFilenameClientSide(file.name);
+				var $li = $('<li class="decaldesk-selected-file-row"></li>');
+
+				var $nameRow = $('<div class="decaldesk-file-name-row"></div>');
+				$nameRow.append('<span class="decaldesk-file-name">' + escapeHtml(file.name) + '</span>');
 				var $remove = $('<button type="button" class="decaldesk-remove-file" aria-label="Remove">&times;</button>');
 				$remove.on('click', function () {
 					removeFile(index);
 				});
-				$li.append($remove);
+				$nameRow.append($remove);
+				$li.append($nameRow);
+
+				if (!parsed.ok) {
+					invalidCount++;
+					$li.addClass('decaldesk-file-invalid');
+					$li.append('<div class="decaldesk-file-parse-note decaldesk-file-parse-error">⚠ ' + escapeHtml(parsed.message) + '</div>');
+				} else {
+					var preview = parsed.name + ' · ' + parsed.width + '×' + parsed.height + ' cm · ' + parsed.material + ' · ' + parsed.category;
+					$li.append('<div class="decaldesk-file-parse-note decaldesk-file-parse-ok">✓ ' + escapeHtml(preview) + '</div>');
+					if (parsed.warning) {
+						$li.addClass('decaldesk-file-warning');
+						$li.append('<div class="decaldesk-file-parse-note decaldesk-file-parse-warning">⚠ ' + escapeHtml(parsed.warning) + '</div>');
+					}
+				}
+
 				$ul.append($li);
 			});
 			$fileList.append($ul);
+
+			$fileSummary.show();
+			var countText = selectedFiles.length + ' / ' + MAX_FILES + ' files selected';
+			if (invalidCount > 0) {
+				countText += ' (' + invalidCount + ' with naming problems — see below)';
+			}
+			$fileCount.text(countText);
 		}
 
 		function escapeHtml(text) {
@@ -341,6 +421,20 @@
 			if (!selectedFiles.length) {
 				alert('Please select at least one file.');
 				return;
+			}
+
+			var invalidFiles = selectedFiles.filter(function (file) {
+				return !parseFilenameClientSide(file.name).ok;
+			});
+			if (invalidFiles.length > 0) {
+				var proceed = confirm(
+					invalidFiles.length + ' file(s) have a naming problem and will fail to upload:\n\n' +
+					invalidFiles.map(function (f) { return '- ' + f.name; }).join('\n') +
+					'\n\nUpload the other files anyway? (Cancel to go back and fix the names first.)'
+				);
+				if (!proceed) {
+					return;
+				}
 			}
 
 			var status = $('input[name="decaldesk_status"]:checked').val();

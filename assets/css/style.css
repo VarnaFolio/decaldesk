@@ -157,9 +157,6 @@
 }
 
 .decaldesk-selected-files li {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
 	padding: 6px 10px;
 	border-bottom: 1px solid #f0f0f1;
 	font-size: 13px;
@@ -167,6 +164,12 @@
 
 .decaldesk-selected-files li:last-child {
 	border-bottom: none;
+}
+
+.decaldesk-file-name-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 
 .decaldesk-file-name {
@@ -187,6 +190,31 @@
 
 .decaldesk-remove-file:hover {
 	color: #a02224;
+}
+
+.decaldesk-file-parse-note {
+	margin-top: 2px;
+	font-size: 12px;
+}
+
+.decaldesk-file-parse-ok {
+	color: #007017;
+}
+
+.decaldesk-file-parse-warning {
+	color: #996800;
+}
+
+.decaldesk-file-parse-error {
+	color: #d63638;
+}
+
+.decaldesk-selected-file-row.decaldesk-file-invalid {
+	background: #fcf0f1;
+}
+
+.decaldesk-selected-file-row.decaldesk-file-warning {
+	background: #fcf9e8;
 }
 
 .decaldesk-progress-label {
