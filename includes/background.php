@@ -165,6 +165,35 @@ function decaldesk_process_design_job( $args ) {
 			'price'      => $price,
 		)
 	);
+
+	// Оригиналният качен файл (incoming/) и генерираните мокъп(и) вече са
+	// КОПИРАНИ в media library чрез decaldesk_attach_mockups_and_design()
+	// по-горе (decaldesk_attach_product_image() прави copy(), не move()) -
+	// собствените копия на плъгина в incoming/ и mockups/ вече не са нужни
+	// и биха се трупали безкрайно на диска при всяко следващо качване, ако
+	// не се изтрият тук. Продуктът си остава напълно наред без тях.
+	decaldesk_cleanup_job_files( $file_path, $mockup_paths );
+}
+
+/**
+ * Трие физическите файлове на един job от incoming/ и mockups/ - извиква се
+ * веднага след успешна обработка (копията вече живеят в media library), и
+ * от периодичното почистване (decaldesk_cleanup_old_jobs()) за jobs, чиито
+ * файлове по някаква причина не са били изтрити веднага (напр. error jobs).
+ *
+ * @param string   $file_path    Път до оригиналния дизайн в incoming/.
+ * @param string[] $mockup_paths Пътища до генерираните мокъп файлове.
+ */
+function decaldesk_cleanup_job_files( $file_path, $mockup_paths = array() ) {
+	if ( $file_path && file_exists( $file_path ) ) {
+		wp_delete_file( $file_path );
+	}
+
+	foreach ( (array) $mockup_paths as $mockup_path ) {
+		if ( $mockup_path && file_exists( $mockup_path ) ) {
+			wp_delete_file( $mockup_path );
+		}
+	}
 }
 
 /**

@@ -73,6 +73,10 @@ Examples: `koleda_50x70_matte_kitchen.jpg`, or `koleda_50x70_kitchen.jpg` (no ma
 5. Generates the mockup (format configurable — WebP/JPEG/PNG, see settings below) via Imagick/GD and embeds the meta description into it (`includes/mockup.php`).
 6. Creates a WooCommerce product — draft or published, with a Latin-script slug and SEO meta description (`includes/product.php`).
 
+## Storage and history cleanup
+
+The original file you upload lives briefly in `uploads/decaldesk/incoming/` and any generated mockup in `uploads/decaldesk/mockups/` — both are only *copied* into the WordPress media library when the product is created, so once processing succeeds the plugin deletes its own working copies right away (the product's images are unaffected). A daily cleanup (**DecalDesk → Settings → History retention**, default 90 days) also removes old finished/failed rows from **DecalDesk → History** along with any leftover file from a job that errored out, so neither the database table nor the `incoming/` folder grows forever. Set the retention to `0` to disable automatic cleanup entirely — nothing here ever touches products you've already created.
+
 ## Structure
 
 ```

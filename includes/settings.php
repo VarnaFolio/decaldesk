@@ -315,6 +315,13 @@ function decaldesk_sanitize_settings( $input ) {
 	$output['max_dimension_cm']   = isset( $input['max_dimension_cm'] ) ? max( 1, (int) $input['max_dimension_cm'] ) : 1000;
 	$output['custom_footer_text'] = isset( $input['custom_footer_text'] ) ? wp_kses_post( wp_unslash( $input['custom_footer_text'] ) ) : '';
 
+	// История (jobs таблица + евентуални останали incoming/ файлове) по-стара
+	// от толкова дни се трие автоматично от decaldesk_cleanup_old_jobs()
+	// (дневен cron) - 0 изключва автоматичното почистване изцяло. Продуктите,
+	// вече създадени от тези jobs, НЕ се засягат - трие се само редът в
+	// историята и евентуален "осиротял" файл в incoming/.
+	$output['job_retention_days'] = isset( $input['job_retention_days'] ) ? max( 0, (int) $input['job_retention_days'] ) : 90;
+
 	// Какъв тип продукти продава магазинът (напр. "vinyl decals and stickers",
 	// "framed canvas prints", "ceramic tiles") - DecalDesk работи с всеки
 	// продукт, чиято цена зависи от площта, не само декали/стикери. Това
@@ -432,6 +439,7 @@ function decaldesk_render_settings_page() {
 			'price_per_sqm'            => 60,
 			'min_price'                => 15,
 			'max_dimension_cm'         => 1000,
+			'job_retention_days'       => 90,
 			'custom_footer_text'       => '',
 			'store_description'        => '',
 			'improve_product_title'    => false,
@@ -496,6 +504,19 @@ function decaldesk_render_settings_page() {
 								value="<?php echo esc_attr( $settings['max_dimension_cm'] ); ?>" class="regular-text">
 						<p class="description">
 							<?php esc_html_e( 'Protects against typos in the filename (e.g. an extra accidental zero). A file larger than this on either side will be rejected with a clear message.', 'decaldesk' ); ?>
+						</p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">
+						<label for="decaldesk_job_retention_days"><?php esc_html_e( 'History retention (days)', 'decaldesk' ); ?></label>
+					</th>
+					<td>
+						<input type="number" step="1" min="0" id="decaldesk_job_retention_days"
+								name="decaldesk_settings[job_retention_days]"
+								value="<?php echo esc_attr( $settings['job_retention_days'] ); ?>" class="regular-text">
+						<p class="description">
+							<?php esc_html_e( 'Finished/failed upload records older than this are automatically removed from DecalDesk → History, along with any leftover original file. Set to 0 to disable automatic cleanup. Products already created are never affected — this only cleans up history bookkeeping and temporary files.', 'decaldesk' ); ?>
 						</p>
 					</td>
 				</tr>

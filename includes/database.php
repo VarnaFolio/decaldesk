@@ -293,6 +293,64 @@ function decaldesk_delete_jobs( $job_ids ) {
 }
 
 /**
+ * ==========================================================
+ * Автоматично почистване на стара история (дневен cron, виж decaldesk.php)
+ * ==========================================================
+ * Без това jobs таблицата и uploads/decaldesk/incoming/ растат безкрайно -
+ * успешно обработените jobs вече чистят собствените си файлове веднага (виж
+ * decaldesk_cleanup_job_files() в background.php), но самият ред в историята
+ * оставаше завинаги, а провалените jobs изобщо не се чистеха. Продуктите,
+ * вече създадени от старите jobs, НЕ се засягат по никакъв начин - трие се
+ * само служебната бекенд информация (история + евентуален осиротял файл).
+ */
+function decaldesk_cleanup_old_jobs() {
+	global $wpdb;
+
+	$settings       = get_option( 'decaldesk_settings', array() );
+	$retention_days = isset( $settings['job_retention_days'] ) ? (int) $settings['job_retention_days'] : 90;
+
+	// 0 = автоматичното почистване е изрично изключено от потребителя.
+	if ( $retention_days <= 0 ) {
+		return;
+	}
+
+	$table  = decaldesk_jobs_table();
+	$cutoff = gmdate( 'Y-m-d H:i:s', time() - $retention_days * DAY_IN_SECONDS );
+
+	$old_jobs = $wpdb->get_results(
+		$wpdb->prepare(
+			"SELECT id, filename FROM {$table} WHERE status IN ('done', 'error') AND updated_at < %s",
+			$cutoff
+		),
+		ARRAY_A
+	);
+
+	if ( empty( $old_jobs ) ) {
+		return;
+	}
+
+	// Почистваме евентуален останал файл в incoming/ за всеки job, преди да
+	// изтрием реда - най-вече засяга 'error' jobs (успешните вече са си
+	// изчистили файла веднага след обработката, виж decaldesk_cleanup_job_files()).
+	$upload_dir   = wp_upload_dir();
+	$incoming_dir = $upload_dir['basedir'] . '/decaldesk/incoming';
+
+	foreach ( $old_jobs as $job ) {
+		if ( empty( $job['filename'] ) ) {
+			continue;
+		}
+
+		$file_path = $incoming_dir . '/' . sanitize_file_name( $job['filename'] );
+		if ( file_exists( $file_path ) ) {
+			wp_delete_file( $file_path );
+		}
+	}
+
+	decaldesk_delete_jobs( wp_list_pluck( $old_jobs, 'id' ) );
+}
+add_action( 'decaldesk_daily_cleanup', 'decaldesk_cleanup_old_jobs' );
+
+/**
  * Връща последните N job-а (за статус таблото в админа).
  *
  * @param int $limit

@@ -2,14 +2,14 @@
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: DecalDesk 1.5.11\n"
+"Project-Id-Version: DecalDesk 1.5.12\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/decaldesk\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-07-23T12:57:51+00:00\n"
+"POT-Creation-Date: 2026-07-23T13:11:50+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: decaldesk\n"
@@ -126,8 +126,8 @@ msgstr ""
 
 #: admin/admin-page-categories.php:141
 #: admin/admin-page-upload.php:155
-#: includes/settings.php:610
-#: includes/settings.php:871
+#: includes/settings.php:631
+#: includes/settings.php:892
 msgid "Learn more"
 msgstr ""
 
@@ -187,8 +187,8 @@ msgstr ""
 
 #: admin/admin-page-categories.php:252
 #: admin/admin-page-upload.php:153
-#: includes/settings.php:608
-#: includes/settings.php:869
+#: includes/settings.php:629
+#: includes/settings.php:890
 msgid "DecalDesk Pro"
 msgstr ""
 
@@ -224,7 +224,7 @@ msgstr ""
 #: admin/admin-page-history.php:260
 #: admin/admin-page-upload.php:184
 #: admin/admin-page-upload.php:313
-#: includes/background.php:178
+#: includes/background.php:207
 #: includes/settings.php:126
 msgid "You don't have permission to do this."
 msgstr ""
@@ -572,7 +572,7 @@ msgid "DecalDesk requires WooCommerce to be active in order to work."
 msgstr ""
 
 #. translators: %s: support email address
-#: decaldesk.php:562
+#: decaldesk.php:584
 #, php-format
 msgid "DecalDesk — need a hand? Email %s"
 msgstr ""
@@ -790,304 +790,312 @@ msgstr ""
 msgid "AI-generated descriptions are available in DecalDesk Pro."
 msgstr ""
 
-#: includes/settings.php:463
+#: includes/settings.php:471
 msgid "DecalDesk – Settings"
 msgstr ""
 
-#: includes/settings.php:471
+#: includes/settings.php:479
 msgid "Price per m² (€)"
 msgstr ""
 
-#: includes/settings.php:481
+#: includes/settings.php:489
 msgid "Minimum price (€)"
 msgstr ""
 
-#: includes/settings.php:491
+#: includes/settings.php:499
 msgid "Maximum size per side (cm)"
 msgstr ""
 
-#: includes/settings.php:498
+#: includes/settings.php:506
 msgid "Protects against typos in the filename (e.g. an extra accidental zero). A file larger than this on either side will be rejected with a clear message."
 msgstr ""
 
-#: includes/settings.php:504
+#: includes/settings.php:512
+msgid "History retention (days)"
+msgstr ""
+
+#: includes/settings.php:519
+msgid "Finished/failed upload records older than this are automatically removed from DecalDesk → History, along with any leftover original file. Set to 0 to disable automatic cleanup. Products already created are never affected — this only cleans up history bookkeeping and temporary files."
+msgstr ""
+
+#: includes/settings.php:525
 msgid "Store product type"
 msgstr ""
 
-#: includes/settings.php:508
+#: includes/settings.php:529
 msgid "What does your store sell?"
 msgstr ""
 
-#: includes/settings.php:513
+#: includes/settings.php:534
 msgid "e.g. vinyl decals and stickers, framed canvas prints, ceramic tiles, custom fabric panels..."
 msgstr ""
 
-#: includes/settings.php:516
+#: includes/settings.php:537
 msgid "DecalDesk works with any product priced by size, not only decals/stickers. Describe what you actually sell in a few words, in the language you want product content written in - it's used both in AI-generated descriptions and in the static fallback template (used when AI is off or unavailable). Leave blank to keep the original decal/sticker wording."
 msgstr ""
 
-#: includes/settings.php:521
+#: includes/settings.php:542
 msgid "Product titles"
 msgstr ""
 
-#: includes/settings.php:526
+#: includes/settings.php:547
 msgid "Let AI (or the fallback rule, when AI is off) improve the product title instead of using the filename's design name as-is"
 msgstr ""
 
-#: includes/settings.php:529
+#: includes/settings.php:550
 msgid "Off by default: the product title is exactly the design name from the filename. When enabled, the title becomes a more natural, SEO-friendly headline (design name plus category/keyword) - written by AI when it's on, or by a simple name + category rule otherwise. The URL slug and SKU are unaffected either way."
 msgstr ""
 
-#: includes/settings.php:535
+#: includes/settings.php:556
 msgid "Extra text in the description"
 msgstr ""
 
-#: includes/settings.php:539
+#: includes/settings.php:560
 msgid "Text at the end of every description"
 msgstr ""
 
-#: includes/settings.php:543
+#: includes/settings.php:564
 msgid "e.g. For a different size, please request a quote by contacting us."
 msgstr ""
 
-#: includes/settings.php:545
+#: includes/settings.php:566
 msgid "Optional. If filled in, it's automatically appended to the bottom of the description on EVERY new product (whether the description came from AI or the static template). Leave blank = nothing gets added."
 msgstr ""
 
-#: includes/settings.php:551
+#: includes/settings.php:572
 msgid "Mockup Image Optimization"
 msgstr ""
 
-#: includes/settings.php:554
+#: includes/settings.php:575
 msgid "Mockups contain a photographic background (the template), so PNG usually ends up needlessly heavy. WebP keeps nearly the same quality at a much smaller file size — a faster site."
 msgstr ""
 
-#: includes/settings.php:559
+#: includes/settings.php:580
 msgid "Mockup format"
 msgstr ""
 
-#: includes/settings.php:564
+#: includes/settings.php:585
 msgid "recommended — smallest size, good quality"
 msgstr ""
 
-#: includes/settings.php:567
+#: includes/settings.php:588
 msgid "wide compatibility"
 msgstr ""
 
-#: includes/settings.php:570
+#: includes/settings.php:591
 msgid "lossless, but the heaviest file"
 msgstr ""
 
-#: includes/settings.php:577
+#: includes/settings.php:598
 msgid "Compression quality"
 msgstr ""
 
-#: includes/settings.php:584
+#: includes/settings.php:605
 msgid "Only applies to WebP/JPEG (PNG is always lossless, ignored here). 80-85 is a reasonable balance between quality and file size."
 msgstr ""
 
-#: includes/settings.php:609
+#: includes/settings.php:630
 msgid "Mockups are always saved as PNG in this version. WebP/JPEG compression (smaller, faster-loading files) is available in DecalDesk Pro."
 msgstr ""
 
 #. translators: %s: link to the Upload page
-#: includes/settings.php:620
+#: includes/settings.php:641
 #, php-format
 msgid "The variant sizing setup (Variable Products) now lives in <a href=\"%s\">DecalDesk → Upload</a>, right next to the variants option — easier to edit there while you upload."
 msgstr ""
 
-#: includes/settings.php:629
+#: includes/settings.php:650
 msgid "Every uploaded design is created as a Simple Product in this version. Selectable size/material/color variants (Variable Products) are available in DecalDesk Pro."
 msgstr ""
 
-#: includes/settings.php:633
+#: includes/settings.php:654
 msgid "AI-generated descriptions"
 msgstr ""
 
-#: includes/settings.php:636
+#: includes/settings.php:657
 msgid "Generates longer, sales-focused descriptions instead of the static template. Choose a free provider (Google Gemini, with a daily limit) or a paid one (Anthropic Claude, no limit)."
 msgstr ""
 
-#: includes/settings.php:643
+#: includes/settings.php:664
 msgid "AI provider"
 msgstr ""
 
-#: includes/settings.php:648
+#: includes/settings.php:669
 msgid "Disabled (use the static template)"
 msgstr ""
 
-#: includes/settings.php:653
+#: includes/settings.php:674
 msgid "Free — Google Gemini (daily limit, see below)"
 msgstr ""
 
-#: includes/settings.php:658
+#: includes/settings.php:679
 msgid "Paid — Anthropic Claude (no built-in limit)"
 msgstr ""
 
-#: includes/settings.php:663
+#: includes/settings.php:684
 msgid "Test connection with AI provider"
 msgstr ""
 
-#: includes/settings.php:672
+#: includes/settings.php:693
 msgid "AI content language"
 msgstr ""
 
-#: includes/settings.php:682
+#: includes/settings.php:703
 msgid "Other (type below)"
 msgstr ""
 
-#: includes/settings.php:687
+#: includes/settings.php:708
 msgid "e.g. Czech, Hungarian, Swedish..."
 msgstr ""
 
-#: includes/settings.php:690
+#: includes/settings.php:711
 msgid "The language for AI-generated product descriptions and tags shown to your store customers — independent of the admin panel language. This does not need to match the language your store operates in unless you want it to."
 msgstr ""
 
-#: includes/settings.php:762
+#: includes/settings.php:783
 msgid "AI Vision — image analysis"
 msgstr ""
 
-#: includes/settings.php:765
+#: includes/settings.php:786
 msgid "Look at the design itself"
 msgstr ""
 
-#: includes/settings.php:770
+#: includes/settings.php:791
 msgid "Let the AI look at the actual image (not just the filename) when writing the description"
 msgstr ""
 
-#: includes/settings.php:773
+#: includes/settings.php:794
 msgid "Both providers (Gemini and Claude) support image recognition. The design is automatically downscaled before sending, to save bandwidth and tokens. The result is a much more accurate, specific description, instead of a generic one based only on size/material/category."
 msgstr ""
 
-#: includes/settings.php:779
+#: includes/settings.php:800
 msgid "Free provider — Google Gemini"
 msgstr ""
 
-#: includes/settings.php:783
+#: includes/settings.php:804
 msgid "Today's usage"
 msgstr ""
 
-#: includes/settings.php:787
+#: includes/settings.php:808
 msgid "free AI descriptions used today."
 msgstr ""
 
-#: includes/settings.php:789
+#: includes/settings.php:810
 msgid "The limit has been reached — the static template will be used until tomorrow."
 msgstr ""
 
-#: includes/settings.php:791
+#: includes/settings.php:812
 msgid "The counter resets automatically at midnight. Google itself allows far more (hundreds per day) — this limit is just our own safeguard."
 msgstr ""
 
-#: includes/settings.php:796
+#: includes/settings.php:817
 msgid "Daily limit"
 msgstr ""
 
-#: includes/settings.php:802
+#: includes/settings.php:823
 msgid "How many products per day should get an AI description before switching to the template."
 msgstr ""
 
-#: includes/settings.php:807
+#: includes/settings.php:828
 msgid "Google Gemini API key"
 msgstr ""
 
-#: includes/settings.php:811
+#: includes/settings.php:832
 msgid "Set via the DECALDESK_GEMINI_API_KEY constant in wp-config.php"
 msgstr ""
 
-#: includes/settings.php:814
-#: includes/settings.php:839
+#: includes/settings.php:835
+#: includes/settings.php:860
 msgid "•••••••••••••••••••• (saved, leave blank to keep it)"
 msgstr ""
 
-#: includes/settings.php:818
+#: includes/settings.php:839
 msgid "Get a free key from Google AI Studio (no card required):"
 msgstr ""
 
-#: includes/settings.php:820
+#: includes/settings.php:841
 msgid "For a more secure setup, define it in wp-config.php:"
 msgstr ""
 
-#: includes/settings.php:827
+#: includes/settings.php:848
 msgid "Paid provider — Anthropic Claude"
 msgstr ""
 
-#: includes/settings.php:831
+#: includes/settings.php:852
 msgid "Anthropic API key"
 msgstr ""
 
-#: includes/settings.php:835
+#: includes/settings.php:856
 msgid "Set via the DECALDESK_AI_API_KEY constant in wp-config.php"
 msgstr ""
 
-#: includes/settings.php:836
+#: includes/settings.php:857
 msgid "The field below is ignored while the constant is defined — this is the more secure approach."
 msgstr ""
 
-#: includes/settings.php:842
+#: includes/settings.php:863
 msgid "The key is stored in the database. For a more secure setup, define it in wp-config.php instead:"
 msgstr ""
 
-#: includes/settings.php:850
+#: includes/settings.php:871
 msgid "Model"
 msgstr ""
 
-#: includes/settings.php:855
+#: includes/settings.php:876
 msgid "fastest and cheapest"
 msgstr ""
 
-#: includes/settings.php:858
+#: includes/settings.php:879
 msgid "recommended balance"
 msgstr ""
 
-#: includes/settings.php:861
+#: includes/settings.php:882
 msgid "highest quality, more expensive"
 msgstr ""
 
-#: includes/settings.php:870
+#: includes/settings.php:891
 msgid "This version always uses the static description template. AI-generated descriptions (Google Gemini or Anthropic Claude) are available in DecalDesk Pro."
 msgstr ""
 
-#: includes/settings.php:875
+#: includes/settings.php:896
 msgid "Categories & Mockup Templates"
 msgstr ""
 
 #. translators: %s: link to the Categories page
-#: includes/settings.php:881
+#: includes/settings.php:902
 #, php-format
 msgid "Category management (slug/name), mockup templates, and design positioning now live on a separate page: <a href=\"%s\">DecalDesk → Categories</a>."
 msgstr ""
 
-#: includes/settings.php:889
+#: includes/settings.php:910
 msgid "On plugin deletion"
 msgstr ""
 
-#: includes/settings.php:892
+#: includes/settings.php:913
 msgid "Full cleanup"
 msgstr ""
 
-#: includes/settings.php:897
+#: includes/settings.php:918
 msgid "Delete all plugin data (settings, daily quota, log files, temporary files in incoming/mockups) when the plugin is fully removed"
 msgstr ""
 
-#: includes/settings.php:900
+#: includes/settings.php:921
 msgid "OFF by default (safer)"
 msgstr ""
 
-#: includes/settings.php:901
+#: includes/settings.php:922
 msgid "if you just deactivate the plugin, or delete it to upload a new version, your data stays intact."
 msgstr ""
 
-#: includes/settings.php:902
+#: includes/settings.php:923
 msgid "Only check this if you're removing the plugin for good and want a clean wipe."
 msgstr ""
 
-#: includes/settings.php:903
+#: includes/settings.php:924
 msgid "Important: WooCommerce products you've already created with the plugin are NEVER deleted automatically — this only affects DecalDesk's own internal data."
 msgstr ""
 
-#: includes/settings.php:909
+#: includes/settings.php:930
 msgid "Save settings"
 msgstr ""
 

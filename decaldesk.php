@@ -3,7 +3,7 @@
  * Plugin Name:       DecalDesk
  * Plugin URI:        https://decaldesk.com
  * Description:       Автоматизирано създаване на WooCommerce продукти от дизайн файлове — парсване на име, ценообразуване по площ, AI описания, мокъп генериране, размерни варианти.
- * Version:           1.5.12
+ * Version:           1.5.13
  * Requires at least: 6.9
  * Requires PHP:      7.4
  * Tested up to:      7.0
@@ -71,7 +71,7 @@ if ( ! function_exists( 'decaldesk_fs' ) ) {
 // ==========================================================
 // Константи
 // ==========================================================
-define( 'DECALDESK_VERSION', '1.5.12' );
+define( 'DECALDESK_VERSION', '1.5.13' );
 define( 'DECALDESK_PATH', plugin_dir_path( __FILE__ ) );
 define( 'DECALDESK_URL', plugin_dir_url( __FILE__ ) );
 
@@ -270,6 +270,14 @@ function decaldesk_init_plugin() {
 	require_once DECALDESK_PATH . 'includes/settings.php';
 
 	require_once DECALDESK_PATH . 'admin/admin-menu.php';
+
+	// Ако плъгинът е бил активен вече ПРЕДИ версията, в която е добавен този
+	// cron (т.е. активиран е FTP/rsync ъпдейт, без деактивиране+активиране -
+	// activation hook-ът няма да се изпълни в такъв случай), се презастраховаме
+	// тук - wp_next_scheduled() е евтина проверка, безопасно е да е на всяка заявка.
+	if ( ! wp_next_scheduled( 'decaldesk_daily_cleanup' ) ) {
+		wp_schedule_event( time(), 'daily', 'decaldesk_daily_cleanup' );
+	}
 }
 add_action( 'plugins_loaded', 'decaldesk_init_plugin', 20 );
 
@@ -312,6 +320,13 @@ function decaldesk_activate() {
 				),
 			)
 		);
+	}
+
+	// Дневно автоматично почистване на стара история (jobs таблица + евентуални
+	// осиротели incoming/ файлове) - виж decaldesk_cleanup_old_jobs() в
+	// includes/database.php. Не пипа реалните вече създадени продукти.
+	if ( ! wp_next_scheduled( 'decaldesk_daily_cleanup' ) ) {
+		wp_schedule_event( time(), 'daily', 'decaldesk_daily_cleanup' );
 	}
 }
 register_activation_hook( __FILE__, 'decaldesk_activate' );
@@ -360,6 +375,11 @@ function decaldesk_deactivate() {
 	if ( $timestamp ) {
 		wp_unschedule_event( $timestamp, $job_hook );
 	}
+
+	$cleanup_timestamp = wp_next_scheduled( 'decaldesk_daily_cleanup' );
+	if ( $cleanup_timestamp ) {
+		wp_unschedule_event( $cleanup_timestamp, 'decaldesk_daily_cleanup' );
+	}
 }
 register_deactivation_hook( __FILE__, 'decaldesk_deactivate' );
 
@@ -398,6 +418,8 @@ function decaldesk_run_uninstall_cleanup() {
 	if ( function_exists( 'as_unschedule_all_actions' ) ) {
 		as_unschedule_all_actions( '', array(), 'decaldesk' );
 	}
+
+	wp_clear_scheduled_hook( 'decaldesk_daily_cleanup' );
 
 	$upload_dir    = wp_upload_dir();
 	$decaldesk_dir = $upload_dir['basedir'] . '/decaldesk';

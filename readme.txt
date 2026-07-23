@@ -4,7 +4,7 @@ Tags: woocommerce, decals, stickers, product automation, ai
 Requires at least: 6.9
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.5.12
+Stable tag: 1.5.13
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,9 @@ Yes (Pro). You can use a free Google Gemini API key (from Google AI Studio, no c
 3. A generated product with AI description and mockup
 
 == Changelog ==
+
+= 1.5.13 =
+* Added automatic housekeeping for stored data: the original uploaded file and generated mockup(s) are now deleted right after a product is successfully created (their copies already live permanently in the media library, so nothing is lost), instead of sitting unused in uploads/decaldesk/incoming/ and .../mockups/ forever. A new daily cleanup also removes old finished/failed rows from DecalDesk → History (configurable retention, DecalDesk → Settings → "History retention (days)", default 90, set to 0 to disable) along with any leftover file from a job that errored out. Products you've already created are never touched by any of this.
 
 = 1.5.12 =
 * The upload screen's JavaScript (assets/js/uploader.js) is now fully translatable — every message (live filename preview, confirm dialogs, progress/status text, the final batch summary) previously showed hardcoded English regardless of the admin's language. Wired up via wp_set_script_translations() with a matching Bulgarian JSON translation file; verified via WordPress's own script-translation loader that all strings resolve correctly.
