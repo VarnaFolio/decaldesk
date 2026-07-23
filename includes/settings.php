@@ -356,7 +356,7 @@ function decaldesk_sanitize_settings( $input ) {
 		: 'none';
 
 	$output['ai_model']           = isset( $input['ai_model'] ) ? sanitize_text_field( $input['ai_model'] ) : 'claude-sonnet-4-6';
-	$output['gemini_daily_limit'] = isset( $input['gemini_daily_limit'] ) ? max( 1, (int) $input['gemini_daily_limit'] ) : 10;
+	$output['gemini_daily_limit'] = isset( $input['gemini_daily_limit'] ) ? max( 1, (int) $input['gemini_daily_limit'] ) : 50;
 	$output['ai_use_vision']      = ! empty( $input['ai_use_vision'] );
 	/*! </fs_premium_only> */
 
@@ -441,7 +441,7 @@ function decaldesk_render_settings_page() {
 			'ai_api_key'               => '',
 			'ai_model'                 => 'claude-sonnet-4-6',
 			'gemini_api_key'           => '',
-			'gemini_daily_limit'       => 10,
+			'gemini_daily_limit'       => 50,
 			'ai_use_vision'            => false,
 		/*! </fs_premium_only> */
 		)

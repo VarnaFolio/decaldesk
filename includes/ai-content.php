@@ -45,7 +45,7 @@ function decaldesk_generate_ai_content( $parsed, $design_path = '' ) {
 			'ai_api_key'         => '',
 			'ai_model'           => 'claude-sonnet-4-6',
 			'gemini_api_key'     => '',
-			'gemini_daily_limit' => 10,
+			'gemini_daily_limit' => 50,
 			'ai_use_vision'      => false,
 		)
 	);
@@ -894,7 +894,7 @@ function decaldesk_increment_daily_quota() {
  */
 function decaldesk_get_remaining_daily_quota() {
 	$settings    = get_option( 'decaldesk_settings', array() );
-	$daily_limit = ! empty( $settings['gemini_daily_limit'] ) ? (int) $settings['gemini_daily_limit'] : 10;
+	$daily_limit = ! empty( $settings['gemini_daily_limit'] ) ? (int) $settings['gemini_daily_limit'] : 50;
 	$used        = decaldesk_get_daily_usage();
 
 	return array(

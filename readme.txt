@@ -4,7 +4,7 @@ Tags: woocommerce, decals, stickers, product automation, ai
 Requires at least: 6.9
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.5.6
+Stable tag: 1.5.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -74,6 +74,9 @@ Yes (Pro). You can use a free Google Gemini API key (from Google AI Studio, no c
 3. A generated product with AI description and mockup
 
 == Changelog ==
+
+= 1.5.7 =
+* Raised the default free Gemini daily AI limit from 10 to 50 products/day, matching the maximum batch upload size — still configurable in Settings (1-500). Existing installs that already saved a Settings value keep it unchanged; this only affects new installs and anyone who hasn't customized the field yet.
 
 = 1.5.6 =
 * Upload screen: the final batch summary now flags when part of the batch fell back to the static template while the rest got real AI content (e.g. the free daily quota ran out mid-batch) — "X of Y used the static template instead of AI" with a link to Settings. Only shown when a batch actually mixes both, so it stays silent for the normal all-AI or AI-off cases.

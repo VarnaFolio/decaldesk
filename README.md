@@ -20,7 +20,7 @@ DecalDesk isn't limited to decals/stickers — it works with any product priced 
 
 From **DecalDesk → Settings**, choose one of three modes:
 - **Off** — static template (no AI)
-- **Free (Google Gemini)** — with a daily limit (10 products/day by default, configurable). Get a free API key from https://aistudio.google.com/app/apikey — no card required.
+- **Free (Google Gemini)** — with a daily limit (50 products/day by default, configurable). Get a free API key from https://aistudio.google.com/app/apikey — no card required.
 - **Paid (Anthropic Claude)** — no plugin-enforced limit; the real limit is whatever your Anthropic plan allows.
 
 Both AI modes generate: a long description, a short description, an SEO meta description, an SEO title, and a focus keyphrase — saved to both Yoast SEO (`_yoast_wpseo_metadesc`, `_yoast_wpseo_title`, `_yoast_wpseo_focuskw`) and RankMath (`rank_math_description`, `rank_math_title`, `rank_math_focus_keyword`). The meta description is also embedded directly into the mockup's PNG file (Title/Description/Comment metadata via Imagick). If AI is off or unavailable, the static fallback template fills in a sensible rule-based SEO title and focus keyphrase too — these fields are never left empty.
