@@ -20,6 +20,98 @@
 
 		var selectedFiles = [];
 
+		// ==========================================================
+		// Съхранение на активните job-ове в localStorage - ако администраторът
+		// презареди/затвори таба по средата на batch-а, обработката продължава
+		// на сървъра, но без това live-проследяването в JS би се изгубило и
+		// единственият начин да се провери резултатът би бил ръчно през
+		// DecalDesk → History. Записът се трие веднага щом всички job-ове
+		// приключат (успешно или с грешка).
+		var ACTIVE_JOBS_STORAGE_KEY = 'decaldesk_active_jobs';
+		var ACTIVE_JOBS_MAX_AGE_MS = 15 * 60 * 1000; // съответства на maxPolls таймаута по-долу, с известен запас
+
+		function saveActiveJobsToStorage(jobRows, uploadStats) {
+			var filenames = {};
+			Object.keys(jobRows).forEach(function (jobId) {
+				filenames[jobId] = jobRows[jobId].filename;
+			});
+
+			try {
+				localStorage.setItem(ACTIVE_JOBS_STORAGE_KEY, JSON.stringify({
+					filenames: filenames,
+					uploadStats: uploadStats,
+					savedAt: Date.now()
+				}));
+			} catch (e) {
+				// localStorage недостъпен (private mode, квота и т.н.) - live прогресът
+				// просто няма да оцелее презареждане, но качването си работи нормално.
+			}
+		}
+
+		function clearActiveJobsFromStorage() {
+			try {
+				localStorage.removeItem(ACTIVE_JOBS_STORAGE_KEY);
+			} catch (e) {
+				// нищо за правене
+			}
+		}
+
+		function loadActiveJobsFromStorage() {
+			var raw;
+			try {
+				raw = localStorage.getItem(ACTIVE_JOBS_STORAGE_KEY);
+			} catch (e) {
+				return null;
+			}
+
+			if (!raw) {
+				return null;
+			}
+
+			var parsed;
+			try {
+				parsed = JSON.parse(raw);
+			} catch (e) {
+				return null;
+			}
+
+			if (!parsed || !parsed.filenames || !parsed.savedAt || (Date.now() - parsed.savedAt) > ACTIVE_JOBS_MAX_AGE_MS) {
+				clearActiveJobsFromStorage();
+				return null;
+			}
+
+			if (Object.keys(parsed.filenames).length === 0) {
+				clearActiveJobsFromStorage();
+				return null;
+			}
+
+			return parsed;
+		}
+
+		// При зареждане на страницата: ако има запазени активни job-ове от
+		// прекъснато проследяване, пресъздаваме резултатните редове и веднага
+		// подновяваме поллинга - вместо администраторът да гадае дали качването
+		// изобщо е минало.
+		(function resumeActiveJobsIfAny() {
+			var stored = loadActiveJobsFromStorage();
+			if (!stored) {
+				return;
+			}
+
+			var jobRows = {};
+			Object.keys(stored.filenames).forEach(function (jobId) {
+				var $row = createQueuedResultRow(stored.filenames[jobId]);
+				jobRows[jobId] = { $row: $row, filename: stored.filenames[jobId] };
+			});
+
+			$progress.show();
+			$progressBar.css('width', '50%'); // качването вече е приключило преди презареждането
+			$progressLabel.text('Resuming progress tracking after reload...');
+			$uploadBtn.prop('disabled', true);
+
+			pollJobStatuses(jobRows, stored.uploadStats);
+		})();
+
 		// Клик върху dropzone отваря file picker (само ако кликът НЕ идва от самия input)
 		$dropzone.on('click', function (e) {
 			if (e.target === $fileInput[0]) {
@@ -309,6 +401,7 @@
 				$progressLabel.text('All files uploaded - processing in the background...');
 
 				if (Object.keys(jobRows).length > 0) {
+					saveActiveJobsToStorage(jobRows, uploadStats);
 					pollJobStatuses(jobRows, uploadStats);
 				} else {
 					// Нямаше нито един успешно качен файл - няма какво да следим
@@ -424,6 +517,7 @@
 
 					if (doneCount + errorCount >= totalJobs || pollCount >= maxPolls) {
 						clearInterval(intervalId);
+						clearActiveJobsFromStorage();
 						$progress.hide();
 						$uploadBtn.prop('disabled', false);
 

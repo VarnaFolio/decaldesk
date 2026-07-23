@@ -1,3 +1,6 @@
+= 1.5.3 =
+* Upload screen: live progress tracking now survives a page reload/tab close mid-batch. The set of active jobs is kept in localStorage while a batch is processing and automatically resumed on load, instead of being silently lost (previously required checking DecalDesk → History manually to see if an interrupted batch had actually finished).
+
 = 1.5.2 =
 * Added a configurable "Store product type" setting (DecalDesk → Settings) — DecalDesk is no longer decal/sticker-specific wording only; describe what your store actually sells (paintings, fabric, tiles...) and it feeds both the AI prompt and the static fallback description template. Leave blank for unchanged default (decal/sticker) wording.
 * Added automatic SKU generation for every Simple Product, rule-based from name/size/category/material (no AI needed), with automatic numeric-suffix handling on collision.
