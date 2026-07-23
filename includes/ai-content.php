@@ -113,8 +113,7 @@ function decaldesk_generate_ai_content( $parsed, $design_path = '' ) {
 		$fallback['source'] = 'fallback';
 		return $fallback;
 	}
-	/*
-	! </fs_premium_only> */
+	/*! </fs_premium_only> */
 	// Този build генерира само статичното шаблонно съдържание. AI-генерирани
 	// описания (Google Gemini / Anthropic Claude) са налични в DecalDesk Pro.
 	$fallback           = decaldesk_build_fallback_content( $parsed );

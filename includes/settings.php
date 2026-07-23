@@ -168,8 +168,7 @@ function decaldesk_ajax_test_ai_connection() {
 	}
 
 	wp_send_json_success( array( 'raw' => $result ) );
-	/*
-	! </fs_premium_only> */
+	/*! </fs_premium_only> */
 	// AI описанията (Google Gemini / Anthropic Claude) са налични в DecalDesk Pro.
 	wp_send_json_error( array( 'message' => __( 'AI-generated descriptions are available in DecalDesk Pro.', 'decaldesk' ) ), 403 );
 }
@@ -328,8 +327,7 @@ function decaldesk_sanitize_settings( $input ) {
 	$output['mockup_quality'] = isset( $input['mockup_quality'] ) ? max( 1, min( 100, (int) $input['mockup_quality'] ) ) : 82;
 	/*! </fs_premium_only> */
 
-	/*
-	! <fs_premium_only> */
+	/*! <fs_premium_only> */
 	// Размерни варианти (за Variable Products) - размери задължителни за да
 	// работи функцията, материал/цвят са изрично незадължителни списъци.
 	// ВАЖНО: пазим НОВИТЕ данни ако $input наистина ги носи (независимо дали
@@ -378,8 +376,7 @@ function decaldesk_sanitize_settings( $input ) {
 	// за да не се изтрият случайно данни при бъдещо преинсталиране на плъгина.
 	$output['delete_data_on_uninstall'] = ! empty( $input['delete_data_on_uninstall'] );
 
-	/*
-	! <fs_premium_only> */
+	/*! <fs_premium_only> */
 	// API ключовете се запазват само ако е въведен нов; иначе пазим стария (за да не се налага
 	// да се въвежда наново при всеки Save, ако вече е зададен през wp-config.php константа).
 	if ( ! empty( $input['ai_api_key'] ) ) {
