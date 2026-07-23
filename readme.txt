@@ -4,7 +4,7 @@ Tags: woocommerce, decals, stickers, product automation, ai
 Requires at least: 6.9
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.5.10
+Stable tag: 1.5.11
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,9 @@ Yes (Pro). You can use a free Google Gemini API key (from Google AI Studio, no c
 3. A generated product with AI description and mockup
 
 == Changelog ==
+
+= 1.5.11 =
+* Refreshed the Bulgarian translation (languages/decaldesk-bg_BG.po/.mo) — it had fallen behind after several feature additions (onboarding checklist, product title setting, optional material, etc.), showing English text in a Bulgarian-locale admin. Regenerated the .pot from current source and translated everything that was missing or outdated (69 strings), with zero untranslated/fuzzy entries remaining.
 
 = 1.5.10 =
 * Build tooling: excluded assets/marketplace/ (WP.org/Marketplace listing screenshots) from the distributed plugin zip — it's not a runtime asset and was previously bundled unnecessarily into both the Free and Premium builds.

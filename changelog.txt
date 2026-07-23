@@ -1,3 +1,6 @@
+= 1.5.11 =
+* Refreshed the Bulgarian translation (languages/decaldesk-bg_BG.po/.mo) — it had fallen behind after several feature additions (onboarding checklist, product title setting, optional material, etc.), showing English text in a Bulgarian-locale admin. Regenerated the .pot from current source and translated everything that was missing or outdated (69 strings), with zero untranslated/fuzzy entries remaining.
+
 = 1.5.10 =
 * Build tooling: excluded assets/marketplace/ (WP.org/Marketplace listing screenshots) from the distributed plugin zip — it's not a runtime asset and was previously bundled unnecessarily into both the Free and Premium builds.
 

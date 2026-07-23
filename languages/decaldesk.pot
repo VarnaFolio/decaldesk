@@ -1,742 +1,1085 @@
+# Copyright (C) 2026 DecalDesk
+# This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: DecalDesk 1.3.4\n"
-"Report-Msgid-Bugs-To: support@decaldesk.com\n"
-"POT-Creation-Date: 2026-07-12T00:00:00+00:00\n"
+"Project-Id-Version: DecalDesk 1.5.10\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/decaldesk\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: manual\n"
+"POT-Creation-Date: 2026-07-23T12:48:41+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: decaldesk\n"
 
-msgid " (pending: "
-msgstr ""
-
-msgid " cm"
-msgstr ""
-
-msgid " failed to process"
-msgstr ""
-
-msgid " files are in an unsupported format (allowed: PNG, JPG, WEBP, GIF) and were skipped."
-msgstr ""
-
-msgid " files selected"
-msgstr ""
-
-msgid " files were already added and were skipped."
-msgstr ""
-
-msgid " files were not added."
-msgstr ""
-
-msgid " files were not uploaded"
-msgstr ""
-
-msgid " files — "
-msgstr ""
-
-msgid " of "
-msgstr ""
-
-msgid " successful products out of "
-msgstr ""
-
-msgid "\"%s\" has been uploaded and queued for processing."
-msgstr ""
-
-msgid "%1$d of %2$d products over the past week used the static template instead of an AI description."
-msgstr ""
-
-msgid "%1$s – self-adhesive film, %2$d x %3$d cm (%4$s m²). Made from %5$s material with high-quality printing, suited for %6$s."
-msgstr ""
-
-msgid "%1$s – self-adhesive film, %2$d x %3$d cm. Order online with fast delivery."
-msgstr ""
-
-msgid "%d products failed to process successfully over the past week."
-msgstr ""
-
-msgid "%d skipped (already published, still processing, or without a product)."
-msgstr ""
-
-msgid "+ Add another template (up to %d)"
-msgstr ""
-
-msgid "A category with this slug already exists."
-msgstr ""
-
-msgid "A server connection error occurred."
-msgstr ""
-
-msgid "AI (Claude)"
-msgstr ""
-
-msgid "AI (free)"
-msgstr ""
-
-msgid "AI Vision — image analysis"
-msgstr ""
-
-msgid "AI provider"
-msgstr ""
-
-msgid "AI-generated descriptions"
-msgstr ""
-
-msgid "Add category"
-msgstr ""
-
-msgid "Add new category"
-msgstr ""
-
-msgid "All"
-msgstr ""
-
-msgid "All files uploaded - processing in the background..."
-msgstr ""
-
-msgid "Allowed formats: %s."
-msgstr ""
-
-msgid "Allowed formats: PNG, JPG/JPEG, WEBP, GIF"
-msgstr ""
-
-msgid "Allowed template formats: PNG, JPG, WEBP."
-msgstr ""
-
-msgid "An error occurred."
-msgstr ""
-
-msgid "Anthropic API key"
-msgstr ""
-
-msgid "At least 3 points are required for a freeform shape."
-msgstr ""
-
-msgid "At least 3 valid points are required."
-msgstr ""
-
-msgid "Both providers (Gemini and Claude) support image recognition. The design is automatically downscaled before sending, to save bandwidth and tokens. The result is a much more accurate, specific description, instead of a generic one based only on size/material/category."
-msgstr ""
-
-msgid "Categories"
-msgstr ""
-
-msgid "Categories & Mockup Templates"
-msgstr ""
-
-msgid "Category management (slug/name), mockup templates, and design positioning now live on a separate page: <a href=\"%s\">DecalDesk → Categories</a>."
-msgstr ""
-
-msgid "Check your AI settings →"
-msgstr ""
-
-msgid "Clear all"
-msgstr ""
-
-msgid "Clear points"
-msgstr ""
-
-msgid "Click on the template to add a point. Drag existing points to move them. You need at least 3 points."
-msgstr ""
-
-msgid "Color"
-msgstr ""
-
-msgid "Colors (optional)"
-msgstr ""
-
-msgid "Compression quality"
-msgstr ""
-
-msgid "Configure sizes / materials / colors ▾"
-msgstr ""
-
-msgid "Create with selectable variants (size/material/color)"
-msgstr ""
-
-msgid "Custom template uploaded"
-msgstr ""
-
-msgid "Daily limit"
-msgstr ""
-
-msgid "Date"
-msgstr ""
-
+#. Plugin Name of the plugin
+#. Author of the plugin
+#: decaldesk.php
+#: admin/admin-menu.php:11
+#: admin/admin-menu.php:12
 msgid "DecalDesk"
 msgstr ""
 
-msgid "DecalDesk requires WooCommerce to be active in order to work."
+#. Plugin URI of the plugin
+#: decaldesk.php
+msgid "https://decaldesk.com"
 msgstr ""
 
-msgid "DecalDesk – Categories & Mockup Templates"
+#. Description of the plugin
+#: decaldesk.php
+msgid "Автоматизирано създаване на WooCommerce продукти от дизайн файлове — парсване на име, ценообразуване по площ, AI описания, мокъп генериране, размерни варианти."
 msgstr ""
 
-msgid "DecalDesk – History"
-msgstr ""
-
-msgid "DecalDesk – Settings"
-msgstr ""
-
-msgid "DecalDesk – Upload Designs"
-msgstr ""
-
-msgid "DecalDesk — need a hand? Email %s"
-msgstr ""
-
-msgid "DecalDesk:"
-msgstr ""
-
-msgid "Delete"
-msgstr ""
-
-msgid "Delete all plugin data (settings, daily quota, log files, temporary files in incoming/mockups) when the plugin is fully removed"
-msgstr ""
-
-msgid "Delete category"
-msgstr ""
-
-msgid "Delete record (doesn't touch the product)"
-msgstr ""
-
-msgid "Delete this record from history? (the store product, if any, is NOT deleted)"
-msgstr ""
-
-msgid "Delete this template"
-msgstr ""
-
-msgid "Deleted %d records from history."
-msgstr ""
-
-msgid "Description"
-msgstr ""
-
-msgid "Dimensions must be positive numbers."
-msgstr ""
-
-msgid "Disabled (use the static template)"
-msgstr ""
-
-msgid "Done"
-msgstr ""
-
-msgid "Done."
-msgstr ""
-
-msgid "Done: "
-msgstr ""
-
-msgid "Drag and resize the frame to set exactly where the design should appear on this template."
-msgstr ""
-
-msgid "Drop files here or click to browse"
-msgstr ""
-
-msgid "Each category matches the \"category\" part of the filename (e.g. holiday_50x70_matte_KITCHEN.jpg → category \"kitchen\"). Here you upload mockup template(s) and set exactly where the design should sit on each one."
-msgstr ""
-
-msgid "Edit product"
-msgstr ""
-
-msgid "Error"
-msgstr ""
-
-msgid "Error deleting."
-msgstr ""
-
-msgid "Error saving."
-msgstr ""
-
-msgid "Error uploading."
-msgstr ""
-
-msgid "Error."
-msgstr ""
-
-msgid "Every uploaded design will become one product with a choice of: "
-msgstr ""
-
-msgid "Every uploaded design will become one product with a choice of: %s"
-msgstr ""
-
-msgid "Example: holiday_50x70_matte_kitchen.jpg"
-msgstr ""
-
-msgid "Extra text in the description"
-msgstr ""
-
-msgid "Failed"
-msgstr ""
-
-msgid "Failed to create the parent product."
-msgstr ""
-
-msgid "Failed to create the product."
-msgstr ""
-
-msgid "Failed to generate any mockup."
-msgstr ""
-
-msgid "Failed to load the images."
-msgstr ""
-
-msgid "Failed to save the file to the server."
-msgstr ""
-
-msgid "Failed to save the template."
-msgstr ""
-
-msgid "File"
-msgstr ""
-
-msgid "Filename format: name_widthxheight_material_category.extension"
-msgstr ""
-
-msgid "For a more secure setup, define it in wp-config.php:"
-msgstr ""
-
-msgid "Free provider — Google Gemini"
-msgstr ""
-
-msgid "Free — Google Gemini (daily limit, see below)"
-msgstr ""
-
-msgid "Freeform"
-msgstr ""
-
-msgid "Full cleanup"
-msgstr ""
-
-msgid "Generate mockups from all templates in the category (up to 4)"
-msgstr ""
-
-msgid "Generates longer, sales-focused descriptions instead of the static template. Choose a free provider (Google Gemini, with a daily limit) or a paid one (Anthropic Claude, no limit)."
-msgstr ""
-
-msgid "Get a free key from Google AI Studio (no card required):"
-msgstr ""
-
-msgid "Google Gemini API key"
-msgstr ""
-
-msgid "Hide for 24 hours"
-msgstr ""
-
-msgid "History"
-msgstr ""
-
-msgid "How many products per day should get an AI description before switching to the template."
-msgstr ""
-
-msgid "Important: WooCommerce products you've already created with the plugin are NEVER deleted automatically — this only affects DecalDesk's own internal data."
-msgstr ""
-
-msgid "Invalid data."
-msgstr ""
-
-msgid "It's currently being processed."
-msgstr ""
-
-msgid "Last error:"
-msgstr ""
-
-msgid "Let the AI look at the actual image (not just the filename) when writing the description"
-msgstr ""
-
-msgid "Look at the design itself"
-msgstr ""
-
-msgid "Material"
-msgstr ""
-
-msgid "Materials (optional)"
-msgstr ""
-
-msgid "Maximum %d files at once"
-msgstr ""
-
-msgid "Maximum size per side (cm)"
-msgstr ""
-
-msgid "Minimum price (€)"
-msgstr ""
-
-msgid "Missing category."
-msgstr ""
-
-msgid "Missing file or category."
-msgstr ""
-
-msgid "Mockup Image Optimization"
-msgstr ""
-
-msgid "Mockup format"
-msgstr ""
-
-msgid "Mockups contain a photographic background (the template), so PNG usually ends up needlessly heavy. WebP keeps nearly the same quality at a much smaller file size — a faster site."
-msgstr ""
-
-msgid "Model"
-msgstr ""
-
-msgid "Name (e.g. Kitchen Backsplash)"
-msgstr ""
-
-msgid "Name and slug are required."
-msgstr ""
-
-msgid "Neither Imagick nor the GD library is available on the server."
-msgstr ""
-
-msgid "No Anthropic API key set."
-msgstr ""
-
-msgid "No Google Gemini API key set."
-msgstr ""
-
-msgid "No categories added yet."
-msgstr ""
-
-msgid "No file received."
-msgstr ""
-
-msgid "No file selected."
-msgstr ""
-
-msgid "No template uploaded for this slot yet"
-msgstr ""
-
-msgid "No variant sizes configured in Settings."
-msgstr ""
-
-msgid "No variant sizes configured yet — add at least one below to enable this option."
-msgstr ""
-
-msgid "OFF by default (safer)"
-msgstr ""
-
-msgid "On plugin deletion"
-msgstr ""
-
-msgid "One size per line, format \"widthxheight\" in cm."
-msgstr ""
-
-msgid "Only applies to WebP/JPEG (PNG is always lossless, ignored here). 80-85 is a reasonable balance between quality and file size."
-msgstr ""
-
-msgid "Only check this if you're removing the plugin for good and want a clean wipe."
-msgstr ""
-
-msgid "Optional. If filled in, it's automatically appended to the bottom of the description on EVERY new product (whether the description came from AI or the static template). Leave blank = nothing gets added."
-msgstr ""
-
-msgid "Paid provider — Anthropic Claude"
-msgstr ""
-
-msgid "Paid — Anthropic Claude (no built-in limit)"
-msgstr ""
-
-msgid "Pending"
-msgstr ""
-
-msgid "Please fill in a name and slug."
-msgstr ""
-
-msgid "Please select at least one file."
-msgstr ""
-
-msgid "Position saved."
-msgstr ""
-
-msgid "Price"
-msgstr ""
-
-msgid "Price per m² (€)"
-msgstr ""
-
-msgid "Processed "
-msgstr ""
-
-msgid "Processing"
-msgstr ""
-
-msgid "Processing is taking unusually long. Products are still being created in the background - reload the page in a bit to see the final result."
-msgstr ""
-
-msgid "Processing..."
-msgstr ""
-
-msgid "Product \"%s\" was created successfully."
-msgstr ""
-
-msgid "Protects against typos in the filename (e.g. an extra accidental zero). A file larger than this on either side will be rejected with a clear message."
-msgstr ""
-
-msgid "Publish"
-msgstr ""
-
-msgid "Publish immediately"
-msgstr ""
-
-msgid "Publish selected"
-msgstr ""
-
-msgid "Published %d products."
-msgstr ""
-
-msgid "Queued for processing..."
-msgstr ""
-
-msgid "Rectangle"
-msgstr ""
-
-msgid "Remove"
-msgstr ""
-
-msgid "Reset to centered"
-msgstr ""
-
-msgid "Save as draft"
-msgstr ""
-
-msgid "Save position"
-msgstr ""
-
-msgid "Save settings"
-msgstr ""
-
-msgid "Save variants"
-msgstr ""
-
-msgid "Saved."
-msgstr ""
-
-msgid "Saving..."
-msgstr ""
-
-msgid "Search by filename"
-msgstr ""
-
-msgid "See the existing product below."
-msgstr ""
-
-msgid "Server connection error."
-msgstr ""
-
-msgid "Server error during upload — check your hosting configuration."
-msgstr ""
-
-msgid "Set via the DECALDESK_AI_API_KEY constant in wp-config.php"
-msgstr ""
-
-msgid "Set via the DECALDESK_GEMINI_API_KEY constant in wp-config.php"
-msgstr ""
-
-msgid "Settings"
-msgstr ""
-
-msgid "Size"
-msgstr ""
-
-msgid "Size: %1$d x %2$d cm | Material: %3$s"
-msgstr ""
-
-msgid "Sizes (required)"
-msgstr ""
-
-msgid "Status"
-msgstr ""
-
-msgid "Template"
-msgstr ""
-
-msgid "Template %d"
-msgstr ""
-
-msgid "Template uploaded."
-msgstr ""
-
-msgid "Test connection with AI provider"
-msgstr ""
-
-msgid "Test with a design"
-msgstr ""
-
-msgid "Text at the end of every description"
-msgstr ""
-
-msgid "The AI provider is disabled (set to \"Disabled\")."
-msgstr ""
-
-msgid "The category doesn't exist."
-msgstr ""
-
-msgid "The category needs at least one template (even the default). Delete the whole category if you don't need it."
-msgstr ""
-
-msgid "The counter resets automatically at midnight. Google itself allows far more (hundreds per day) — this limit is just our own safeguard."
-msgstr ""
-
-msgid "The design file doesn't exist."
-msgstr ""
-
-msgid "The dimensions %1$d x %2$d cm look unrealistically large (maximum %3$d cm per side). Check for a typo in the filename."
-msgstr ""
-
-msgid "The field below is ignored while the constant is defined — this is the more secure approach."
-msgstr ""
-
-msgid "The file is empty or corrupted."
-msgstr ""
-
-msgid "The file is too large (exceeds the server's upload limit)."
-msgstr ""
-
-msgid "The file was missing on the server when processing started."
-msgstr ""
-
-msgid "The file was only partially uploaded — try again."
-msgstr ""
-
-msgid "The file was recognized as \"%s\", which isn't an allowed design format."
-msgstr ""
-
-msgid "The file wasn't recognized as a valid image (content check failed). It may be corrupted, or not actually an image despite its extension."
-msgstr ""
-
-msgid "The image has invalid (zero) pixel dimensions."
-msgstr ""
-
-msgid "The image resolution is too high (%1$d x %2$d px). The maximum is %3$d px on the longer side."
-msgstr ""
-
-msgid "The key is stored in the database. For a more secure setup, define it in wp-config.php instead:"
-msgstr ""
-
-msgid "The limit has been reached — the static template will be used until tomorrow."
-msgstr ""
-
-msgid "The limit of "
-msgstr ""
-
-msgid "The name \"%s\" doesn't match the format name_widthxheight_material_category.extension"
-msgstr ""
-
-msgid "The slug is suggested automatically from the name, but you can edit it before adding."
-msgstr ""
-
-msgid "The variant sizing setup (Variable Products) now lives in <a href=\"%s\">DecalDesk → Upload</a>, right next to the variants option — easier to edit there while you upload."
-msgstr ""
-
-msgid "This design has already been uploaded before (as \"%s\")."
-msgstr ""
-
-msgid "Today's usage"
-msgstr ""
-
-msgid "Total done"
-msgstr ""
-
-msgid "Unknown error during upload."
-msgstr ""
-
-msgid "Unknown error."
-msgstr ""
-
-msgid "Upload"
-msgstr ""
-
+#: admin/admin-menu.php:22
 msgid "Upload Designs"
 msgstr ""
 
-msgid "Upload failed (unknown error)."
+#: admin/admin-menu.php:23
+msgid "Upload"
 msgstr ""
 
-msgid "Upload files"
+#: admin/admin-menu.php:31
+#: admin/admin-menu.php:32
+msgid "History"
 msgstr ""
 
-msgid "Upload new designs"
+#: admin/admin-menu.php:40
+#: admin/admin-menu.php:41
+msgid "Categories"
 msgstr ""
 
-msgid "Upload template"
+#: admin/admin-menu.php:49
+#: admin/admin-menu.php:50
+msgid "Settings"
 msgstr ""
 
-msgid "Uploading file "
+#: admin/admin-page-categories.php:28
+msgid "DecalDesk – Categories & Mockup Templates"
 msgstr ""
 
-msgid "Uploading template..."
+#: admin/admin-page-categories.php:30
+msgid "Each category matches the \"category\" part of the filename (e.g. holiday_50x70_matte_KITCHEN.jpg → category \"kitchen\"). Here you upload mockup template(s) and set exactly where the design should sit on each one."
 msgstr ""
 
-msgid "Useful for categories with several templates (e.g. \"cars\" — show the design on a few different models). Slower processing, so it's off by default — turn it on only when you actually need it for a specific batch."
+#: admin/admin-page-categories.php:34
+msgid "Add new category"
 msgstr ""
 
-msgid "Using the default template"
+#: admin/admin-page-categories.php:36
+#: admin/admin-page-categories.php:94
+msgid "Category name"
 msgstr ""
 
-msgid "View in store"
+#: admin/admin-page-categories.php:37
+msgid "Name (e.g. Kitchen Backsplash)"
 msgstr ""
 
-msgid "WooCommerce is not active."
+#: admin/admin-page-categories.php:38
+msgid "Category slug"
 msgstr ""
 
-msgid "You don't have permission to do this."
-msgstr ""
-
-msgid "Your settings, history, and uploaded templates were successfully migrated from the previous version (ProductOps). Everything is in place."
-msgstr ""
-
-msgid "e.g. For a different size, please request a quote by contacting us."
-msgstr ""
-
-msgid "e.g. matte, gloss, clear"
-msgstr ""
-
-msgid "e.g. white, black, clear film"
-msgstr ""
-
-msgid "fastest and cheapest"
-msgstr ""
-
-msgid "free AI descriptions used today."
-msgstr ""
-
-msgid "highest quality, more expensive"
-msgstr ""
-
-msgid "if you just deactivate the plugin, or delete it to upload a new version, your data stays intact."
-msgstr ""
-
-msgid "lossless, but the heaviest file"
-msgstr ""
-
-msgid "recommended balance"
-msgstr ""
-
-msgid "recommended — smallest size, good quality"
-msgstr ""
-
+#: admin/admin-page-categories.php:39
 msgid "slug (e.g. kitchen)"
 msgstr ""
 
+#: admin/admin-page-categories.php:41
+msgid "Add category"
+msgstr ""
+
+#: admin/admin-page-categories.php:44
+msgid "The slug is suggested automatically from the name, but you can edit it before adding."
+msgstr ""
+
+#: admin/admin-page-categories.php:54
+msgid "No categories added yet."
+msgstr ""
+
+#: admin/admin-page-categories.php:96
+msgid "Delete category"
+msgstr ""
+
+#. translators: %d: maximum number of templates per category
+#: admin/admin-page-categories.php:125
+#, php-format
+msgid "+ Add another template (up to %d)"
+msgstr ""
+
+#: admin/admin-page-categories.php:130
+msgid "+ Add another template"
+msgstr ""
+
+#: admin/admin-page-categories.php:135
+msgid "Multiple templates per category and the freeform zone editor are Pro features."
+msgstr ""
+
+#: admin/admin-page-categories.php:136
+#: admin/admin-page-upload.php:75
+#: admin/admin-page-upload.php:144
+msgid "Upgrade to Pro"
+msgstr ""
+
+#: admin/admin-page-categories.php:140
+msgid "This version supports one template and a rectangular zone per category. Multiple templates per category and the freeform zone editor are available in DecalDesk Pro."
+msgstr ""
+
+#: admin/admin-page-categories.php:141
+#: admin/admin-page-upload.php:155
+#: includes/settings.php:610
+#: includes/settings.php:871
+msgid "Learn more"
+msgstr ""
+
+#. translators: %d: template slot number
+#: admin/admin-page-categories.php:178
+#, php-format
+msgid "Template %d"
+msgstr ""
+
+#: admin/admin-page-categories.php:181
+msgid "Delete this template"
+msgstr ""
+
+#: admin/admin-page-categories.php:191
+msgid "No template uploaded for this slot yet"
+msgstr ""
+
+#: admin/admin-page-categories.php:197
+msgid "Design zone. Use arrow keys to move, Shift+arrow to move faster."
+msgstr ""
+
+#: admin/admin-page-categories.php:200
+msgid "Resize from top-left corner. Use arrow keys, Shift+arrow to move faster."
+msgstr ""
+
+#: admin/admin-page-categories.php:201
+msgid "Resize from top-right corner. Use arrow keys, Shift+arrow to move faster."
+msgstr ""
+
+#: admin/admin-page-categories.php:202
+msgid "Resize from bottom-left corner. Use arrow keys, Shift+arrow to move faster."
+msgstr ""
+
+#: admin/admin-page-categories.php:203
+msgid "Resize from bottom-right corner. Use arrow keys, Shift+arrow to move faster."
+msgstr ""
+
+#: admin/admin-page-categories.php:216
+msgid "Freeform point. Use arrow keys to move, Shift+arrow to move faster, Delete to remove."
+msgstr ""
+
+#: admin/admin-page-categories.php:226
+msgid "Custom template uploaded"
+msgstr ""
+
+#: admin/admin-page-categories.php:228
+msgid "Using the default template"
+msgstr ""
+
+#: admin/admin-page-categories.php:235
+msgid "Rectangle"
+msgstr ""
+
+#: admin/admin-page-categories.php:247
+msgid "Freeform"
+msgstr ""
+
+#: admin/admin-page-categories.php:252
+#: admin/admin-page-upload.php:153
+#: includes/settings.php:608
+#: includes/settings.php:869
+msgid "DecalDesk Pro"
+msgstr ""
+
+#: admin/admin-page-categories.php:258
+msgid "Upload template"
+msgstr ""
+
+#: admin/admin-page-categories.php:263
+msgid "Test with a design"
+msgstr ""
+
+#: admin/admin-page-categories.php:267
+msgid "Save position"
+msgstr ""
+
+#: admin/admin-page-categories.php:268
+msgid "Reset to centered"
+msgstr ""
+
+#: admin/admin-page-categories.php:269
+msgid "Clear points"
+msgstr ""
+
+#: admin/admin-page-categories.php:272
+msgid "Drag and resize the frame to set exactly where the design should appear on this template."
+msgstr ""
+
+#: admin/admin-page-categories.php:275
+msgid "Click on the template to add a point. Drag existing points to move them. You need at least 3 points."
+msgstr ""
+
+#: admin/admin-page-categories.php:399
+#: admin/admin-page-history.php:260
+#: admin/admin-page-upload.php:184
+#: admin/admin-page-upload.php:313
+#: includes/background.php:178
+#: includes/settings.php:126
+msgid "You don't have permission to do this."
+msgstr ""
+
+#: admin/admin-page-categories.php:414
+msgid "Name and slug are required."
+msgstr ""
+
+#: admin/admin-page-categories.php:421
+msgid "A category with this slug already exists."
+msgstr ""
+
+#: admin/admin-page-categories.php:448
+msgid "Invalid data."
+msgstr ""
+
+#: admin/admin-page-categories.php:453
+msgid "The category doesn't exist."
+msgstr ""
+
+#: admin/admin-page-categories.php:510
+msgid "Missing file or category."
+msgstr ""
+
+#: admin/admin-page-categories.php:518
+#: admin/admin-page-categories.php:679
+msgid "Multiple templates per category are available in DecalDesk Pro."
+msgstr ""
+
+#: admin/admin-page-categories.php:531
+msgid "Allowed template formats: PNG, JPG, WEBP."
+msgstr ""
+
+#: admin/admin-page-categories.php:574
+msgid "Failed to save the template."
+msgstr ""
+
+#: admin/admin-page-categories.php:596
+#: admin/admin-page-categories.php:666
+msgid "Missing category."
+msgstr ""
+
+#: admin/admin-page-categories.php:671
+msgid "The freeform zone editor requires a Pro license."
+msgstr ""
+
+#: admin/admin-page-categories.php:675
+msgid "The freeform zone editor is available in DecalDesk Pro."
+msgstr ""
+
+#: admin/admin-page-categories.php:693
+msgid "At least 3 points are required for a freeform shape."
+msgstr ""
+
+#: admin/admin-page-categories.php:708
+msgid "At least 3 valid points are required."
+msgstr ""
+
+#: admin/admin-page-history.php:36
+msgid "File"
+msgstr ""
+
+#: admin/admin-page-history.php:37
+msgid "Status"
+msgstr ""
+
+#: admin/admin-page-history.php:38
+msgid "Description"
+msgstr ""
+
+#: admin/admin-page-history.php:39
+msgid "Price"
+msgstr ""
+
+#: admin/admin-page-history.php:40
+msgid "Date"
+msgstr ""
+
+#: admin/admin-page-history.php:61
+msgid "All"
+msgstr ""
+
+#: admin/admin-page-history.php:62
+#: admin/admin-page-history.php:165
+#: admin/admin-page-history.php:387
+msgid "Pending"
+msgstr ""
+
+#: admin/admin-page-history.php:63
+#: admin/admin-page-history.php:170
+#: admin/admin-page-history.php:391
+msgid "Processing"
+msgstr ""
+
+#: admin/admin-page-history.php:64
+#: admin/admin-page-history.php:175
+msgid "Done"
+msgstr ""
+
+#: admin/admin-page-history.php:65
+#: admin/admin-page-history.php:399
+msgid "Failed"
+msgstr ""
+
+#: admin/admin-page-history.php:88
+msgid "Publish selected"
+msgstr ""
+
+#: admin/admin-page-history.php:89
+msgid "Delete record (doesn't touch the product)"
+msgstr ""
+
+#: admin/admin-page-history.php:112
+msgid "Edit product"
+msgstr ""
+
+#: admin/admin-page-history.php:116
+msgid "View in store"
+msgstr ""
+
+#: admin/admin-page-history.php:133
+msgid "Publish"
+msgstr ""
+
+#: admin/admin-page-history.php:155
+msgid "Delete this record from history? (the store product, if any, is NOT deleted)"
+msgstr ""
+
+#: admin/admin-page-history.php:156
+msgid "Delete"
+msgstr ""
+
+#: admin/admin-page-history.php:180
+msgid "Error"
+msgstr ""
+
+#: admin/admin-page-history.php:208
+msgid "AI (free)"
+msgstr ""
+
+#: admin/admin-page-history.php:213
+msgid "AI (Claude)"
+msgstr ""
+
+#: admin/admin-page-history.php:218
+msgid "Template"
+msgstr ""
+
+#. translators: %d: number of deleted records
+#: admin/admin-page-history.php:273
+#, php-format
+msgid "Deleted %d records from history."
+msgstr ""
+
+#. translators: %d: number of published products
+#: admin/admin-page-history.php:317
+#, php-format
+msgid "Published %d products."
+msgstr ""
+
+#. translators: %d: number of skipped records
+#: admin/admin-page-history.php:323
+#, php-format
+msgid "%d skipped (already published, still processing, or without a product)."
+msgstr ""
+
+#: admin/admin-page-history.php:378
+msgid "DecalDesk – History"
+msgstr ""
+
+#: admin/admin-page-history.php:380
+msgid "Upload new designs"
+msgstr ""
+
+#: admin/admin-page-history.php:395
+msgid "Total done"
+msgstr ""
+
+#: admin/admin-page-history.php:411
+msgid "Search by filename"
+msgstr ""
+
+#: admin/admin-page-upload.php:13
+msgid "DecalDesk – Upload Designs"
+msgstr ""
+
+#: admin/admin-page-upload.php:17
+msgid "Drop files here or press Enter to browse for files"
+msgstr ""
+
+#: admin/admin-page-upload.php:18
+msgid "Drop files here or click to browse"
+msgstr ""
+
+#: admin/admin-page-upload.php:20
+msgid "Filename format: name_widthxheight_material_category.extension (material is optional: name_widthxheight_category.extension also works)"
+msgstr ""
+
+#: admin/admin-page-upload.php:21
+msgid "Examples: holiday_50x70_matte_kitchen.jpg, or holiday_50x70_kitchen.jpg (no material)"
+msgstr ""
+
+#: admin/admin-page-upload.php:22
+msgid "Allowed formats: PNG, JPG/JPEG, WEBP, GIF"
+msgstr ""
+
+#. translators: %d: maximum number of files at once
+#: admin/admin-page-upload.php:26
+#, php-format
+msgid "Maximum %d files at once"
+msgstr ""
+
+#: admin/admin-page-upload.php:38
+msgid "Clear all"
+msgstr ""
+
+#: admin/admin-page-upload.php:47
+msgid "Save as draft"
+msgstr ""
+
+#: admin/admin-page-upload.php:51
+msgid "Publish immediately"
+msgstr ""
+
+#: admin/admin-page-upload.php:66
+msgid "Create with selectable variants (size/material/color)"
+msgstr ""
+
+#: admin/admin-page-upload.php:68
+#: admin/admin-page-upload.php:138
+msgid "Pro"
+msgstr ""
+
+#: admin/admin-page-upload.php:74
+msgid "Selectable size/material/color variants require a Pro license."
+msgstr ""
+
+#: admin/admin-page-upload.php:77
+msgid "No variant widths configured yet — add at least one below to enable this option."
+msgstr ""
+
+#. translators: %s: list of configured widths
+#: admin/admin-page-upload.php:82
+#, php-format
+msgid "Every uploaded design will become one product with a choice of width: %s (height is calculated automatically to match each design's proportions)."
+msgstr ""
+
+#: admin/admin-page-upload.php:90
+msgid "Configure widths / materials / colors ▾"
+msgstr ""
+
+#: admin/admin-page-upload.php:97
+msgid "Widths (required)"
+msgstr ""
+
+#: admin/admin-page-upload.php:102
+msgid "One width per line, in cm. The height for each variant is calculated automatically to match this design's own proportions — do not enter the height yourself."
+msgstr ""
+
+#: admin/admin-page-upload.php:107
+msgid "Materials (optional)"
+msgstr ""
+
+#: admin/admin-page-upload.php:112
+msgid "e.g. matte, gloss, clear"
+msgstr ""
+
+#: admin/admin-page-upload.php:117
+msgid "Colors (optional)"
+msgstr ""
+
+#: admin/admin-page-upload.php:122
+msgid "e.g. white, black, clear film"
+msgstr ""
+
+#: admin/admin-page-upload.php:127
+msgid "Save variants"
+msgstr ""
+
+#: admin/admin-page-upload.php:136
+msgid "Generate mockups from all templates in the category (up to 4)"
+msgstr ""
+
+#: admin/admin-page-upload.php:143
+msgid "Multiple mockup templates per category require a Pro license."
+msgstr ""
+
+#: admin/admin-page-upload.php:146
+msgid "Useful for categories with several templates (e.g. \"cars\" — show the design on a few different models). Slower processing, so it's off by default — turn it on only when you actually need it for a specific batch."
+msgstr ""
+
+#: admin/admin-page-upload.php:154
+msgid "Selectable size/material/color variants (Variable Products) are available in DecalDesk Pro. Every design uploaded here is created as a Simple Product."
+msgstr ""
+
+#: admin/admin-page-upload.php:161
+msgid "Upload files"
+msgstr ""
+
+#: admin/admin-page-upload.php:188
+msgid "No file received."
+msgstr ""
+
+#. translators: %s: list of allowed extensions
+#: admin/admin-page-upload.php:213
+#, php-format
+msgid "Allowed formats: %s."
+msgstr ""
+
+#. translators: %s: the original filename from the previous upload
+#: admin/admin-page-upload.php:237
+#, php-format
+msgid "This design has already been uploaded before (as \"%s\")."
+msgstr ""
+
+#: admin/admin-page-upload.php:244
+msgid "See the existing product below."
+msgstr ""
+
+#: admin/admin-page-upload.php:247
+msgid "It's currently being processed."
+msgstr ""
+
+#: admin/admin-page-upload.php:282
+msgid "Failed to save the file to the server."
+msgstr ""
+
+#. translators: %s: the filename
+#: admin/admin-page-upload.php:293
+#, php-format
+msgid "\"%s\" has been uploaded and queued for processing."
+msgstr ""
+
+#: decaldesk.php:216
+msgid "Your settings, history, and uploaded templates were successfully migrated from the previous version (ProductOps). Everything is in place."
+msgstr ""
+
+#: decaldesk.php:231
+msgid "DecalDesk requires WooCommerce to be active in order to work."
+msgstr ""
+
+#. translators: %s: support email address
+#: decaldesk.php:557
+#, php-format
+msgid "DecalDesk — need a hand? Email %s"
+msgstr ""
+
+#: includes/background.php:85
+msgid "The file was missing on the server when processing started."
+msgstr ""
+
+#. translators: %s: the product name
+#: includes/background.php:160
+#, php-format
+msgid "Product \"%s\" was created successfully."
+msgstr ""
+
+#: includes/mockup.php:67
+msgid "The design file doesn't exist."
+msgstr ""
+
+#: includes/mockup.php:115
+msgid "Failed to generate any mockup."
+msgstr ""
+
+#: includes/mockup.php:568
+msgid "Neither Imagick nor the GD library is available on the server."
+msgstr ""
+
+#: includes/mockup.php:577
+msgid "Failed to load the images."
+msgstr ""
+
+#: includes/notices.php:76
+msgid "Review your price per m² and minimum price (currently using example defaults)"
+msgstr ""
+
+#: includes/notices.php:81
+msgid "Set up your own categories (currently the example ones: Stickers, Car Wraps, Wall Decals, Kitchen Backsplash)"
+msgstr ""
+
+#: includes/notices.php:86
+msgid "Upload a mockup template for your first category (optional - a generic placeholder is used until then)"
+msgstr ""
+
+#: includes/notices.php:91
+msgid "Upload your first design file"
+msgstr ""
+
+#: includes/notices.php:129
+msgid "Getting started with DecalDesk"
+msgstr ""
+
+#: includes/notices.php:143
+msgid "Dismiss"
+msgstr ""
+
+#: includes/notices.php:195
+#: includes/notices.php:221
+msgid "DecalDesk:"
+msgstr ""
+
+#. translators: 1: number of products with a fallback description, 2: total descriptions generated over the past 7 days
+#: includes/notices.php:199
+#, php-format
+msgid "%1$d of %2$d products over the past week used the static template instead of an AI description."
+msgstr ""
+
+#: includes/notices.php:204
+msgid "Check your AI settings →"
+msgstr ""
+
+#: includes/notices.php:206
+#: includes/notices.php:234
+msgid "Hide for 24 hours"
+msgstr ""
+
+#. translators: %d: number of failed processing attempts over the past 7 days
+#: includes/notices.php:225
+#, php-format
+msgid "%d products failed to process successfully over the past week."
+msgstr ""
+
+#: includes/notices.php:230
+msgid "Last error:"
+msgstr ""
+
+#. translators: %s: the filename
+#: includes/parser.php:47
+#, php-format
+msgid "The name \"%s\" doesn't match the format name_widthxheight_material_category.extension (material is optional: name_widthxheight_category.extension also works)"
+msgstr ""
+
+#: includes/parser.php:59
+msgid "Dimensions must be positive numbers."
+msgstr ""
+
+#. translators: 1: given width, 2: given height, 3: maximum allowed value in cm
+#: includes/parser.php:73
+#, php-format
+msgid "The dimensions %1$d x %2$d cm look unrealistically large (maximum %3$d cm per side). Check for a typo in the filename."
+msgstr ""
+
+#: includes/parser.php:116
+msgid "The file is empty or corrupted."
+msgstr ""
+
+#: includes/parser.php:124
+msgid "The file wasn't recognized as a valid image (content check failed). It may be corrupted, or not actually an image despite its extension."
+msgstr ""
+
+#. translators: %s: the file's actually detected MIME type
+#: includes/parser.php:143
+#, php-format
+msgid "The file was recognized as \"%s\", which isn't an allowed design format."
+msgstr ""
+
+#: includes/parser.php:144
 msgid "unknown type"
 msgstr ""
 
+#: includes/parser.php:152
+msgid "The image has invalid (zero) pixel dimensions."
+msgstr ""
+
+#. translators: 1: actual width in px, 2: actual height in px, 3: maximum allowed value
+#: includes/parser.php:162
+#, php-format
+msgid "The image resolution is too high (%1$d x %2$d px). The maximum is %3$d px on the longer side."
+msgstr ""
+
+#: includes/parser.php:183
+msgid "The file is too large (exceeds the server's upload limit)."
+msgstr ""
+
+#: includes/parser.php:185
+msgid "The file was only partially uploaded — try again."
+msgstr ""
+
+#: includes/parser.php:187
+msgid "No file selected."
+msgstr ""
+
+#: includes/parser.php:191
+msgid "Server error during upload — check your hosting configuration."
+msgstr ""
+
+#: includes/parser.php:193
+msgid "Upload failed (unknown error)."
+msgstr ""
+
+#. translators: 1: product name, 2: mockup number
+#: includes/product.php:54
+#, php-format
+msgid "%1$s – mockup %2$d"
+msgstr ""
+
+#: includes/product.php:58
+msgid "mockup"
+msgstr ""
+
+#: includes/product.php:84
+msgid "original design"
+msgstr ""
+
+#: includes/product.php:85
+msgid "original design file"
+msgstr ""
+
+#: includes/product.php:158
+#: includes/product.php:344
+msgid "WooCommerce is not active."
+msgstr ""
+
+#: includes/product.php:167
+msgid "No variant sizes configured in Settings."
+msgstr ""
+
+#: includes/product.php:206
+msgid "Size"
+msgstr ""
+
+#: includes/product.php:207
+msgid "Material"
+msgstr ""
+
+#: includes/product.php:208
+msgid "Color"
+msgstr ""
+
+#: includes/product.php:259
+msgid "Failed to create the parent product."
+msgstr ""
+
+#: includes/product.php:389
+msgid "Failed to create the product."
+msgstr ""
+
+#: includes/settings.php:131
+msgid "AI descriptions require a Pro license."
+msgstr ""
+
+#: includes/settings.php:153
+msgid "No Google Gemini API key set."
+msgstr ""
+
+#: includes/settings.php:159
+msgid "No Anthropic API key set."
+msgstr ""
+
+#: includes/settings.php:163
+msgid "The AI provider is disabled (set to \"Disabled\")."
+msgstr ""
+
+#: includes/settings.php:173
+msgid "AI-generated descriptions are available in DecalDesk Pro."
+msgstr ""
+
+#: includes/settings.php:463
+msgid "DecalDesk – Settings"
+msgstr ""
+
+#: includes/settings.php:471
+msgid "Price per m² (€)"
+msgstr ""
+
+#: includes/settings.php:481
+msgid "Minimum price (€)"
+msgstr ""
+
+#: includes/settings.php:491
+msgid "Maximum size per side (cm)"
+msgstr ""
+
+#: includes/settings.php:498
+msgid "Protects against typos in the filename (e.g. an extra accidental zero). A file larger than this on either side will be rejected with a clear message."
+msgstr ""
+
+#: includes/settings.php:504
+msgid "Store product type"
+msgstr ""
+
+#: includes/settings.php:508
+msgid "What does your store sell?"
+msgstr ""
+
+#: includes/settings.php:513
+msgid "e.g. vinyl decals and stickers, framed canvas prints, ceramic tiles, custom fabric panels..."
+msgstr ""
+
+#: includes/settings.php:516
+msgid "DecalDesk works with any product priced by size, not only decals/stickers. Describe what you actually sell in a few words, in the language you want product content written in - it's used both in AI-generated descriptions and in the static fallback template (used when AI is off or unavailable). Leave blank to keep the original decal/sticker wording."
+msgstr ""
+
+#: includes/settings.php:521
+msgid "Product titles"
+msgstr ""
+
+#: includes/settings.php:526
+msgid "Let AI (or the fallback rule, when AI is off) improve the product title instead of using the filename's design name as-is"
+msgstr ""
+
+#: includes/settings.php:529
+msgid "Off by default: the product title is exactly the design name from the filename. When enabled, the title becomes a more natural, SEO-friendly headline (design name plus category/keyword) - written by AI when it's on, or by a simple name + category rule otherwise. The URL slug and SKU are unaffected either way."
+msgstr ""
+
+#: includes/settings.php:535
+msgid "Extra text in the description"
+msgstr ""
+
+#: includes/settings.php:539
+msgid "Text at the end of every description"
+msgstr ""
+
+#: includes/settings.php:543
+msgid "e.g. For a different size, please request a quote by contacting us."
+msgstr ""
+
+#: includes/settings.php:545
+msgid "Optional. If filled in, it's automatically appended to the bottom of the description on EVERY new product (whether the description came from AI or the static template). Leave blank = nothing gets added."
+msgstr ""
+
+#: includes/settings.php:551
+msgid "Mockup Image Optimization"
+msgstr ""
+
+#: includes/settings.php:554
+msgid "Mockups contain a photographic background (the template), so PNG usually ends up needlessly heavy. WebP keeps nearly the same quality at a much smaller file size — a faster site."
+msgstr ""
+
+#: includes/settings.php:559
+msgid "Mockup format"
+msgstr ""
+
+#: includes/settings.php:564
+msgid "recommended — smallest size, good quality"
+msgstr ""
+
+#: includes/settings.php:567
 msgid "wide compatibility"
 msgstr ""
 
-msgid "•••••••••••••••••••• (saved, leave blank to keep it)"
+#: includes/settings.php:570
+msgid "lossless, but the heaviest file"
 msgstr ""
 
+#: includes/settings.php:577
+msgid "Compression quality"
+msgstr ""
 
+#: includes/settings.php:584
+msgid "Only applies to WebP/JPEG (PNG is always lossless, ignored here). 80-85 is a reasonable balance between quality and file size."
+msgstr ""
+
+#: includes/settings.php:609
+msgid "Mockups are always saved as PNG in this version. WebP/JPEG compression (smaller, faster-loading files) is available in DecalDesk Pro."
+msgstr ""
+
+#. translators: %s: link to the Upload page
+#: includes/settings.php:620
+#, php-format
+msgid "The variant sizing setup (Variable Products) now lives in <a href=\"%s\">DecalDesk → Upload</a>, right next to the variants option — easier to edit there while you upload."
+msgstr ""
+
+#: includes/settings.php:629
+msgid "Every uploaded design is created as a Simple Product in this version. Selectable size/material/color variants (Variable Products) are available in DecalDesk Pro."
+msgstr ""
+
+#: includes/settings.php:633
+msgid "AI-generated descriptions"
+msgstr ""
+
+#: includes/settings.php:636
+msgid "Generates longer, sales-focused descriptions instead of the static template. Choose a free provider (Google Gemini, with a daily limit) or a paid one (Anthropic Claude, no limit)."
+msgstr ""
+
+#: includes/settings.php:643
+msgid "AI provider"
+msgstr ""
+
+#: includes/settings.php:648
+msgid "Disabled (use the static template)"
+msgstr ""
+
+#: includes/settings.php:653
+msgid "Free — Google Gemini (daily limit, see below)"
+msgstr ""
+
+#: includes/settings.php:658
+msgid "Paid — Anthropic Claude (no built-in limit)"
+msgstr ""
+
+#: includes/settings.php:663
+msgid "Test connection with AI provider"
+msgstr ""
+
+#: includes/settings.php:672
 msgid "AI content language"
 msgstr ""
 
+#: includes/settings.php:682
 msgid "Other (type below)"
 msgstr ""
 
+#: includes/settings.php:687
 msgid "e.g. Czech, Hungarian, Swedish..."
 msgstr ""
 
+#: includes/settings.php:690
 msgid "The language for AI-generated product descriptions and tags shown to your store customers — independent of the admin panel language. This does not need to match the language your store operates in unless you want it to."
+msgstr ""
+
+#: includes/settings.php:762
+msgid "AI Vision — image analysis"
+msgstr ""
+
+#: includes/settings.php:765
+msgid "Look at the design itself"
+msgstr ""
+
+#: includes/settings.php:770
+msgid "Let the AI look at the actual image (not just the filename) when writing the description"
+msgstr ""
+
+#: includes/settings.php:773
+msgid "Both providers (Gemini and Claude) support image recognition. The design is automatically downscaled before sending, to save bandwidth and tokens. The result is a much more accurate, specific description, instead of a generic one based only on size/material/category."
+msgstr ""
+
+#: includes/settings.php:779
+msgid "Free provider — Google Gemini"
+msgstr ""
+
+#: includes/settings.php:783
+msgid "Today's usage"
+msgstr ""
+
+#: includes/settings.php:787
+msgid "free AI descriptions used today."
+msgstr ""
+
+#: includes/settings.php:789
+msgid "The limit has been reached — the static template will be used until tomorrow."
+msgstr ""
+
+#: includes/settings.php:791
+msgid "The counter resets automatically at midnight. Google itself allows far more (hundreds per day) — this limit is just our own safeguard."
+msgstr ""
+
+#: includes/settings.php:796
+msgid "Daily limit"
+msgstr ""
+
+#: includes/settings.php:802
+msgid "How many products per day should get an AI description before switching to the template."
+msgstr ""
+
+#: includes/settings.php:807
+msgid "Google Gemini API key"
+msgstr ""
+
+#: includes/settings.php:811
+msgid "Set via the DECALDESK_GEMINI_API_KEY constant in wp-config.php"
+msgstr ""
+
+#: includes/settings.php:814
+#: includes/settings.php:839
+msgid "•••••••••••••••••••• (saved, leave blank to keep it)"
+msgstr ""
+
+#: includes/settings.php:818
+msgid "Get a free key from Google AI Studio (no card required):"
+msgstr ""
+
+#: includes/settings.php:820
+msgid "For a more secure setup, define it in wp-config.php:"
+msgstr ""
+
+#: includes/settings.php:827
+msgid "Paid provider — Anthropic Claude"
+msgstr ""
+
+#: includes/settings.php:831
+msgid "Anthropic API key"
+msgstr ""
+
+#: includes/settings.php:835
+msgid "Set via the DECALDESK_AI_API_KEY constant in wp-config.php"
+msgstr ""
+
+#: includes/settings.php:836
+msgid "The field below is ignored while the constant is defined — this is the more secure approach."
+msgstr ""
+
+#: includes/settings.php:842
+msgid "The key is stored in the database. For a more secure setup, define it in wp-config.php instead:"
+msgstr ""
+
+#: includes/settings.php:850
+msgid "Model"
+msgstr ""
+
+#: includes/settings.php:855
+msgid "fastest and cheapest"
+msgstr ""
+
+#: includes/settings.php:858
+msgid "recommended balance"
+msgstr ""
+
+#: includes/settings.php:861
+msgid "highest quality, more expensive"
+msgstr ""
+
+#: includes/settings.php:870
+msgid "This version always uses the static description template. AI-generated descriptions (Google Gemini or Anthropic Claude) are available in DecalDesk Pro."
+msgstr ""
+
+#: includes/settings.php:875
+msgid "Categories & Mockup Templates"
+msgstr ""
+
+#. translators: %s: link to the Categories page
+#: includes/settings.php:881
+#, php-format
+msgid "Category management (slug/name), mockup templates, and design positioning now live on a separate page: <a href=\"%s\">DecalDesk → Categories</a>."
+msgstr ""
+
+#: includes/settings.php:889
+msgid "On plugin deletion"
+msgstr ""
+
+#: includes/settings.php:892
+msgid "Full cleanup"
+msgstr ""
+
+#: includes/settings.php:897
+msgid "Delete all plugin data (settings, daily quota, log files, temporary files in incoming/mockups) when the plugin is fully removed"
+msgstr ""
+
+#: includes/settings.php:900
+msgid "OFF by default (safer)"
+msgstr ""
+
+#: includes/settings.php:901
+msgid "if you just deactivate the plugin, or delete it to upload a new version, your data stays intact."
+msgstr ""
+
+#: includes/settings.php:902
+msgid "Only check this if you're removing the plugin for good and want a clean wipe."
+msgstr ""
+
+#: includes/settings.php:903
+msgid "Important: WooCommerce products you've already created with the plugin are NEVER deleted automatically — this only affects DecalDesk's own internal data."
+msgstr ""
+
+#: includes/settings.php:909
+msgid "Save settings"
 msgstr ""
