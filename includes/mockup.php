@@ -8,35 +8,26 @@ if ( ! defined( 'DECALDESK_MAX_TEMPLATES_PER_CATEGORY' ) ) {
 }
 
 /**
- * Този build поддържа един темплейт на категория. Множество темплейти
- * (до DECALDESK_MAX_TEMPLATES_PER_CATEGORY на категория) се предлагат в
- * DecalDesk Pro - отделен плъгин, не lock/unlock на този код.
+ * Максимален брой темплейти на категория.
  *
  * @return int
  */
 function decaldesk_max_template_slots() {
-	/*! <fs_premium_only> */
-	return decaldesk_fs()->can_use_premium_code() ? DECALDESK_MAX_TEMPLATES_PER_CATEGORY : 1;
-	/*! </fs_premium_only> */
-	return 1;
+	return DECALDESK_MAX_TEMPLATES_PER_CATEGORY;
 }
 
 /**
- * Връща само първия темплейт - това издание генерира мокъпи от един
- * темплейт на категория. Параметърът $generate_all се пази за съвместимост
- * на сигнатурата с извикващия код, но няма ефект в този build.
+ * По подразбиране връща само първия темплейт (по-бързо). Ако $generate_all
+ * е true, връща всички конфигурирани темплейти - по един мокъп за всеки.
  *
  * @param string[] $template_paths
- * @param bool     $generate_all Без ефект в тази версия.
+ * @param bool     $generate_all
  * @return string[]
  */
 function decaldesk_resolve_final_template_paths( $template_paths, $generate_all ) {
-	/*! <fs_premium_only> */
-	if ( $generate_all && decaldesk_fs()->can_use_premium_code() ) {
+	if ( $generate_all ) {
 		return $template_paths;
 	}
-	return array_slice( $template_paths, 0, 1 );
-	/*! </fs_premium_only> */
 	return array_slice( $template_paths, 0, 1 );
 }
 
@@ -117,7 +108,6 @@ function decaldesk_generate_mockup( $design_path, $category, $generate_all = fal
 
 	return $mockup_paths;
 }
-/*! <fs_premium_only> */
 /**
  * Проверява дали текущият сървър реално може да записва WebP - или чрез
  * Imagick (с webp coder), или чрез GD с imagewebp().
@@ -132,27 +122,19 @@ function decaldesk_webp_supported() {
 
 	return function_exists( 'imagewebp' );
 }
-/*! </fs_premium_only> */
 
 /**
- * Връща конфигурацията за изходния формат на мокъпа. Този build винаги
- * извежда PNG - WebP/JPEG компресията е в DecalDesk Pro.
+ * Връща конфигурацията за изходния формат на мокъпа (WebP по подразбиране,
+ * JPEG или PNG по избор от настройките).
  *
  * @return array{format: string, extension: string, quality: int}
  */
 function decaldesk_get_mockup_output_config() {
-	/*! <fs_premium_only> */
 	$settings = get_option( 'decaldesk_settings', array() );
 
 	$format = isset( $settings['mockup_format'] ) && in_array( $settings['mockup_format'], array( 'webp', 'jpeg', 'png' ), true )
 		? $settings['mockup_format']
 		: 'webp';
-
-	// WebP/JPEG компресията е Pro функция - без валиден лиценз винаги
-	// записваме PNG (без загуба, но по-тежък файл), независимо от избора в настройките.
-	if ( 'png' !== $format && ! decaldesk_fs()->can_use_premium_code() ) {
-		$format = 'png';
-	}
 
 	// Ако е избран WebP, но нито Imagick, нито GD с webp поддръжка са налични -
 	// падаме на PNG ОЩЕ ТУК, за да могат разширението на файла и реалния запис
@@ -171,12 +153,6 @@ function decaldesk_get_mockup_output_config() {
 		'format'    => $format,
 		'extension' => $extension,
 		'quality'   => $quality,
-	);
-	/*! </fs_premium_only> */
-	return array(
-		'format'    => 'png',
-		'extension' => 'png',
-		'quality'   => 82,
 	);
 }
 
@@ -299,23 +275,12 @@ function decaldesk_get_template_zones( $category ) {
 }
 
 /**
- * Този build няма freeform (polygon) mockup renderer - предлага се в
- * DecalDesk Pro. Ако зона е записана като polygon (напр. данни от Pro),
- * пада обратно на правоъгълна зона по подразбиране вместо да гърми.
+ * Пропуска зоната непроменена - и rect, и polygon се поддържат.
  *
  * @param array $zone
  * @return array
  */
 function decaldesk_maybe_downgrade_zone( $zone ) {
-	if ( isset( $zone['type'] ) && 'polygon' === $zone['type']/*! <fs_premium_only> */ && ! decaldesk_fs()->can_use_premium_code()/*! </fs_premium_only> */ ) {
-		return array(
-			'x'      => 15,
-			'y'      => 15,
-			'width'  => 70,
-			'height' => 70,
-		);
-	}
-
 	return $zone;
 }
 
@@ -355,7 +320,6 @@ function decaldesk_calculate_contain_fit( $design_w, $design_h, $box_w, $box_h )
 	);
 }
 
-/*! <fs_premium_only> */
 /**
  * Изчислява "cover fit" позициониране: увеличава дизайна така, че да ЗАПЪЛНИ
  * цялата кутия (запазвайки пропорциите му), центриран - краищата на дизайна
@@ -382,7 +346,6 @@ function decaldesk_calculate_cover_fit( $design_w, $design_h, $box_w, $box_h ) {
 		'offset_y' => (int) round( ( $box_h - $new_h ) / 2 ),
 	);
 }
-/*! </fs_premium_only> */
 
 /**
  * Генериране на мокъп чрез Imagick (предпочитан вариант, по-качествен).
@@ -411,9 +374,7 @@ function decaldesk_generate_mockup_imagick( $design_path, $template_path, $outpu
 		$zone_type = isset( $zone['type'] ) && 'polygon' === $zone['type'] ? 'polygon' : 'rect';
 
 		if ( 'polygon' === $zone_type && ! empty( $zone['points'] ) && count( $zone['points'] ) >= 3 ) {
-			/*! <fs_premium_only> */
 			decaldesk_composite_polygon_imagick( $template, $design, $zone['points'], $tpl_width, $tpl_height );
-			/*! </fs_premium_only> */
 		} else {
 			$zone = wp_parse_args(
 				$zone,
@@ -477,7 +438,6 @@ function decaldesk_generate_mockup_imagick( $design_path, $template_path, $outpu
 	}
 }
 
-/*! <fs_premium_only> */
 /**
  * Наслагва дизайна в произволна полигонална форма (Imagick) - "cover fit"
  * (запълва цялата форма, изрязан по контура) + alpha маска по формата.
@@ -552,7 +512,6 @@ function decaldesk_composite_polygon_imagick( $template, $design, $points, $tpl_
 	$design_layer->clear();
 	$mask->clear();
 }
-/*! </fs_premium_only> */
 
 /**
  * Генериране на мокъп чрез GD (fallback, ако Imagick липсва).
@@ -585,9 +544,7 @@ function decaldesk_generate_mockup_gd( $design_path, $template_path, $output_pat
 	imagesavealpha( $template_img, true );
 
 	if ( 'polygon' === $zone_type && ! empty( $zone['points'] ) && count( $zone['points'] ) >= 3 ) {
-		/*! <fs_premium_only> */
 		decaldesk_composite_polygon_gd( $template_img, $design_img, $zone['points'], $tpl_width, $tpl_height );
-		/*! </fs_premium_only> */
 	} else {
 		$zone = wp_parse_args(
 			$zone,
@@ -676,7 +633,6 @@ function decaldesk_generate_mockup_gd( $design_path, $template_path, $output_pat
 	return true;
 }
 
-/*! <fs_premium_only> */
 /**
  * Наслагва дизайна в произволна полигонална форма (GD) - "cover fit"
  * (запълва цялата форма) + ray-casting точков тест за изрязване по контура.
@@ -805,7 +761,6 @@ function decaldesk_point_in_polygon( $x, $y, $points ) {
 
 	return $inside;
 }
-/*! </fs_premium_only> */
 
 /**
  * Вгражда текстови метаданни (заглавие, описание, автор) в изображение,

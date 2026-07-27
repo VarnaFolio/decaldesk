@@ -2,8 +2,9 @@
 
 Този файл съдържа официалните изисквания и най-добри практики, които важат за
 разработката на плъгина DecalDesk (WooCommerce разширение). Идентификация на
-плъгина: текстов домейн `decaldesk`, автор DecalDesk, лицензиране и ъпдейти
-през Freemius (виж `decaldesk.php`).
+плъгина: текстов домейн `decaldesk`, автор DecalDesk. Разпространява се като
+единен продукт (без Free/Pro разделение) през CodeCanyon — без Freemius,
+без WordPress.org (виж `decaldesk.php`).
 
 ---
 
@@ -110,10 +111,9 @@ if ( ! in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins',
   и `phpstan.neon.dist` (level 5, WordPress stubs) в корена на репото. Всички
   тези файлове, `composer.json`-ът, `phpunit.xml.dist` и `tools/vendor/` са
   dev-only tooling — изрично изключени от дистрибутивните ZIP-ове (виж
-  `tools/build-free-zip.js`). Инсталация: `composer install` (инсталира в
-  `tools/vendor/`, не в runtime `vendor/`, за да не се бърка с ръчно
-  vendor-натия Freemius SDK). Пускане: `composer run phpcs` / `composer run
-  phpstan` / `composer run test`.
+  `tools/build-codecanyon-zip.js`). Инсталация: `composer install` (инсталира
+  в `tools/vendor/`, отделно от runtime кода на плъгина). Пускане: `composer
+  run phpcs` / `composer run phpstan` / `composer run test`.
 - Ако плъгинът се качва в официалния Marketplace — трябва да минава QIT
   (Activation, Security, Malware, PHPCompatibility, Woo API, E2E с
   Playwright).
@@ -141,17 +141,13 @@ decaldesk.php   # Bootstrap файл
   `dbDelta`, настройки по подразбиране, `flush_rewrite_rules()`).
 - `register_deactivation_hook`: спиране на cron/фонови задачи — **без**
   триене на потребителски данни.
-- Деинсталиране: **НЕ** се ползва стандартен `uninstall.php` в този проект —
-  Freemius изрично изисква логиката за почистване да минава само през
-  `decaldesk_fs()->add_action( 'after_uninstall', ... )` в `decaldesk.php`,
-  за да не влиза в конфликт с техния собствен uninstall диалог/survey. Пълно
-  почистване (опции, метаданни, custom таблици) при реално изтриване от
-  админ панела, само ако е включена изрична опция "Пълно почистване" в
-  настройките — виж `decaldesk_run_uninstall_cleanup()` в `decaldesk.php`.
-  (В по-ранна версия имаше и отделен `uninstall.php` — премахнат по изрично
-  искане на Freemius; не го добавяй отново по подразбиране за нови модули,
-  освен ако не потвърдиш, че продуктът вече не ползва Freemius за
-  лицензиране.)
+- Деинсталиране: през стандартния `register_uninstall_hook()` в
+  `decaldesk.php` (регистриран към `decaldesk_run_uninstall_cleanup_all_sites()`).
+  Плъгинът вече не ползва Freemius, затова не са нужни специални
+  ограничения около uninstall механизма. Пълно почистване (опции, метаданни,
+  custom таблици) при реално изтриване от админ панела, само ако е включена
+  изрична опция "Пълно почистване" в настройките — виж
+  `decaldesk_run_uninstall_cleanup()` в `decaldesk.php`.
 
 ---
 

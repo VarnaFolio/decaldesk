@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <ruleset name="DecalDesk">
-    <description>Coding standard for the DecalDesk plugin — WordPress Coding Standards + PHP 7.4-8.3 compatibility. Dev-only tooling; not shipped with the plugin (see tools/build-free-zip.js EXCLUDE_FILES).</description>
+    <description>Coding standard for the DecalDesk plugin — WordPress Coding Standards + PHP 7.4-8.3 compatibility. Dev-only tooling; not shipped with the plugin (see tools/build-codecanyon-zip.js EXCLUDE_FILES).</description>
 
     <file>.</file>
 

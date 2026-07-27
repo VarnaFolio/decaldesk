@@ -37,7 +37,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * }
  */
 function decaldesk_generate_ai_content( $parsed, $design_path = '' ) {
-	/*! <fs_premium_only> */
 	$settings = wp_parse_args(
 		get_option( 'decaldesk_settings', array() ),
 		array(
@@ -51,12 +50,6 @@ function decaldesk_generate_ai_content( $parsed, $design_path = '' ) {
 	);
 
 	$provider = ! empty( $settings['ai_provider'] ) ? $settings['ai_provider'] : 'none';
-
-	// AI описанията са Pro функция - без валиден лиценз винаги падаме на
-	// статичния шаблон, независимо какво е избрано в настройките.
-	if ( 'none' !== $provider && ! decaldesk_fs()->can_use_premium_code() ) {
-		$provider = 'none';
-	}
 
 	// Подготвяме изображението само ако vision е включен, доставчикът поддържа снимки,
 	// и файлът реално съществува. При грешка просто продължаваме без изображение.
@@ -113,15 +106,12 @@ function decaldesk_generate_ai_content( $parsed, $design_path = '' ) {
 		$fallback['source'] = 'fallback';
 		return $fallback;
 	}
-	/*! </fs_premium_only> */
-	// Този build генерира само статичното шаблонно съдържание. AI-генерирани
-	// описания (Google Gemini / Anthropic Claude) са налични в DecalDesk Pro.
+
 	$fallback           = decaldesk_build_fallback_content( $parsed );
 	$fallback['source'] = 'fallback';
 	return $fallback;
 }
 
-/*! <fs_premium_only> */
 /**
  * Смалява дизайна и го връща като base64 PNG, готов за пращане към AI Vision.
  * Оригиналните файлове за печат често са огромни (много MB) - смаляваме до
@@ -184,7 +174,6 @@ function decaldesk_prepare_image_for_ai( $design_path ) {
 
 	return '';
 }
-/*! </fs_premium_only> */
 
 /**
  * Зарежда изображение с GD, разпознавайки реалния формат по съдържанието на
@@ -214,7 +203,6 @@ function decaldesk_gd_load_image( $path ) {
 	}
 }
 
-/*! <fs_premium_only> */
 /**
  * Изгражда общия промпт за AI (еднакъв за всички доставчици).
  *
@@ -563,7 +551,6 @@ function decaldesk_call_gemini_api( $parsed, $api_key, $image_base64 = '' ) {
 
 	return $result;
 }
-/*! </fs_premium_only> */
 
 /**
  * Fallback съдържание (шаблонно), използва се когато AI е изключен или недостъпен.
@@ -716,7 +703,6 @@ function decaldesk_build_fallback_content( $parsed ) {
 	);
 }
 
-/*! <fs_premium_only> */
 /**
  * ==========================================================
  * Диагностични "суров резултат" версии - за бутона "Тествай връзката"
@@ -824,7 +810,6 @@ function decaldesk_call_claude_api_raw( $parsed, $api_key, $model ) {
 
 	return $text;
 }
-/*! </fs_premium_only> */
 
 /**
  * Връща избрания език за AI-генерираното продуктово съдържание (описания,
@@ -854,7 +839,6 @@ function decaldesk_get_store_description() {
 	return isset( $settings['store_description'] ) ? trim( $settings['store_description'] ) : '';
 }
 
-/*! <fs_premium_only> */
 /**
  * Връща API ключа: приоритет има константа в wp-config.php (по-сигурно),
  * след това полето от настройките в базата.
@@ -958,7 +942,6 @@ function decaldesk_get_remaining_daily_quota() {
 		'remaining' => max( 0, $daily_limit - $used ),
 	);
 }
-/*! </fs_premium_only> */
 
 /**
  * Помощна функция за логване на грешки от плъгина (в output/logs/ и/или error_log).

@@ -98,19 +98,10 @@ function decaldesk_attach_mockups_and_design( $product_id, $mockup_paths, $desig
  * за да може изобщо да се създаде Variable Product).
  */
 function decaldesk_variants_configured() {
-	/*! <fs_premium_only> */
-	// Variable Products (размерни варианти) е Pro функция.
-	if ( ! decaldesk_fs()->can_use_premium_code() ) {
-		return false;
-	}
-
 	$settings = get_option( 'decaldesk_settings', array() );
 	return ! empty( $settings['variant_sizes'] );
-	/*! </fs_premium_only> */
-	return false;
 }
 
-/*! <fs_premium_only> */
 /**
  * Изчислява реалната ширина/височина (в см) на един размерен вариант,
  * запазвайки пропорциите на КОНКРЕТНИЯ качен дизайн. Потребителят конфигурира
@@ -325,7 +316,6 @@ function decaldesk_create_variable_product( $parsed, $mockup_paths, $status = 'd
 
 	return $product_id;
 }
-/*! </fs_premium_only> */
 
 /**
  * Създава WooCommerce продукт от парснатите данни.

@@ -3,7 +3,7 @@
  * Plugin Name:       DecalDesk
  * Plugin URI:        https://decaldesk.com
  * Description:       Автоматизирано създаване на WooCommerce продукти от дизайн файлове — парсване на име, ценообразуване по площ, AI описания, мокъп генериране, размерни варианти.
- * Version:           1.5.15
+ * Version:           1.5.16
  * Requires at least: 6.9
  * Requires PHP:      7.4
  * Tested up to:      7.0
@@ -22,56 +22,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // ==========================================================
-// Freemius (лицензиране, плащания, Pro/Free gating, ъпдейти)
-// ==========================================================
-// Трябва да се зареди възможно най-рано - преди всичко останало в плъгина.
-// Заменя предишния GitHub Plugin Update Checker: Freemius вече е
-// каноничният update/license сървър. Тази версия (WP.org) е is_premium=false
-// и не съдържа код за Pro-only функции (те живеят само в DecalDesk Pro).
-if ( ! function_exists( 'decaldesk_fs' ) ) {
-	function decaldesk_fs() {
-		global $decaldesk_fs;
-
-		if ( ! isset( $decaldesk_fs ) ) {
-			require_once __DIR__ . '/vendor/freemius/start.php';
-
-			$decaldesk_fs = fs_dynamic_init(
-				array(
-					'id'                  => '34508',
-					'slug'                => 'decaldesk',
-					'type'                => 'plugin',
-					'public_key'          => 'pk_5f71bbda1294ec97ace8d99c33f3b',
-					'is_premium'          => true,
-					'premium_suffix'      => 'Pro',
-					// Ако плъгинът е "serviceware" (работи само през външен сървър,
-					// без реален premium код в самия плъгин), тази опция трябва да е false.
-					'has_premium_version' => true,
-					'has_addons'          => false,
-					'has_paid_plans'      => true,
-					'is_org_compliant'    => true,
-					// Ползва се само ако/когато Freemius автоматично генерира
-					// WP.org-съвместима free версия от този код (маркирани блокове).
-					// Премахва се автоматично в тази free версия, ако въобще стигнем
-					// дотам - засега няма ефект, докато не активираме тази функция.
-					'wp_org_gatekeeper'   => 'OA7#BoRiBNqdf52FvzEf!!074aRLPs8fspif$7K1#4u4Csys1fQlCecVcUTOs2mcpeVHi#C2j9d09fOTvbC0HloPT7fFee5WdS3G',
-					'menu'                => array(
-						'support' => false,
-					),
-				)
-			);
-		}
-
-		return $decaldesk_fs;
-	}
-
-	decaldesk_fs();
-	do_action( 'decaldesk_fs_loaded' );
-}
-
-// ==========================================================
 // Константи
 // ==========================================================
-define( 'DECALDESK_VERSION', '1.5.15' );
+define( 'DECALDESK_VERSION', '1.5.16' );
 define( 'DECALDESK_PATH', plugin_dir_path( __FILE__ ) );
 define( 'DECALDESK_URL', plugin_dir_url( __FILE__ ) );
 
@@ -245,9 +198,13 @@ function decaldesk_check_woocommerce() {
 // ==========================================================
 // Source кодът е на английски (стандартна WordPress конвенция) - всеки
 // друг език, включително български, идва като превод от languages/.
-// Ръчно load_plugin_textdomain() НЕ е нужно за плъгини, хоствани в
-// WordPress.org директорията - WordPress автоматично зарежда преводите
-// по slug-а на плъгина от версия 4.6 насам.
+// Плъгинът се разпространява извън WordPress.org (CodeCanyon), затова
+// автоматичното зареждане на преводи по slug (WP.org-specific от 4.6
+// насам) не важи тук - зареждаме ръчно.
+function decaldesk_load_textdomain() {
+	load_plugin_textdomain( 'decaldesk', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+}
+add_action( 'plugins_loaded', 'decaldesk_load_textdomain' );
 
 // ==========================================================
 // Инициализация - includes/admin менюто се зареждат САМО ако WooCommerce
@@ -388,7 +345,7 @@ function decaldesk_deactivate() {
 register_deactivation_hook( __FILE__, 'decaldesk_deactivate' );
 
 // ==========================================================
-// Деинсталиране (през Freemius after_uninstall hook)
+// Деинсталиране
 // ==========================================================
 // По подразбиране НЕ трие нищо - потребителят трябва изрично да е включил
 // "Пълно почистване" от DecalDesk → Настройки, преди да изтрие плъгина.
@@ -399,11 +356,6 @@ register_deactivation_hook( __FILE__, 'decaldesk_deactivate' );
 // са реални бизнес данни (инвентар на магазина), не вътрешни данни на
 // плъгина. Тук чистим само собствените опции/файлове на DecalDesk
 // (настройки, дневна AI квота, лог, временни файлове).
-//
-// Ползваме decaldesk_fs()->add_action('after_uninstall', ...) като единствен
-// механизъм (вместо и самостоятелен uninstall.php) - Freemius изисква това,
-// защото сам прихваща/показва диалога за деинсталиране и координира кога
-// точно да се задейства почистването.
 function decaldesk_run_uninstall_cleanup() {
 	$settings = get_option( 'decaldesk_settings', array() );
 
@@ -480,7 +432,7 @@ function decaldesk_run_uninstall_cleanup_all_sites() {
 		decaldesk_run_uninstall_cleanup();
 	}
 }
-decaldesk_fs()->add_action( 'after_uninstall', 'decaldesk_run_uninstall_cleanup_all_sites' );
+register_uninstall_hook( __FILE__, 'decaldesk_run_uninstall_cleanup_all_sites' );
 
 // ==========================================================
 // Enqueue admin assets (само на страницата на DecalDesk)
@@ -557,7 +509,6 @@ function decaldesk_enqueue_admin_assets( $hook ) {
 			array(
 				'ajax_url' => admin_url( 'admin-ajax.php' ),
 				'nonce'    => wp_create_nonce( 'decaldesk_categories_nonce' ),
-				'isPro'    => decaldesk_fs()->can_use_premium_code(),
 				'maxSlots' => decaldesk_max_template_slots(),
 			)
 		);
