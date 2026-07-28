@@ -124,6 +124,10 @@ function decaldesk_ajax_test_ai_connection() {
 		wp_send_json_error( array( 'message' => __( 'You don\'t have permission to do this.', 'decaldesk' ) ), 403 );
 	}
 
+	if ( decaldesk_is_demo_mode_enabled() ) {
+		wp_send_json_error( array( 'message' => __( 'Disabled while Demo mode is on, to protect the AI budget of this public preview site.', 'decaldesk' ) ) );
+	}
+
 	$settings = wp_parse_args(
 		get_option( 'decaldesk_settings', array() ),
 		array(
@@ -380,6 +384,15 @@ function decaldesk_sanitize_settings( $input ) {
 	// за да не се изтрият случайно данни при бъдещо преинсталиране на плъгина.
 	$output['delete_data_on_uninstall'] = ! empty( $input['delete_data_on_uninstall'] );
 
+	// Demo mode - за публично preview копие на сайта (виж includes/demo-mode.php).
+	// По подразбиране изключено; клампваме числовите полета, за да не могат
+	// случайно да се запазят 0/отрицателни лимити.
+	$output['demo_mode']             = ! empty( $input['demo_mode'] );
+	$output['demo_upload_daily_cap'] = isset( $input['demo_upload_daily_cap'] ) ? max( 1, (int) $input['demo_upload_daily_cap'] ) : 30;
+	$output['demo_max_filesize_mb']  = isset( $input['demo_max_filesize_mb'] ) ? max( 1, (int) $input['demo_max_filesize_mb'] ) : 3;
+	$output['demo_ai_daily_cap']     = isset( $input['demo_ai_daily_cap'] ) ? max( 1, (int) $input['demo_ai_daily_cap'] ) : 15;
+	$output['demo_retention_hours']  = isset( $input['demo_retention_hours'] ) ? max( 1, (int) $input['demo_retention_hours'] ) : 6;
+
 	// API ключовете се запазват само ако е въведен нов; иначе пазим стария (за да не се налага
 	// да се въвежда наново при всеки Save, ако вече е зададен през wp-config.php константа).
 	if ( ! empty( $input['ai_api_key'] ) ) {
@@ -441,6 +454,11 @@ function decaldesk_render_settings_page() {
 			'gemini_api_key'           => '',
 			'gemini_daily_limit'       => 50,
 			'ai_use_vision'            => false,
+			'demo_mode'                => false,
+			'demo_upload_daily_cap'    => 30,
+			'demo_max_filesize_mb'     => 3,
+			'demo_ai_daily_cap'        => 15,
+			'demo_retention_hours'     => 6,
 		)
 	);
 
@@ -864,6 +882,66 @@ function decaldesk_render_settings_page() {
 				);
 				?>
 			</p>
+
+			<h2><?php esc_html_e( 'Demo mode (public preview site)', 'decaldesk' ); ?></h2>
+			<p class="description">
+				<?php esc_html_e( 'For a separate copy of your site (a subdomain, e.g. demo.yourstore.com) where potential customers can try DecalDesk for real before buying — never enable this on your real store. It caps daily uploads, caps daily real AI calls (Claude has no built-in limit otherwise), rejects oversized files, and shortens the History cleanup window to hours instead of days.', 'decaldesk' ); ?>
+			</p>
+			<table class="form-table">
+				<tr>
+					<th scope="row"><?php esc_html_e( 'Enable demo mode', 'decaldesk' ); ?></th>
+					<td>
+						<label for="decaldesk_demo_mode">
+							<input type="checkbox" id="decaldesk_demo_mode" name="decaldesk_settings[demo_mode]"
+									value="1" <?php checked( ! empty( $settings['demo_mode'] ) ); ?>>
+							<?php esc_html_e( 'This installation is a public pre-sales demo', 'decaldesk' ); ?>
+						</label>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">
+						<label for="decaldesk_demo_upload_daily_cap"><?php esc_html_e( 'Max uploads per day', 'decaldesk' ); ?></label>
+					</th>
+					<td>
+						<input type="number" step="1" min="1" id="decaldesk_demo_upload_daily_cap"
+								name="decaldesk_settings[demo_upload_daily_cap]"
+								value="<?php echo esc_attr( $settings['demo_upload_daily_cap'] ); ?>" class="small-text">
+						<p class="description"><?php esc_html_e( 'Shared across all demo visitors. Once reached, uploads are rejected with a friendly message until the next day.', 'decaldesk' ); ?></p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">
+						<label for="decaldesk_demo_max_filesize_mb"><?php esc_html_e( 'Max file size (MB)', 'decaldesk' ); ?></label>
+					</th>
+					<td>
+						<input type="number" step="1" min="1" id="decaldesk_demo_max_filesize_mb"
+								name="decaldesk_settings[demo_max_filesize_mb]"
+								value="<?php echo esc_attr( $settings['demo_max_filesize_mb'] ); ?>" class="small-text">
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">
+						<label for="decaldesk_demo_ai_daily_cap"><?php esc_html_e( 'Max real AI calls per day', 'decaldesk' ); ?></label>
+					</th>
+					<td>
+						<input type="number" step="1" min="1" id="decaldesk_demo_ai_daily_cap"
+								name="decaldesk_settings[demo_ai_daily_cap]"
+								value="<?php echo esc_attr( $settings['demo_ai_daily_cap'] ); ?>" class="small-text">
+						<p class="description"><?php esc_html_e( 'Applies to both providers, including Claude (which has no built-in daily limit otherwise). Once reached, uploads still work but fall back to the static template instead of calling the AI.', 'decaldesk' ); ?></p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">
+						<label for="decaldesk_demo_retention_hours"><?php esc_html_e( 'History cleanup window (hours)', 'decaldesk' ); ?></label>
+					</th>
+					<td>
+						<input type="number" step="1" min="1" id="decaldesk_demo_retention_hours"
+								name="decaldesk_settings[demo_retention_hours]"
+								value="<?php echo esc_attr( $settings['demo_retention_hours'] ); ?>" class="small-text">
+						<p class="description"><?php esc_html_e( 'Overrides "History retention (days)" above while demo mode is on — the cleanup also switches from once a day to once an hour.', 'decaldesk' ); ?></p>
+					</td>
+				</tr>
+			</table>
 
 			<h2><?php esc_html_e( 'On plugin deletion', 'decaldesk' ); ?></h2>
 			<table class="form-table">

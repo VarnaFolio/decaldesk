@@ -51,6 +51,19 @@ function decaldesk_generate_ai_content( $parsed, $design_path = '' ) {
 
 	$provider = ! empty( $settings['ai_provider'] ) ? $settings['ai_provider'] : 'none';
 
+	// Demo mode (публично preview копие на сайта, виж includes/demo-mode.php) -
+	// налага дневен лимит РЕАЛНИ AI извиквания и за двата доставчика (Claude
+	// иначе няма вграден лимит), за да не се изразходи AI бюджета от посетители
+	// преди покупка. Проверяваме тук, преди дори да подготвим изображението.
+	if ( 'none' !== $provider && decaldesk_is_demo_mode_enabled() ) {
+		if ( ! decaldesk_demo_ai_quota_available( decaldesk_get_demo_ai_daily_cap() ) ) {
+			decaldesk_log( 'Demo mode: дневният AI лимит за demo сайта е достигнат — пада на шаблон.' );
+			$fallback           = decaldesk_build_fallback_content( $parsed );
+			$fallback['source'] = 'fallback';
+			return $fallback;
+		}
+	}
+
 	// Подготвяме изображението само ако vision е включен, доставчикът поддържа снимки,
 	// и файлът реално съществува. При грешка просто продължаваме без изображение.
 	$image_payload = '';
@@ -78,6 +91,9 @@ function decaldesk_generate_ai_content( $parsed, $design_path = '' ) {
 
 		if ( false !== $result ) {
 			decaldesk_increment_daily_quota();
+			if ( decaldesk_is_demo_mode_enabled() ) {
+				decaldesk_increment_demo_ai_quota();
+			}
 			$result['source'] = 'ai_free';
 			return $result;
 		}
@@ -98,6 +114,9 @@ function decaldesk_generate_ai_content( $parsed, $design_path = '' ) {
 		$result = decaldesk_call_claude_api( $parsed, $api_key, $settings['ai_model'], $image_payload );
 
 		if ( false !== $result ) {
+			if ( decaldesk_is_demo_mode_enabled() ) {
+				decaldesk_increment_demo_ai_quota();
+			}
 			$result['source'] = 'ai_claude';
 			return $result;
 		}

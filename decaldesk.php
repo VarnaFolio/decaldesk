@@ -229,6 +229,7 @@ function decaldesk_init_plugin() {
 	require_once DECALDESK_PATH . 'includes/background.php';
 	require_once DECALDESK_PATH . 'includes/notices.php';
 	require_once DECALDESK_PATH . 'includes/settings.php';
+	require_once DECALDESK_PATH . 'includes/demo-mode.php';
 
 	require_once DECALDESK_PATH . 'admin/admin-menu.php';
 

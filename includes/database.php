@@ -306,16 +306,27 @@ function decaldesk_delete_jobs( $job_ids ) {
 function decaldesk_cleanup_old_jobs() {
 	global $wpdb;
 
-	$settings       = get_option( 'decaldesk_settings', array() );
-	$retention_days = isset( $settings['job_retention_days'] ) ? (int) $settings['job_retention_days'] : 90;
+	$settings = get_option( 'decaldesk_settings', array() );
 
-	// 0 = автоматичното почистване е изрично изключено от потребителя.
-	if ( $retention_days <= 0 ) {
-		return;
+	// Demo mode (публично preview копие на сайта, виж includes/demo-mode.php) -
+	// прескача обичайния "дни" ретеншън и налага много по-кратък прозорец в
+	// часове, независимо от job_retention_days, за да не се трупат чужди
+	// тестови продукти/файлове между посетители на demo сайта.
+	if ( decaldesk_is_demo_mode_enabled() ) {
+		$retention_hours = isset( $settings['demo_retention_hours'] ) ? max( 1, (int) $settings['demo_retention_hours'] ) : 6;
+		$cutoff           = gmdate( 'Y-m-d H:i:s', time() - $retention_hours * HOUR_IN_SECONDS );
+	} else {
+		$retention_days = isset( $settings['job_retention_days'] ) ? (int) $settings['job_retention_days'] : 90;
+
+		// 0 = автоматичното почистване е изрично изключено от потребителя.
+		if ( $retention_days <= 0 ) {
+			return;
+		}
+
+		$cutoff = gmdate( 'Y-m-d H:i:s', time() - $retention_days * DAY_IN_SECONDS );
 	}
 
-	$table  = decaldesk_jobs_table();
-	$cutoff = gmdate( 'Y-m-d H:i:s', time() - $retention_days * DAY_IN_SECONDS );
+	$table = decaldesk_jobs_table();
 
 	$old_jobs = $wpdb->get_results(
 		$wpdb->prepare(

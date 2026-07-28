@@ -171,6 +171,15 @@ function decaldesk_handle_upload() {
 	$use_variants         = ! empty( $_POST['use_variants'] );
 	$generate_all_mockups = ! empty( $_POST['generate_all_mockups'] );
 
+	// Demo mode (публично preview копие на сайта, виж includes/demo-mode.php) -
+	// проверяваме размер и дневен лимит ПРЕДИ всякаква реална обработка на файла.
+	if ( decaldesk_is_demo_mode_enabled() ) {
+		$demo_check = decaldesk_check_demo_upload_limits( $file );
+		if ( is_wp_error( $demo_check ) ) {
+			wp_send_json_error( array( 'message' => $demo_check->get_error_message() ), 403 );
+		}
+	}
+
 	// Проверка дали самото качване е минало без грешка (прекъснат ъплоуд, превишен размер и т.н.)
 	if ( ! isset( $file['error'] ) || UPLOAD_ERR_OK !== $file['error'] ) {
 		wp_send_json_error( array( 'message' => decaldesk_upload_error_message( $file['error'] ?? -1 ) ), 400 );
@@ -260,6 +269,10 @@ function decaldesk_handle_upload() {
 	// 3) Слагаме дизайна в опашката за фонова обработка (AI + мокъп + продукт).
 	// Обработката продължава дори табът да бъде затворен веднага след това.
 	$job_id = decaldesk_queue_design_job( $target_path, $file['name'], $status, $file_hash, $use_variants, $generate_all_mockups );
+
+	if ( decaldesk_is_demo_mode_enabled() ) {
+		decaldesk_increment_demo_upload_quota();
+	}
 
 	wp_send_json_success(
 		array(
