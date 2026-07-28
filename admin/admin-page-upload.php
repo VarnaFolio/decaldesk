@@ -10,7 +10,7 @@ function decaldesk_render_upload_page() {
 	$settings = get_option( 'decaldesk_settings', array() );
 	?>
 	<div class="wrap decaldesk-wrap">
-		<h1><?php esc_html_e( 'DecalDesk – Upload Designs', 'decaldesk' ); ?></h1>
+		<?php decaldesk_render_page_header( 'decaldesk', __( 'Upload Designs', 'decaldesk' ) ); ?>
 
 		<div class="decaldesk-upload-box">
 			<div id="decaldesk-dropzone" class="decaldesk-dropzone" tabindex="0" role="button"

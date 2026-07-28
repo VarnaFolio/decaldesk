@@ -375,11 +375,7 @@ function decaldesk_render_history_page() {
 	$list_table->prepare_items();
 	?>
 	<div class="wrap decaldesk-wrap">
-		<h1 class="wp-heading-inline"><?php esc_html_e( 'DecalDesk – History', 'decaldesk' ); ?></h1>
-		<a href="<?php echo esc_url( admin_url( 'admin.php?page=decaldesk' ) ); ?>" class="page-title-action">
-			<?php esc_html_e( 'Upload new designs', 'decaldesk' ); ?>
-		</a>
-		<hr class="wp-header-end">
+		<?php decaldesk_render_page_header( 'decaldesk-history', __( 'History', 'decaldesk' ) ); ?>
 
 		<div class="decaldesk-stat-cards">
 			<div class="decaldesk-stat-card">

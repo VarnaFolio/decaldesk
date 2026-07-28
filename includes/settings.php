@@ -448,7 +448,7 @@ function decaldesk_render_settings_page() {
 	$is_custom_language = ! in_array( $settings['ai_content_language'], $preset_languages, true );
 	?>
 	<div class="wrap decaldesk-wrap">
-		<h1><?php esc_html_e( 'DecalDesk – Settings', 'decaldesk' ); ?></h1>
+		<?php decaldesk_render_page_header( 'decaldesk-settings', __( 'Settings', 'decaldesk' ) ); ?>
 
 		<form method="post" action="options.php">
 			<?php settings_fields( 'decaldesk_settings_group' ); ?>

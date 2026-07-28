@@ -25,7 +25,7 @@ function decaldesk_render_categories_page() {
 	$categories = isset( $settings['categories'] ) ? $settings['categories'] : array();
 	?>
 	<div class="wrap decaldesk-wrap">
-		<h1><?php esc_html_e( 'DecalDesk – Categories & Mockup Templates', 'decaldesk' ); ?></h1>
+		<?php decaldesk_render_page_header( 'decaldesk-categories', __( 'Categories & Mockup Templates', 'decaldesk' ) ); ?>
 		<p class="description">
 			<?php esc_html_e( 'Each category matches the "category" part of the filename (e.g. holiday_50x70_matte_KITCHEN.jpg → category "kitchen"). Here you upload mockup template(s) and set exactly where the design should sit on each one.', 'decaldesk' ); ?>
 		</p>
